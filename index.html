@@ -114,8 +114,8 @@
 
   /* ── SIDEBAR ── */
   .sidebar {
-    width: 260px;
-    min-width: 260px;
+    width: 270px;
+    min-width: 270px;
     background: var(--white);
     border-right: 1.5px solid var(--border);
     padding: 24px 0;
@@ -162,7 +162,7 @@
   }
   .nav-item.active .nav-dot { opacity: 1; }
   .nav-sub {
-    padding-left: 28px;
+    padding-left: 34px;
     font-size: 12.5px;
     border-left: 3px solid transparent;
   }
@@ -172,13 +172,27 @@
     font-weight: 500;
     color: var(--dark);
   }
+  .nav-subsub {
+    padding-left: 48px;
+    font-size: 12px;
+    border-left: 3px solid transparent;
+    color: var(--text);
+    opacity: 0.85;
+  }
+  .nav-subsub.active {
+    border-left-color: var(--accent);
+    background: var(--bg);
+    font-weight: 500;
+    color: var(--dark);
+    opacity: 1;
+  }
   .sidebar-divider { height: 1px; background: var(--border); margin: 10px 20px; }
 
   /* ── MAIN CONTENT ── */
   .main {
     flex: 1;
     padding: 40px 48px 80px;
-    max-width: 900px;
+    max-width: 920px;
   }
 
   /* breadcrumbs */
@@ -190,6 +204,7 @@
     color: var(--text);
     opacity: 0.7;
     margin-bottom: 28px;
+    flex-wrap: wrap;
   }
   .breadcrumbs span { cursor: pointer; }
   .breadcrumbs span:hover { opacity: 1; text-decoration: underline; }
@@ -289,10 +304,10 @@
   .theme-name { font-weight: 600; font-size: 13px; color: var(--dark); margin-bottom: 3px; }
   .theme-desc { font-size: 12px; color: var(--text); line-height: 1.4; }
 
-  /* tabs */
-  .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--tab); margin-bottom: 24px; }
+  /* ── INLINE TABS (within a theme page) ── */
+  .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--tab); margin-bottom: 24px; flex-wrap: wrap; }
   .tab-btn {
-    padding: 9px 20px;
+    padding: 9px 18px;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
@@ -303,11 +318,99 @@
     border-bottom: 3px solid transparent;
     margin-bottom: -2px;
     transition: all 0.15s;
+    white-space: nowrap;
   }
   .tab-btn:hover { color: var(--dark); }
   .tab-btn.active { color: var(--dark); font-weight: 600; border-bottom-color: var(--accent); }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
+
+  /* ── SCORE/OMGEVING SWITCHER ── */
+  .score-switcher {
+    display: inline-flex;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 28px;
+  }
+  .switcher-btn {
+    padding: 7px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .switcher-btn.active {
+    background: var(--accent);
+    color: var(--dark);
+    font-weight: 600;
+  }
+  .switcher-btn:hover:not(.active) { background: var(--bg); }
+
+  .score-panel { display: none; }
+  .score-panel.active { display: block; }
+
+  /* ── INDICATOR PILLS ── */
+  .indicator-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .indicator-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--white);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .indicator-pill.active {
+    background: var(--dark);
+    color: var(--white);
+    border-color: var(--dark);
+    font-weight: 600;
+  }
+  .indicator-pill:hover:not(.active) { border-color: var(--accent); color: var(--dark); }
+
+  .indicator-panel { display: none; }
+  .indicator-panel.active { display: block; }
+
+  /* ── INDICATOR DETAIL TABS ── */
+  .detail-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--tab); margin: 20px 0 20px; }
+  .detail-tab-btn {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .detail-tab-btn:hover { color: var(--dark); }
+  .detail-tab-btn.active { color: var(--dark); font-weight: 600; border-bottom-color: var(--accent); }
+  .detail-tab-content { display: none; }
+  .detail-tab-content.active { display: block; }
 
   /* table */
   table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
@@ -350,6 +453,18 @@
     margin: 16px 0;
     font-size: 13px;
   }
+  .placeholder-block {
+    background: #f5f5f5;
+    border: 2px dashed #ccc;
+    border-radius: var(--radius);
+    padding: 32px;
+    margin: 24px 0;
+    text-align: center;
+    color: #888;
+  }
+  .placeholder-block .ph-icon { font-size: 40px; margin-bottom: 12px; }
+  .placeholder-block .ph-title { font-size: 16px; font-weight: 600; color: #666; margin-bottom: 8px; }
+  .placeholder-block .ph-desc { font-size: 13px; }
 
   /* process flow */
   .process-flow {
@@ -414,6 +529,15 @@
   .s-high { background: #fce4b0; color: #7a3e00; }
   .s-vhigh { background: #ffd6c4; color: #7a1a10; }
   .s-unknown { background: #e0e0e0; color: #555; }
+
+  /* score inline badge */
+  .score-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
 
   /* code block */
   pre {
@@ -489,6 +613,46 @@
   .source-link { font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; }
   .source-link:hover { text-decoration: underline; }
 
+  /* formula box */
+  .formula-box {
+    background: var(--dark);
+    color: var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 16px 0;
+    letter-spacing: 0.5px;
+  }
+
+  /* risk score diagram */
+  .risk-diagram {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .risk-box {
+    background: var(--tab);
+    border-radius: 6px;
+    padding: 12px 18px;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+  }
+  .risk-box.result {
+    background: var(--accent);
+  }
+  .risk-box .rb-label { font-size: 11px; font-weight: 600; color: var(--dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .risk-box .rb-val { font-size: 13px; font-weight: 700; color: var(--dark); }
+  .risk-op { font-size: 22px; font-weight: 700; color: var(--accent); }
+
   /* scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -530,6 +694,19 @@
     color: white;
   }
 
+  /* deel badge */
+  .deel-badge {
+    display: inline-block;
+    background: var(--dark);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
   @media (max-width: 900px) {
     .sidebar { display: none; }
     .main { padding: 24px 20px 60px; }
@@ -564,21 +741,27 @@
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">Stap 1 — Omgevingsscore</div>
+      <div class="sidebar-section-label">Deel 1 — Omgevingsscore</div>
       <div class="nav-item" onclick="navigate('omgeving', this)"><div class="nav-dot"></div>Omgevingsscore</div>
-      <div class="nav-item nav-sub" onclick="navigate('hitte', this)"><div class="nav-dot"></div>🌡️ Hitte</div>
-      <div class="nav-item nav-sub" onclick="navigate('droogte', this)"><div class="nav-dot"></div>🏜️ Droogte</div>
-      <div class="nav-item nav-sub" onclick="navigate('wateroverlast', this)"><div class="nav-dot"></div>🌧️ Wateroverlast</div>
-      <div class="nav-item nav-sub" onclick="navigate('overstroming', this)"><div class="nav-dot"></div>🌊 Overstroming</div>
+      <div class="nav-item nav-sub" onclick="navigate('hitte', this); setThemeView('hitte','omgeving')"><div class="nav-dot"></div>🌡️ Hitte</div>
+      <div class="nav-item nav-sub" onclick="navigate('droogte', this); setThemeView('droogte','omgeving')"><div class="nav-dot"></div>🏜️ Droogte</div>
+      <div class="nav-item nav-sub" onclick="navigate('wateroverlast', this); setThemeView('wateroverlast','omgeving')"><div class="nav-dot"></div>🌧️ Wateroverlast</div>
+      <div class="nav-item nav-sub" onclick="navigate('overstroming', this); setThemeView('overstroming','omgeving')"><div class="nav-dot"></div>🌊 Overstroming</div>
+      <div class="nav-item nav-sub" onclick="navigate('hagelstorm', this)"><div class="nav-dot"></div>⛈️ Hagel & Storm</div>
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">Stap 2 — Gebouwscore</div>
+      <div class="sidebar-section-label">Deel 2 — Gebouwscore</div>
       <div class="nav-item" onclick="navigate('gebouw', this)"><div class="nav-dot"></div>Gebouwscore</div>
+      <div class="nav-item nav-sub" onclick="navigate('hitte', this); setThemeView('hitte','gebouw')"><div class="nav-dot"></div>🌡️ Hitte</div>
+      <div class="nav-item nav-sub" onclick="navigate('droogte', this); setThemeView('droogte','gebouw')"><div class="nav-dot"></div>🏜️ Droogte</div>
+      <div class="nav-item nav-sub" onclick="navigate('wateroverlast', this); setThemeView('wateroverlast','gebouw')"><div class="nav-dot"></div>🌧️ Wateroverlast</div>
+      <div class="nav-item nav-sub" onclick="navigate('overstroming', this); setThemeView('overstroming','gebouw')"><div class="nav-dot"></div>🌊 Overstroming</div>
+      <div class="nav-item" onclick="navigate('klimaatrisicoscore', this)"><div class="nav-dot"></div>Klimaatrisicoscore</div>
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">Stap 3 — Adaptatiestrategie</div>
+      <div class="sidebar-section-label">Deel 3 — Adaptatiestrategie</div>
       <div class="nav-item" onclick="navigate('strategie', this)"><div class="nav-dot"></div>Risicomanagement</div>
       <div class="nav-item" onclick="navigate('maatregelen', this)"><div class="nav-dot"></div>Maatregelen</div>
     </div>
@@ -628,7 +811,7 @@
       </div>
 
       <h2>Klimaatthema's</h2>
-      <p>FCAB beoordeelt vier klimaatthema's die relevant zijn voor gebouwen in Nederland, conform het Deltaprogramma Ruimtelijke Adaptatie (DPRA):</p>
+      <p>FCAB beoordeelt vijf klimaatthema's voor gebouwen in Nederland, conform het Deltaprogramma Ruimtelijke Adaptatie (DPRA):</p>
       <div class="theme-grid">
         <div class="theme-card" onclick="navigate('hitte', null)">
           <div class="theme-icon">🌡️</div>
@@ -646,12 +829,10 @@
           <div class="theme-icon">🌊</div>
           <div><div class="theme-name">Overstroming</div><div class="theme-desc">Maximale waterdiepte en plaatsgebonden overstromingskans</div></div>
         </div>
-      </div>
-
-      <h2>Toepassing en scope</h2>
-      <p>FCAB is ontwikkeld voor <strong>bestaande gebouwen</strong> in Nederland. De methodiek is <strong>niet</strong> geschikt voor nieuwbouw, ontwikkeling van groene gebieden of herontwikkeling van voormalige industrieterreinen.</p>
-      <div class="warning-block">
-        <strong>Let op:</strong> FCAB is uitsluitend geschikt voor bestaande gebouwde omgeving. De aanpak is niet geschikt voor het beoordelen van nieuwbouwlocaties of -ontwerpen.
+        <div class="theme-card" onclick="navigate('hagelstorm', null)" style="border-style:dashed;opacity:0.8;">
+          <div class="theme-icon">⛈️</div>
+          <div><div class="theme-name">Hagel &amp; Storm</div><div class="theme-desc">Nieuw thema — in ontwikkeling op basis van KNMI'23</div></div>
+        </div>
       </div>
 
       <h2>Aansluiting op wet- en regelgeving</h2>
@@ -668,9 +849,9 @@
     <div class="page" id="page-process">
       <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>FCAB Methodiek</span></div>
       <h1>FCAB Methodiek</h1>
-      <p class="page-subtitle">Meten → Weten → Doen: de drie stappen van het Framework for Climate Adaptive Buildings</p>
+      <p class="page-subtitle">Meten → Weten → Doen: de drie delen van het Framework for Climate Adaptive Buildings</p>
 
-      <h2>De drie stappen</h2>
+      <h2>De drie delen</h2>
       <div class="process-flow">
         <div class="process-step">
           <div class="process-num">1</div>
@@ -689,31 +870,18 @@
         </div>
       </div>
 
-      <h2>Hoe werken omgevings- en gebouwscore samen?</h2>
+      <h2>Klimaatrisicoscore</h2>
       <p>De <strong>omgevingsscore</strong> (ook wel 'bruto klimaatrisico') beschrijft de klimaateffecten voor de directe omgeving van een gebouw. De <strong>gebouwscore</strong> beschrijft de kwetsbaarheid van het gebouw zelf. Samen vormen zij de <strong>klimaatrisicoscore</strong> (ook wel 'netto klimaatrisico').</p>
 
-      <div class="card">
-        <div class="card-title">Klimaatrisicoscore = Omgevingsscore × Gebouwscore</div>
-        <div class="card-body">Per klimaatthema (hitte, droogte, wateroverlast, overstroming) wordt een afzonderlijke score bepaald. Een hoge score op één thema kan <strong>niet</strong> worden uitgemiddeld met een lage score op een ander thema.</div>
-      </div>
-
-      <h2>Risicodimensies (IPCC AR6)</h2>
-      <p>FCAB volgt het IPCC AR6-raamwerk. Klimaatrisico ontstaat door de wisselwerking van:</p>
-      <table>
-        <tr><th>Dimensie</th><th>Definitie</th><th>In FCAB</th></tr>
-        <tr><td><strong>Hazard</strong></td><td>Kans op en intensiteit van een klimaateffect</td><td>Omgevingsscore</td></tr>
-        <tr><td><strong>Blootstelling</strong></td><td>Mate waarin gebouwen worden getroffen</td><td>Omgevingsscore (ligging)</td></tr>
-        <tr><td><strong>Kwetsbaarheid</strong></td><td>Weerstand of gebrek aan weerstand van het gebouw</td><td>Gebouwscore</td></tr>
-      </table>
-
-      <h2>Klimaatscenario's</h2>
-      <p>FCAB werkt met het <strong>KNMI'14 WH-scenario</strong> voor de periode tot 2050. Dit is het 'worst-case' scenario binnen de KNMI'14-klimaatscenario's en valt binnen het bereik van het IPCC RCP 8.5-scenario.</p>
-      <div class="info-block">
-        <strong>Update:</strong> In 2023 zijn de KNMI'23-klimaatscenario's gepubliceerd, gebaseerd op IPCC AR6/CMIP6. Een toekomstige update van FCAB zal de nieuwe scenario's integreren.
+      <div class="risk-diagram">
+        <div class="risk-box"><div class="rb-label">Omgevingsscore</div><div class="rb-val">Hazard × Blootstelling</div></div>
+        <div class="risk-op">×</div>
+        <div class="risk-box"><div class="rb-label">Gebouwscore</div><div class="rb-val">Kwetsbaarheid</div></div>
+        <div class="risk-op">=</div>
+        <div class="risk-box result"><div class="rb-label">Klimaatrisicoscore</div><div class="rb-val">Per klimaatthema</div></div>
       </div>
 
       <h2>Scoring schaal</h2>
-      <p>Alle omgevings- en gebouwscores worden uitgedrukt in een kwalitatieve schaal:</p>
       <div class="score-scale">
         <div class="score-box s-none">Geen</div>
         <div class="score-box s-vlow">Zeer laag</div>
@@ -723,94 +891,190 @@
         <div class="score-box s-vhigh">Zeer hoog</div>
         <div class="score-box s-unknown">Onbekend</div>
       </div>
-      <p style="margin-top:8px;font-size:12px;">Scores 'hoog' en 'zeer hoog' worden aangemerkt als rode vlaggen en geven aanleiding tot nader onderzoek (deep-dive) en het kiezen van mitigerende maatregelen.</p>
+      <p style="margin-top:8px;font-size:12px;">Scores 'hoog' en 'zeer hoog' worden aangemerkt als rode vlaggen en geven aanleiding tot nader onderzoek.</p>
     </div>
 
     <!-- ══ OMGEVINGSSCORE ══ -->
     <div class="page" id="page-omgeving">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Omgevingsscore</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Deel 1 — Omgevingsscore</span></div>
+      <div class="deel-badge">DEEL 1</div>
       <h1>Omgevingsscore</h1>
       <p class="page-subtitle">FCAB-1 — Inschatting van klimaateffecten in de directe omgeving van een gebouw</p>
-      <div class="info-block">
-        <strong>Definitie:</strong> De omgevingsscore beschrijft de klimaateffecten voor de directe omgeving van een gebouw op basis van de klimaatdreiging (hazard), de blootstelling en de kwetsbaarheid van die omgeving. Soms aangeduid als 'bruto klimaatrisico'.
-      </div>
-      <h2>Databasis</h2>
-      <p>De omgevingsscore is uitsluitend gebaseerd op <strong>vrij beschikbare, landelijk dekkende open data</strong> via de <a href="https://www.klimaateffectatlas.nl" target="_blank" style="color:var(--accent);">Klimaateffectatlas</a>. Hierdoor is de methodiek reproduceerbaar, vergelijkbaar en toegankelijk voor iedereen.</p>
-      <h2>Klimaatthema's en indicatoren</h2>
-      <p>Klik op een thema voor de volledige methodiekbeschrijving:</p>
+      <div class="info-block"><strong>Definitie:</strong> De omgevingsscore beschrijft de klimaateffecten voor de directe omgeving van een gebouw op basis van de klimaatdreiging (hazard), de blootstelling en de kwetsbaarheid van die omgeving. Soms aangeduid als 'bruto klimaatrisico'.</div>
+      <p>De omgevingsscore is uitsluitend gebaseerd op <strong>vrij beschikbare, landelijk dekkende open data</strong> via de Klimaateffectatlas. Klik op een thema voor de volledige methodiekbeschrijving:</p>
       <div class="theme-grid">
-        <div class="theme-card" onclick="navigate('hitte', null)">
+        <div class="theme-card" onclick="navigate('hitte', null); setThemeView('hitte','omgeving')">
           <div class="theme-icon">🌡️</div>
           <div><div class="theme-name">Hitte</div><div class="theme-desc">1 indicator · KNMI WH 2050</div></div>
         </div>
-        <div class="theme-card" onclick="navigate('droogte', null)">
+        <div class="theme-card" onclick="navigate('droogte', null); setThemeView('droogte','omgeving')">
           <div class="theme-icon">🏜️</div>
           <div><div class="theme-name">Droogte</div><div class="theme-desc">3 indicatoren · KNMI WH 2050</div></div>
         </div>
-        <div class="theme-card" onclick="navigate('wateroverlast', null)">
+        <div class="theme-card" onclick="navigate('wateroverlast', null); setThemeView('wateroverlast','omgeving')">
           <div class="theme-icon">🌧️</div>
           <div><div class="theme-name">Wateroverlast</div><div class="theme-desc">2 indicatoren · huidig & 2050</div></div>
         </div>
-        <div class="theme-card" onclick="navigate('overstroming', null)">
+        <div class="theme-card" onclick="navigate('overstroming', null); setThemeView('overstroming','omgeving')">
           <div class="theme-icon">🌊</div>
           <div><div class="theme-name">Overstroming</div><div class="theme-desc">2 indicatoren · 2021 & 2050</div></div>
         </div>
       </div>
-      <h2>Aannames en beperkingen</h2>
-      <ul>
-        <li>De landelijke data bieden een beeld op regionaal schaalniveau — resultaten zijn indicatief op lokaal niveau.</li>
-        <li>Schademechanismen en klimaatrisico zijn altijd lokaal bepaald; lokale data heeft de voorkeur voor gebouwniveau-uitspraken.</li>
-        <li>De methodiek geeft een <strong>bovengrens</strong> (conservatieve schatting) van de klimaateffecten.</li>
-        <li>De omgevingsscore combineert de scores niet tot één totaalscore; iedere score per thema staat op zichzelf.</li>
-        <li>Updatefrequentie van open databronnen is doorgaans eens per 6 jaar, wat kan botsen met jaarlijkse rapportageverplichtingen.</li>
-      </ul>
     </div>
 
-    <!-- ══ HITTE ══ -->
+    <!-- ══ GEBOUWSCORE ══ -->
+    <div class="page" id="page-gebouw">
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Deel 2 — Gebouwscore</span></div>
+      <div class="deel-badge">DEEL 2</div>
+      <h1>Gebouwscore</h1>
+      <p class="page-subtitle">FCAB-2 — Kwetsbaarheid van een gebouw op basis van gebouwspecifieke kenmerken</p>
+      <div class="info-block"><strong>Definitie:</strong> De gebouwscore beschrijft de kwetsbaarheid van een gebouw voor de verschillende klimaateffecten door te kijken naar de gebouwspecifieke eigenschappen. Samen met de omgevingsscore bepaalt de gebouwscore de <strong>klimaatrisicoscore</strong>.</div>
+
+      <h2>Aanpak</h2>
+      <p>Via expert judgement van specialisten binnen de FCAB-alliantie is een selectie gemaakt van de meest relevante gebouwkenmerken per klimaatthema. Door slechts een beperkte set kenmerken te kiezen blijft de methodiek schaalbaar voor grote portefeuilles.</p>
+
+      <div class="theme-grid" style="margin-top:20px;">
+        <div class="theme-card" onclick="navigate('hitte', null); setThemeView('hitte','gebouw')">
+          <div class="theme-icon">🌡️</div>
+          <div><div class="theme-name">Hitte — Gebouwscore</div><div class="theme-desc">Glas, zonwering, isolatie, koeling</div></div>
+        </div>
+        <div class="theme-card" onclick="navigate('droogte', null); setThemeView('droogte','gebouw')">
+          <div class="theme-icon">🏜️</div>
+          <div><div class="theme-name">Droogte — Gebouwscore</div><div class="theme-desc">Bouwjaar, funderingstype, bodemtype</div></div>
+        </div>
+        <div class="theme-card" onclick="navigate('wateroverlast', null); setThemeView('wateroverlast','gebouw')">
+          <div class="theme-icon">🌧️</div>
+          <div><div class="theme-name">Wateroverlast — Gebouwscore</div><div class="theme-desc">Drempel, afdichting, terugslagkleppen</div></div>
+        </div>
+        <div class="theme-card" onclick="navigate('overstroming', null); setThemeView('overstroming','gebouw')">
+          <div class="theme-icon">🌊</div>
+          <div><div class="theme-name">Overstroming — Gebouwscore</div><div class="theme-desc">Vloerpeil, floodproofing, installaties</div></div>
+        </div>
+      </div>
+
+      <h2>Rode vlaggen</h2>
+      <p>Een klimaatrisicoscore van <span class="score-box s-high" style="display:inline-block;padding:2px 10px;">Hoog</span> of <span class="score-box s-vhigh" style="display:inline-block;padding:2px 10px;">Zeer hoog</span> wordt aangemerkt als een <strong>rode vlag</strong> en geeft aanleiding om:</p>
+      <ol class="step-list">
+        <li>Een deep-dive uit te voeren (nauwkeurigere data, locatiebezoek)</li>
+        <li>Een impactanalyse uit te voeren (gezondheid, financieel, erfgoed, reputatie)</li>
+        <li>Een risicohouding te bepalen (Terminate / Treat / Transfer / Take)</li>
+        <li>Mitigerende maatregelen te selecteren en in te plannen</li>
+      </ol>
+    </div>
+
+    <!-- ══ KLIMAATRISICOSCORE ══ -->
+    <div class="page" id="page-klimaatrisicoscore">
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span onclick="navigate('gebouw',null)">Deel 2 — Gebouwscore</span> <span class="sep">›</span> <span>Klimaatrisicoscore</span></div>
+      <div class="deel-badge">DEEL 2</div>
+      <h1>Klimaatrisicoscore</h1>
+      <p class="page-subtitle">Totstandkoming van de klimaatrisicoscore per klimaatthema</p>
+
+      <div class="info-block"><strong>De klimaatrisicoscore</strong> is de combinatie van de omgevingsscore (Deel 1) en de gebouwscore (Deel 2). Het resultaat is een kwalitatieve score per klimaatthema — van 'geen' tot 'zeer hoog'. Scores worden <strong>niet</strong> opgeteld tot één totaalscore.</div>
+
+      <h2>Berekeningslogica</h2>
+      <div class="risk-diagram">
+        <div class="risk-box"><div class="rb-label">Omgevingsscore</div><div class="rb-val">'Bruto klimaatrisico'</div></div>
+        <div class="risk-op">×</div>
+        <div class="risk-box"><div class="rb-label">Gebouwscore</div><div class="rb-val">Kwetsbaarheid gebouw</div></div>
+        <div class="risk-op">=</div>
+        <div class="risk-box result"><div class="rb-label">Klimaatrisicoscore</div><div class="rb-val">'Netto klimaatrisico'</div></div>
+      </div>
+
+      <h2>Scorecombinaties</h2>
+      <p>Per klimaatthema levert de combinatie van omgevings- en gebouwscore een klimaatrisicoscore op. De tabel hieronder geeft de richtlijn voor deze combinatie (vereenvoudigd):</p>
+      <table>
+        <tr><th>Omgevingsscore</th><th>Gebouwscore</th><th>Klimaatrisicoscore</th></tr>
+        <tr><td>Geen / Zeer laag</td><td>Alle niveaus</td><td><span class="score-box s-vlow">Zeer laag / Geen</span></td></tr>
+        <tr><td>Laag</td><td>Laag</td><td><span class="score-box s-low">Laag</span></td></tr>
+        <tr><td>Laag</td><td>Hoog</td><td><span class="score-box s-mid">Middel</span></td></tr>
+        <tr><td>Middel</td><td>Middel</td><td><span class="score-box s-mid">Middel</span></td></tr>
+        <tr><td>Hoog</td><td>Middel</td><td><span class="score-box s-high">Hoog ⚑</span></td></tr>
+        <tr><td>Hoog / Zeer hoog</td><td>Hoog / Zeer hoog</td><td><span class="score-box s-vhigh">Zeer hoog ⚑</span></td></tr>
+      </table>
+
+      <h2>Uitzondering: Hitte</h2>
+      <div class="note-block">Bij het klimaatthema <strong>Hitte</strong> zijn de gebouwkenmerken leidend voor de klimaatrisicoscore. Een hoge omgevingsscore betekent niet automatisch een hoge klimaatrisicoscore als het gebouw goed geïsoleerd is, over buitenzonwering beschikt en spuiventilatie mogelijk is. De gebouwscore weegt bij hitte zwaarder mee.</div>
+
+      <h2>Rode vlaggen</h2>
+      <p>Klimaatrisicoscores van <span class="score-box s-high" style="display:inline-block;padding:2px 10px;">Hoog</span> of <span class="score-box s-vhigh" style="display:inline-block;padding:2px 10px;">Zeer hoog</span> zijn rode vlaggen. Dit zijn startpunten voor verdere analyse — geen eindconclusies.</p>
+
+      <h2>Geen enkelvoudige totaalscore</h2>
+      <div class="warning-block"><strong>Let op:</strong> FCAB berekent géén opgetelde totaalscore over alle klimaatthema's. Een hoog risico op wateroverlast laat zich niet uitmiddelen met een laag risico op hitte. Elke thema-score staat op zichzelf en vergt specifieke aandacht en maatregelen.</div>
+
+      <h2>Hoe scores verbeteren</h2>
+      <p>Gebouwmaatregelen die in FCAB-2 zijn benoemd als bepalend gebouwkenmerk, leiden bij implementatie direct tot een herberekende, verbeterde klimaatrisicoscore. Andere gebouwmaatregelen en gebiedsmaatregelen verbeteren de score pas nadat de onderliggende kaartlagen in de Klimaateffectatlas zijn geactualiseerd (doorgaans eens per 6 jaar).</p>
+    </div>
+
+    <!-- ══ HITTE (THEME PAGE) ══ -->
     <div class="page" id="page-hitte">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span><span onclick="navigate('omgeving',null)">Omgevingsscore</span><span class="sep">›</span><span>Hitte</span></div>
+      <div class="breadcrumbs" id="bc-hitte"></div>
       <h1>🌡️ Hitte</h1>
-      <p class="page-subtitle">Klimaatthema: Hitte — Omgevingsscore indicator</p>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(this,'tab-h-def')">Definitie</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-h-data')">Dataset</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-h-score')">Scoring</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-h-gebouw')">Gebouwscore</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-h-maatr')">Maatregelen</button>
+      <p class="page-subtitle">Klimaatthema Hitte — omgevingsscore & gebouwscore</p>
+
+      <!-- SWITCHER -->
+      <div class="score-switcher">
+        <button class="switcher-btn active" id="sw-hitte-omgeving" onclick="setThemeView('hitte','omgeving')">📍 Deel 1 — Omgevingsscore</button>
+        <button class="switcher-btn" id="sw-hitte-gebouw" onclick="setThemeView('hitte','gebouw')">🏠 Deel 2 — Gebouwscore</button>
       </div>
-      <div class="tab-content active" id="tab-h-def">
-        <h3>Indicator: Hittestress door warme nachten — 2050 Hoog</h3>
-        <p>Tijdens een <strong>tropische nacht</strong> blijft de luchttemperatuur boven 20 °C. In stedelijk gebied is het door het hitte-eilandeffect (UHI) nachtelijk warmer dan in het omringende landelijke gebied. Dit maakt het moeilijker om een gebouw 's nachts passief te koelen.</p>
-        <div class="info-block"><strong>Toepassing:</strong> Aantal verwachte tropische nachten per jaar in 2050 onder het WH-scenario, inclusief het stedelijk hitte-eilandeffect. Hoe meer nachten boven 20 °C, hoe hoger de blootstelling aan hittestress.</div>
-        <h3>Relevantie voor gebouwen</h3>
-        <p>De omgevingsscore voor hitte is een signaleringsinstrument. Of er daadwerkelijk hittestress optreedt in een gebouw is sterk afhankelijk van de gebouwkenmerken (gebouwscore). Bij hitte zijn de gebouwkenmerken <em>leidend</em> voor de klimaatrisicoscore.</p>
+
+      <!-- OMGEVINGSSCORE PANEL -->
+      <div class="score-panel active" id="panel-hitte-omgeving">
+        <div class="deel-badge">DEEL 1 — OMGEVINGSSCORE</div>
+        <h2>Indicator: Hittestress door warme nachten</h2>
+
+        <!-- INDICATOR PILLS: only one for Hitte -->
+        <div class="indicator-pills">
+          <button class="indicator-pill active" onclick="setIndicator('hitte','omgeving','nachten')">🌙 Hittestress warme nachten — 2050 Hoog</button>
+        </div>
+
+        <div class="indicator-panel active" id="ind-hitte-omgeving-nachten">
+          <!-- detail tabs -->
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-hitte-om-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-hitte-om-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-hitte-om-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-hitte-om-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-hitte-om-def">
+            <h3>Definitie</h3>
+            <p>Tijdens een <strong>tropische nacht</strong> blijft de luchttemperatuur boven 20 °C. In stedelijk gebied is het door het hitte-eilandeffect (UHI) nachtelijk warmer dan in het omringende landelijke gebied. Dit maakt het moeilijker om een gebouw 's nachts passief te koelen.</p>
+            <div class="info-block"><strong>Toepassing:</strong> Aantal verwachte tropische nachten per jaar in 2050 onder het WH-scenario, inclusief het stedelijk hitte-eilandeffect. Hoe meer nachten boven 20 °C, hoe hoger de blootstelling aan hittestress.</div>
+          </div>
+          <div class="detail-tab-content" id="dt-hitte-om-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>WENR (Wageningen Environmental Research)</td></tr>
+              <tr><td>Publicatiejaar</td><td>2016</td></tr>
+              <tr><td>Resolutie</td><td>100 m × 100 m</td></tr>
+              <tr><td>Scenario</td><td>KNMI'14 WH (2050)</td></tr>
+              <tr><td>Methode</td><td>Temperatuurmetingen Rotterdam gekoppeld aan omgevingskenmerken (Van Hove et al., 2014), geëxtrapoleerd naar Nederland</td></tr>
+              <tr><td>Beperkingen</td><td>Kaart geeft vooral indicatie voor stedelijk gebied. Herziening is gewenst.</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-hitte-om-score">
+            <h3>Classificatie omgevingsscore Hitte</h3>
+            <table>
+              <tr><th>Kaartwaarde (tropische nachten)</th><th>Omgevingsscore</th></tr>
+              <tr><td>> 3 weken (> 21 nachten)</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>2–3 weken (14–21 nachten)</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>< 2 weken (< 14 nachten)</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
+            </table>
+            <div class="warning-block"><strong>Kanttekening:</strong> De grenswaarden zijn op basis van expert judgement en kunnen in de toekomst worden verfijnd.</div>
+          </div>
+          <div class="detail-tab-content" id="dt-hitte-om-toel">
+            <h3>Toelichting</h3>
+            <p>De omgevingsscore voor hitte is een signaleringsinstrument. Of er daadwerkelijk hittestress optreedt in een gebouw is sterk afhankelijk van de gebouwkenmerken (gebouwscore). Bij hitte zijn de gebouwkenmerken <em>leidend</em> voor de klimaatrisicoscore.</p>
+            <p>De kaart is gebaseerd op een model waarbij het stadseffect is meegenomen, waardoor het specifiek een indicatie geeft van hete nachten in stedelijk gebied — voor landelijk gebied is de nauwkeurigheid lager.</p>
+          </div>
+        </div>
       </div>
-      <div class="tab-content" id="tab-h-data">
-        <h3>Dataset specificaties</h3>
-        <table>
-          <tr><th>Eigenschap</th><th>Waarde</th></tr>
-          <tr><td>Bron</td><td>WENR (Wageningen Environmental Research)</td></tr>
-          <tr><td>Publicatiejaar</td><td>2016</td></tr>
-          <tr><td>Resolutie</td><td>100 m × 100 m</td></tr>
-          <tr><td>Scenario</td><td>KNMI'14 WH (2050)</td></tr>
-          <tr><td>Methode</td><td>Temperatuurmetingen Rotterdam gekoppeld aan omgevingskenmerken (Van Hove et al., 2014), geëxtrapoleerd naar Nederland</td></tr>
-          <tr><td>Beperkingen</td><td>Kaart geeft vooral indicatie voor stedelijk gebied. Herziening is gewenst.</td></tr>
-        </table>
-        <div class="note-block">De kaart is gebaseerd op een model waarbij het stadseffect is meegenomen. Daardoor geeft de kaart specifiek een indicatie van hete nachten in stedelijk gebied — voor landelijk gebied is de nauwkeurigheid lager.</div>
-      </div>
-      <div class="tab-content" id="tab-h-score">
-        <h3>Classificatie omgevingsscore Hitte</h3>
-        <table>
-          <tr><th>Kaartwaarde (tropische nachten)</th><th>Omgevingsscore</th></tr>
-          <tr><td>> 3 weken (> 21 nachten)</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>2–3 weken (14–21 nachten)</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>< 2 weken (< 14 nachten)</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
-        </table>
-        <div class="warning-block"><strong>Kanttekening:</strong> De grenswaarden zijn op basis van expert judgement en kunnen in de toekomst worden verfijnd op basis van lopend onderzoek.</div>
-      </div>
-      <div class="tab-content" id="tab-h-gebouw">
-        <h3>Relevante gebouwkenmerken (FCAB-2)</h3>
+
+      <!-- GEBOUWSCORE PANEL -->
+      <div class="score-panel" id="panel-hitte-gebouw">
+        <div class="deel-badge">DEEL 2 — GEBOUWSCORE</div>
+        <h2>Relevante gebouwkenmerken — Hitte</h2>
         <p>De volgende gebouwkenmerken zijn bepalend voor de gebouwscore op het thema Hitte:</p>
         <table>
           <tr><th>Kenmerk</th><th>Relevantie</th></tr>
@@ -823,228 +1087,443 @@
           <tr><td>Dakoversteek / zonwering</td><td>Vermindert directe instraling gevel</td></tr>
           <tr><td>PV-installatie op dak</td><td>Fungeert deels als zonwering</td></tr>
         </table>
-      </div>
-      <div class="tab-content" id="tab-h-maatr">
-        <h3>Geselecteerde maatregelen — Hitte</h3>
-        <table>
-          <tr><th>#</th><th>Maatregel</th><th>Niveau</th><th>Kosten</th><th>Complexiteit</th></tr>
-          <tr><td>54</td><td>Buitenzonwering</td><td>Gebouw</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
-          <tr><td>57</td><td>Spuiventilatie</td><td>Gebouw</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
-          <tr><td>60</td><td>Groene daken</td><td>Gebouw</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
-          <tr><td>52</td><td>Koele materialen (hoog albedo)</td><td>Gebouw</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
-          <tr><td>17</td><td>Straatbomen en bomenlanen</td><td>Gebied</td><td class="cost-m">Middel</td><td>Eenvoudig</td></tr>
-          <tr><td>15</td><td>Parasols / schaduwdoeken</td><td>Gebied</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
-        </table>
-        <p style="margin-top:8px;"><a href="#" onclick="navigate('maatregelen',null);return false;" style="color:var(--accent);font-weight:600;">→ Bekijk alle maatregelen in de maatregelentabel</a></p>
+        <div class="note-block">De gebouwscore hitte is leidend voor de uiteindelijke klimaatrisicoscore. Een gebouw met goede isolatie en buitenzonwering scoort laag, ook als de omgevingsscore hoog is.</div>
       </div>
     </div>
 
     <!-- ══ DROOGTE ══ -->
     <div class="page" id="page-droogte">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span onclick="navigate('omgeving',null)">Omgevingsscore</span><span class="sep">›</span><span>Droogte</span></div>
+      <div class="breadcrumbs" id="bc-droogte"></div>
       <h1>🏜️ Droogte</h1>
-      <p class="page-subtitle">Klimaatthema: Droogte — drie indicatoren</p>
-      <div class="info-block">Droogte wordt beoordeeld via drie separate indicatoren: <strong>Natuurbrandgevoeligheid</strong>, <strong>Risico Paalrot</strong> en <strong>Risico Verschilzetting</strong>. Elke indicator levert een eigen omgevingsscore.</div>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(this,'tab-d-natuur')">Natuurbrand</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-d-paal')">Paalrot</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-d-vers')">Verschilzetting</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-d-maatr')">Maatregelen</button>
+      <p class="page-subtitle">Klimaatthema Droogte — drie indicatoren voor de omgevingsscore</p>
+
+      <div class="score-switcher">
+        <button class="switcher-btn active" id="sw-droogte-omgeving" onclick="setThemeView('droogte','omgeving')">📍 Deel 1 — Omgevingsscore</button>
+        <button class="switcher-btn" id="sw-droogte-gebouw" onclick="setThemeView('droogte','gebouw')">🏠 Deel 2 — Gebouwscore</button>
       </div>
-      <div class="tab-content active" id="tab-d-natuur">
-        <h3>Natuurbrandgevoeligheid — 2050 Hoog</h3>
-        <p>Gevoeligheidskaart die per gebied aangeeft wat de kans is op het ontstaan van een natuurbrand, op basis van brandbaar materiaal, klimaatspecifieke- en locatiespecifieke eigenschappen. Bestrijkt natuur- én landbouwgebieden.</p>
+
+      <!-- OMGEVING -->
+      <div class="score-panel active" id="panel-droogte-omgeving">
+        <div class="deel-badge">DEEL 1 — OMGEVINGSSCORE</div>
+        <p>Droogte wordt beoordeeld via <strong>drie separate indicatoren</strong>. Elke indicator levert een eigen omgevingsscore.</p>
+        <div class="indicator-pills">
+          <button class="indicator-pill active" onclick="setIndicator('droogte','omgeving','natuur')">🔥 Natuurbrandgevoeligheid</button>
+          <button class="indicator-pill" onclick="setIndicator('droogte','omgeving','paalrot')">🪵 Risico Paalrot</button>
+          <button class="indicator-pill" onclick="setIndicator('droogte','omgeving','verschil')">⬇️ Risico Verschilzetting</button>
+        </div>
+
+        <!-- Natuurbrand -->
+        <div class="indicator-panel active" id="ind-droogte-omgeving-natuur">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-dro-nat-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-nat-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-nat-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-nat-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-dro-nat-def">
+            <h3>Definitie — Natuurbrandgevoeligheid 2050 Hoog</h3>
+            <p>Gevoeligheidskaart die per gebied aangeeft wat de kans is op het ontstaan van een natuurbrand, op basis van brandbaar materiaal, klimaatspecifieke en locatiespecifieke eigenschappen. Bestrijkt natuur- én landbouwgebieden.</p>
+            <div class="info-block">Hoewel de oorzaak van een natuurbrand meestal menselijk handelen is, loopt het risico op ontbranding op bij aanhoudende droogte.</div>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-nat-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>WENR & Deltares</td></tr>
+              <tr><td>Jaar</td><td>2021</td></tr>
+              <tr><td>Resolutie</td><td>250 m × 250 m</td></tr>
+              <tr><td>Validatie</td><td>75% van geregistreerde branden (2017–2020) correct voorspeld bij matig/hoog gevoelig</td></tr>
+              <tr><td>Beperkingen</td><td>Grote stedelijke gebieden en water niet meegenomen; 25% branden buiten 'hoog' gebied</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-nat-score">
+            <h3>Scoring Natuurbrandgevoeligheid</h3>
+            <table>
+              <tr><th>Kaartwaarde</th><th>Omgevingsscore</th></tr>
+              <tr><td>3 — Hoog gevoelig</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>2 — Middel gevoelig</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>1 — Laag gevoelig</td><td><span class="score-box s-vlow">Geen</span></td></tr>
+              <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-nat-toel">
+            <h3>Toelichting</h3>
+            <p>De kaart is een signaleringskaart. Aanbevolen wordt om extra aandacht te besteden aan locaties die als 'hoog gevoelig' zijn aangeduid. Dat 25% van de branden buiten 'matig/hoog gevoelig' is gevallen wil zeggen dat ook lager geclassificeerde locaties aandacht verdienen bij de juiste omstandigheden.</p>
+          </div>
+        </div>
+
+        <!-- Paalrot -->
+        <div class="indicator-panel" id="ind-droogte-omgeving-paalrot">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-dro-pal-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-pal-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-pal-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-pal-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-dro-pal-def">
+            <h3>Definitie — Risico Paalrot 2050 Hoog</h3>
+            <p>In Nederland zijn 750.000–1.000.000 panden gefundeerd op houten palen in kleiige of venige gebieden. Bij aanhoudende droogte daalt het grondwaterpeil en komt er zuurstof bij de paalkop → paalrot. De kosten voor herstel kunnen oplopen tot €120.000 per pand.</p>
+            <div class="formula-box">Risico paalrot = % houten palen × Kwetsbaarheid</div>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-pal-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>Deltares</td></tr>
+              <tr><td>Jaar</td><td>2021</td></tr>
+              <tr><td>Resolutie</td><td>Buurtniveau — CBS Wijk- en Buurtenkaart 2020</td></tr>
+              <tr><td>Beperkingen</td><td>Hoge onzekerheid door gebruik van landelijke data; alleen relevant voor bouwjaar &lt; 1975</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-pal-score">
+            <h3>Scoring Risico Paalrot</h3>
+            <table>
+              <tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr>
+              <tr><td>> 15 AND ≤ 100</td><td><span class="score-box s-vhigh">Zeer hoog</span></td></tr>
+              <tr><td>> 6 AND ≤ 15</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>> 3 AND ≤ 6</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>> 0,8 AND ≤ 3</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>> 0 AND ≤ 0,8</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
+              <tr><td>Bouwjaar > 1975</td><td><span class="score-box s-none">Niet van toepassing</span></td></tr>
+            </table>
+            <div class="note-block">Paalrot is alleen relevant voor gebouwen gebouwd <strong>vóór 1975</strong>. Panden na 1975 zijn doorgaans gefundeerd op betonnen palen.</div>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-pal-toel">
+            <h3>Toelichting</h3>
+            <p>De risicokaart paalrot is in de eerste plaats een signaleringskaart. Bij een hoog of zeer hoog risico moet lokaal worden gekeken hoe een pand is gefundeerd en wat de plaatselijke bodem- en grondwaterkenmerken zijn. De kwetsbaarheid geeft een relatieve indicatie van de kans op problemen.</p>
+          </div>
+        </div>
+
+        <!-- Verschilzetting -->
+        <div class="indicator-panel" id="ind-droogte-omgeving-verschil">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-dro-ver-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-ver-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-ver-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-dro-ver-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-dro-ver-def">
+            <h3>Definitie — Risico Verschilzetting 2050 Hoog</h3>
+            <p>Panden op ondiepe fundering ('op staal') op veen/klei zijn gevoelig voor bodemdaling door droogte (krimp-zwel gedrag). Dit leidt tot ongelijkmatige verzakking en scheurvorming. Klimaatverandering versterkt dit effect.</p>
+            <div class="formula-box">Risico verschilzetting = % funderingen op staal × Kwetsbaarheid</div>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-ver-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>Deltares</td></tr>
+              <tr><td>Jaar</td><td>2021</td></tr>
+              <tr><td>Resolutie</td><td>CBS Wijk- en Buurtenkaart 2020</td></tr>
+              <tr><td>Beperkingen</td><td>Zuid-Limburg niet meegenomen; hogere onzekerheid in rivierengebied (krimp-zwel klei); bouwjaar &lt; 1975 vereist</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-ver-score">
+            <h3>Scoring Risico Verschilzetting</h3>
+            <table>
+              <tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr>
+              <tr><td>> 25 AND ≤ 100</td><td><span class="score-box s-vhigh">Zeer hoog</span></td></tr>
+              <tr><td>> 10 AND ≤ 25</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>> 5 AND ≤ 10</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>> 1 AND ≤ 5</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>> 0 AND ≤ 1</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-dro-ver-toel">
+            <h3>Toelichting</h3>
+            <p>Alleen relevant voor panden gebouwd vóór 1975. Krimp-zwel gedrag van kleibodems is niet meegenomen in deze analyse vanwege onvoldoende data. De risicokaart is in de eerste plaats een signaleringskaart voor nader lokaal onderzoek.</p>
+          </div>
+        </div>
+      </div><!-- end omgeving panel -->
+
+      <!-- GEBOUWSCORE PANEL -->
+      <div class="score-panel" id="panel-droogte-gebouw">
+        <div class="deel-badge">DEEL 2 — GEBOUWSCORE</div>
+        <h2>Relevante gebouwkenmerken — Droogte</h2>
         <table>
-          <tr><th>Bron</th><td>WENR & Deltares</td></tr>
-          <tr><th>Jaar</th><td>2021</td></tr>
-          <tr><th>Resolutie</th><td>250 m × 250 m</td></tr>
-          <tr><th>Validatie</th><td>75% van geregistreerde branden (2017–2020) correct voorspeld bij matig/hoog gevoelig</td></tr>
+          <tr><th>Kenmerk</th><th>Relevantie</th></tr>
+          <tr><td>Bouwjaar (< 1975)</td><td>Bepalend voor van toepassing zijn van paalrot en verschilzetting</td></tr>
+          <tr><td>Funderingstype (hout / staal)</td><td>Houten paalfundering of fundering op staal zijn kwetsbaar</td></tr>
+          <tr><td>Bodemtype in directe omgeving</td><td>Veen/klei verhoogt kwetsbaarheid voor bodemdaling</td></tr>
+          <tr><td>Nabijheid van bomen</td><td>Bomen onttrekken vocht aan bodem, verhogen kans op krimp</td></tr>
+          <tr><td>Aanwezigheid van drainage</td><td>Goede drainage beperkt vochtschommelingen bij fundering</td></tr>
         </table>
-        <h4>Scoring</h4>
-        <table><tr><th>Kaartwaarde</th><th>Score</th></tr>
-          <tr><td>3 (Hoog)</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>2 (Middel)</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>1 (Laag)</td><td><span class="score-box s-vlow">Geen</span></td></tr>
-          <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
-        </table>
-      </div>
-      <div class="tab-content" id="tab-d-paal">
-        <h3>Risico Paalrot — 2050 Hoog</h3>
-        <p>In Nederland zijn 750.000–1.000.000 panden gefundeerd op houten palen in kleiige of venige gebieden. Bij aanhoudende droogte daalt het grondwaterpeil en komt er zuurstof bij de paalkop → paalrot. De kosten voor herstel kunnen oplopen tot €120.000 per pand.</p>
-        <p><strong>Formule:</strong> <span class="inline-code">Risico paalrot = % houten palen × Kwetsbaarheid</span></p>
-        <table><tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr>
-          <tr><td>> 15 AND ≤ 100</td><td><span class="score-box s-vhigh">Zeer hoog</span></td></tr>
-          <tr><td>> 6 AND ≤ 15</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>> 3 AND ≤ 6</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>> 0,8 AND ≤ 3</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>> 0 AND ≤ 0,8</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
-          <tr><td>Bouwjaar > 1975</td><td>Niet van toepassing</td></tr>
-        </table>
-        <div class="note-block">Paalrot is alleen relevant voor gebouwen gebouwd <strong>vóór 1975</strong>. Panden na 1975 zijn doorgaans gefundeerd op betonnen palen en krijgen de categorie 'Niet van toepassing'.</div>
-        <table><tr><th>Bron</th><td>Deltares</td></tr><tr><th>Jaar</th><td>2021</td></tr><tr><th>Resolutie</th><td>CBS Wijk- en Buurtenkaart 2020</td></tr></table>
-      </div>
-      <div class="tab-content" id="tab-d-vers">
-        <h3>Risico Verschilzetting — 2050 Hoog</h3>
-        <p>Panden op ondiepe fundering ('op staal') op veen/klei zijn gevoelig voor bodemdaling door droogte (krimp-zwel gedrag). Dit leidt tot ongelijkmatige verzakking en scheurvorming. Klimaatverandering versterkt dit effect.</p>
-        <p><strong>Formule:</strong> <span class="inline-code">Risico verschilzetting = % funderingen op staal × Kwetsbaarheid</span></p>
-        <table><tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr>
-          <tr><td>> 25 AND ≤ 100</td><td><span class="score-box s-vhigh">Zeer hoog</span></td></tr>
-          <tr><td>> 10 AND ≤ 25</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>> 5 AND ≤ 10</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>> 1 AND ≤ 5</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>> 0 AND ≤ 1</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
-        </table>
-        <div class="note-block">Alleen relevant voor panden gebouwd vóór 1975. Krimp-zwel gedrag van kleibodems is niet meegenomen in deze analyse vanwege onvoldoende data.</div>
-      </div>
-      <div class="tab-content" id="tab-d-maatr">
-        <h3>Maatregelen — Droogte</h3>
-        <table>
-          <tr><th>#</th><th>Maatregel</th><th>Niveau</th><th>Kosten</th></tr>
-          <tr><td>11</td><td>Drainage rond het gebouw</td><td>Gebied</td><td class="cost-m">Middel</td></tr>
-          <tr><td>10</td><td>Niet-waterdoorlatende verharding rond gebouw</td><td>Gebied</td><td class="cost-m">Middel</td></tr>
-          <tr><td>39</td><td>Sterkere, diepere fundamenten</td><td>Gebouw</td><td class="cost-h">Hoog</td></tr>
-          <tr><td>41</td><td>Dilataties tussen aangrenzende gebouwen</td><td>Gebouw</td><td class="cost-m">Middel</td></tr>
-          <tr><td>44</td><td>Regenton</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>14</td><td>Droogtebestendige planten en bomen</td><td>Gebied</td><td class="cost-m">Middel</td></tr>
-        </table>
+        <div class="note-block">De gebouwkenmerken voor droogte zijn primair afgeleid uit het bouwjaar en funderingstype. Zonder locatiebezoek kunnen deze kenmerken niet altijd nauwkeurig worden vastgesteld.</div>
       </div>
     </div>
 
     <!-- ══ WATEROVERLAST ══ -->
     <div class="page" id="page-wateroverlast">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span onclick="navigate('omgeving',null)">Omgevingsscore</span><span class="sep">›</span><span>Wateroverlast</span></div>
+      <div class="breadcrumbs" id="bc-wateroverlast"></div>
       <h1>🌧️ Wateroverlast</h1>
-      <p class="page-subtitle">Klimaatthema: Wateroverlast — twee indicatoren</p>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(this,'tab-w-bui')">Waterdiepte hevige bui</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-w-grond')">Grondwateroverlast</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-w-maatr')">Maatregelen</button>
+      <p class="page-subtitle">Klimaatthema Wateroverlast — twee indicatoren voor de omgevingsscore</p>
+
+      <div class="score-switcher">
+        <button class="switcher-btn active" id="sw-wateroverlast-omgeving" onclick="setThemeView('wateroverlast','omgeving')">📍 Deel 1 — Omgevingsscore</button>
+        <button class="switcher-btn" id="sw-wateroverlast-gebouw" onclick="setThemeView('wateroverlast','gebouw')">🏠 Deel 2 — Gebouwscore</button>
       </div>
-      <div class="tab-content active" id="tab-w-bui">
-        <h3>Waterdiepte bij hevige bui — 70 mm / 2 uur (1:100 jaar)</h3>
-        <p>Maximale waterdiepte voor stedelijk en buitengebied bij een extreme bui van 70 mm in 2 uur. In het huidige klimaat gemiddeld 1× per 100 jaar. Door klimaatverandering kan de kans aan het einde van de eeuw toenemen met factor 2.</p>
-        <table><tr><th>Bron</th><td>Europese Richtlijn Overstromingsrisico's (ROR), Deltares / Tygron</td></tr><tr><th>Jaar</th><td>2018</td></tr><tr><th>Resolutie model</th><td>2 m × 2 m (voor gebouwanalyse met BAG-voetafdruk + 2 m buffer)</td></tr><tr><th>Hoogtebasis</th><td>AHN2 (2007–2012)</td></tr></table>
-        <h4>Scoring</h4>
+
+      <!-- OMGEVING -->
+      <div class="score-panel active" id="panel-wateroverlast-omgeving">
+        <div class="deel-badge">DEEL 1 — OMGEVINGSSCORE</div>
+        <div class="indicator-pills">
+          <button class="indicator-pill active" onclick="setIndicator('wateroverlast','omgeving','bui')">🌧️ Waterdiepte hevige bui</button>
+          <button class="indicator-pill" onclick="setIndicator('wateroverlast','omgeving','grond')">💧 Grondwateroverlast</button>
+        </div>
+
+        <!-- Waterdiepte hevige bui -->
+        <div class="indicator-panel active" id="ind-wateroverlast-omgeving-bui">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-wo-bui-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-wo-bui-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-wo-bui-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-wo-bui-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-wo-bui-def">
+            <h3>Definitie — Waterdiepte bij hevige bui 70 mm / 2 uur (1:100 jaar)</h3>
+            <p>Maximale waterdiepte voor stedelijk gebied en buitengebied bij een extreme bui van <strong>70 mm in 2 uur</strong>. In het huidige klimaat gemiddeld 1× per 100 jaar. Door klimaatverandering kan de kans aan het einde van de eeuw toenemen met factor 2.</p>
+          </div>
+          <div class="detail-tab-content" id="dt-wo-bui-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>Europese Richtlijn Overstromingsrisico's (ROR), Deltares / Tygron</td></tr>
+              <tr><td>Jaar</td><td>2018</td></tr>
+              <tr><td>Modelresolutie</td><td>2 m × 2 m</td></tr>
+              <tr><td>Hoogtemodel</td><td>AHN2 (ingemeten 2007–2012)</td></tr>
+              <tr><td>Beperkingen</td><td>Gebouwen gebouwd ná 2012 vallen buiten AHN2 → score 'Onbekend'</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-wo-bui-score">
+            <h3>Scoring Waterdiepte hevige bui</h3>
+            <table>
+              <tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr>
+              <tr><td>> 30 cm</td><td><span class="score-box s-vhigh">Zeer hoog</span></td></tr>
+              <tr><td>> 20–30 cm</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>> 15–20 cm</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>> 10–15 cm</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>≤ 10 cm</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
+              <tr><td>Gebouwd vanaf 2013</td><td><span class="score-box s-unknown">Onbekend</span></td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-wo-bui-toel">
+            <h3>Toelichting</h3>
+            <p>Voor het bepalen van de omgevingsscore wordt de gebouw-voetafdruk uit de BAG gebruikt, uitgebreid met een buffer van 2 meter. Gebouwen gebouwd na 2012 vallen buiten de AHN2-opnameperiode en krijgen de score 'Onbekend'. In stedelijke gebieden kan als indicatie 'onbekend, oude situatie: hoog' worden vermeld.</p>
+            <div class="warning-block"><strong>Let op:</strong> Klimaatverandering is niet meegenomen in de bui-intensiteit. Dit kan leiden tot onderschatting van het risico voor de toekomst.</div>
+          </div>
+        </div>
+
+        <!-- Grondwater -->
+        <div class="indicator-panel" id="ind-wateroverlast-omgeving-grond">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-wo-gw-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-wo-gw-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-wo-gw-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-wo-gw-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-wo-gw-def">
+            <h3>Definitie — Grondwateroverlast (indexscore uit 3 kaarten)</h3>
+            <p>De grondwateroverlastscore is een samengestelde index van drie kaartlagen:</p>
+            <ol>
+              <li><strong>Ontwikkeling kans grondwateroverlast 2050 Hoog</strong> — verandering in kans tot 2050</li>
+              <li><strong>Gemiddelde Hoogste Grondwaterstand Huidig</strong> — huidige GHG-waarde</li>
+              <li><strong>Bodemdaling door ophoging 2020–2050</strong> — zettingsgevoeligheid</li>
+            </ol>
+          </div>
+          <div class="detail-tab-content" id="dt-wo-gw-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Kaartlaag</th><th>Bron</th><th>Jaar</th><th>Resolutie</th></tr>
+              <tr><td>Kans grondwateroverlast 2050</td><td>Deltares / Nationaal Water Model</td><td>2017</td><td>250 m</td></tr>
+              <tr><td>GHG Huidig</td><td>Deltares / Nationaal Water Model</td><td>2017</td><td>250 m</td></tr>
+              <tr><td>Bodemdaling door ophoging</td><td>Deltares</td><td>2021</td><td>100 m</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-wo-gw-score">
+            <h3>Scoring Grondwateroverlast</h3>
+            <table>
+              <tr><th>Indexscore (som 3 kaarten)</th><th>Omgevingsscore</th></tr>
+              <tr><td>3</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>2</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>1</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>0</td><td><span class="score-box s-none">Geen</span></td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-wo-gw-toel">
+            <h3>Toelichting</h3>
+            <p>De kaarten zijn geschikt op regionaal niveau (wijk/polderniveau en hoger). Op straat- en buurtniveau is de betrouwbaarheid beperkt. Lokale drainagevoorzieningen zijn niet meegenomen, wat tot onderschatting of overschatting kan leiden.</p>
+          </div>
+        </div>
+      </div><!-- end omgeving -->
+
+      <!-- GEBOUW -->
+      <div class="score-panel" id="panel-wateroverlast-gebouw">
+        <div class="deel-badge">DEEL 2 — GEBOUWSCORE</div>
+        <h2>Relevante gebouwkenmerken — Wateroverlast</h2>
         <table>
-          <tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr>
-          <tr><td>> 30 cm</td><td><span class="score-box s-vhigh">Zeer hoog</span></td></tr>
-          <tr><td>> 20–30 cm</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>> 15–20 cm</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>> 10–15 cm</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>≤ 10 cm</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
-          <tr><td>Gebouwd vanaf 2013</td><td><span class="score-box s-unknown">Onbekend</span></td></tr>
-        </table>
-        <div class="warning-block"><strong>Let op:</strong> Gebouwen gebouwd na 2012 vallen buiten de AHN2-opnamperiode en krijgen de score 'Onbekend'. Voor nieuwere gebouwen in stedelijke gebieden kan als indicatie 'onbekend, oude situatie: hoog' worden vermeld.</div>
-      </div>
-      <div class="tab-content" id="tab-w-grond">
-        <h3>Grondwateroverlast — indexscore (3 kaarten)</h3>
-        <p>De grondwateroverlastscore is een samengestelde index van drie kaartlagen:</p>
-        <ol>
-          <li><strong>Ontwikkeling kans grondwateroverlast 2050 Hoog</strong> — verandering in kans tot 2050</li>
-          <li><strong>Gemiddelde Hoogste Grondwaterstand Huidig</strong> — huidige GHG-waarde</li>
-          <li><strong>Bodemdaling door ophoging 2020–2050</strong> — zettingsgevoeligheid</li>
-        </ol>
-        <table>
-          <tr><th>Indexscore (som 3 kaarten)</th><th>Omgevingsscore</th></tr>
-          <tr><td>3</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>2</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>1</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>0</td><td><span class="score-box s-none">Geen</span></td></tr>
-        </table>
-        <div class="note-block">De kaarten hebben een resolutie van 250 m × 250 m en zijn geschikt op regionaal niveau. Op straat- en buurtniveau is de betrouwbaarheid beperkt. Lokale drainagevoorzieningen zijn niet meegenomen.</div>
-      </div>
-      <div class="tab-content" id="tab-w-maatr">
-        <h3>Maatregelen — Wateroverlast</h3>
-        <table>
-          <tr><th>#</th><th>Maatregel</th><th>Niveau</th><th>Kosten</th></tr>
-          <tr><td>104</td><td>Anti-terugslagkleppen toiletten/wastafels</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>102</td><td>Goede afdichting deuren/ramen</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>100</td><td>Groene daken met waterretentie</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>25</td><td>Tegels eruit, groen erin</td><td>Gebied</td><td class="cost-l">Laag</td></tr>
-          <tr><td>33</td><td>SUDS / Wadi</td><td>Gebied</td><td class="cost-m">Middel</td></tr>
-          <tr><td>32</td><td>Waterplein of verlaagd terras</td><td>Gebied</td><td class="cost-h">Hoog</td></tr>
+          <tr><th>Kenmerk</th><th>Relevantie</th></tr>
+          <tr><td>Drempelhoogte entree</td><td>Hogere drempel voorkomt instroming bij wateroverlast</td></tr>
+          <tr><td>Afdichting deuren / ramen</td><td>Goede afdichting beperkt waterinstroming</td></tr>
+          <tr><td>Anti-terugslagkleppen</td><td>Voorkomt terugstroom van rioolwater bij zware neerslag</td></tr>
+          <tr><td>Kelderruimten</td><td>Kelders verhogen kwetsbaarheid bij wateroverlast</td></tr>
+          <tr><td>Groene daken met waterretentie</td><td>Vertraagt afvoer van regenwater</td></tr>
+          <tr><td>Regenton aanwezig</td><td>Beperkt afstroming bij kortdurende buien</td></tr>
         </table>
       </div>
     </div>
 
     <!-- ══ OVERSTROMING ══ -->
     <div class="page" id="page-overstroming">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span onclick="navigate('omgeving',null)">Omgevingsscore</span><span class="sep">›</span><span>Overstroming</span></div>
+      <div class="breadcrumbs" id="bc-overstroming"></div>
       <h1>🌊 Overstroming</h1>
-      <p class="page-subtitle">Klimaatthema: Overstroming — twee indicatoren</p>
-      <div class="info-block">De overstromingsscores zijn gebaseerd op <strong>conservatieve</strong> uitgangspunten, in overeenstemming met het nationale waterkeringsbeleid. De faalkansen zijn berekend zonder rekening te houden met noodmaatregelen of systeemwerking. De scores geven een bovengrens.</div>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(this,'tab-o-max')">Maximale waterdiepte</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-o-kans')">Overstromingskans 2050</button>
-        <button class="tab-btn" onclick="openTab(this,'tab-o-maatr')">Maatregelen</button>
+      <p class="page-subtitle">Klimaatthema Overstroming — twee indicatoren voor de omgevingsscore</p>
+
+      <div class="score-switcher">
+        <button class="switcher-btn active" id="sw-overstroming-omgeving" onclick="setThemeView('overstroming','omgeving')">📍 Deel 1 — Omgevingsscore</button>
+        <button class="switcher-btn" id="sw-overstroming-gebouw" onclick="setThemeView('overstroming','gebouw')">🏠 Deel 2 — Gebouwscore</button>
       </div>
-      <div class="tab-content active" id="tab-o-max">
-        <h3>Maximale waterdieptekaart (overstroomik.nl, 2021)</h3>
-        <p>Toont waar overstromingen tot ca. 1:100.000 jaar kunnen voorkomen. Gebaseerd op de Landelijke Database Overstromingen (LDO) en het LIWO-systeem.</p>
-        <table><tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr>
-          <tr><td>> 2,6 m (plafondhoogte Bouwbesluit 2012)</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>> 1 m – 2,6 m</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>> 0,2 – 1 m</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>≤ 0,2 m</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
-          <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
-        </table>
-        <table><tr><th>Bron</th><td>Rijkswaterstaat / LIWO</td></tr><tr><th>Jaar</th><td>2021</td></tr><tr><th>Resolutie</th><td>100 m × 100 m (onderliggende scenario's soms fijner)</td></tr></table>
-      </div>
-      <div class="tab-content" id="tab-o-kans">
-        <h3>Plaatsgebonden overstromingskans 2050 — drempelwaarde 20 cm</h3>
-        <p>Kans op overstroming ≥ 20 cm in 2050, gebaseerd op veiligheidseisen van waterkeringen (Waterwet) en provinciale norm voor regionale keringen.</p>
-        <table><tr><th>Kans</th><th>Omgevingsscore</th></tr>
-          <tr><td>Grote kans: > 1/30 per jaar</td><td><span class="score-box s-high">Hoog</span></td></tr>
-          <tr><td>Middelgrote kans: > 1/30 tot 1/300 per jaar</td><td><span class="score-box s-mid">Middel</span></td></tr>
-          <tr><td>Kleine kans: > 1/300 tot 1/3.000 per jaar</td><td><span class="score-box s-low">Laag</span></td></tr>
-          <tr><td>Zeer/extreem kleine kans: > 1/3.000 per jaar</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
-          <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
-        </table>
-        <table><tr><th>Bron</th><td>LIWO</td></tr><tr><th>Jaar</th><td>2021</td></tr><tr><th>Resolutie</th><td>Binnendijks 100 m; buitendijks 10 m</td></tr></table>
-      </div>
-      <div class="tab-content" id="tab-o-maatr">
-        <h3>Maatregelen — Overstroming</h3>
+
+      <div class="score-panel active" id="panel-overstroming-omgeving">
+        <div class="deel-badge">DEEL 1 — OMGEVINGSSCORE</div>
+        <div class="info-block">De overstromingsscores zijn gebaseerd op <strong>conservatieve</strong> uitgangspunten, in overeenstemming met het nationale waterkeringsbeleid. De scores geven een bovengrens.</div>
+        <div class="indicator-pills">
+          <button class="indicator-pill active" onclick="setIndicator('overstroming','omgeving','max')">🗺️ Maximale waterdiepte</button>
+          <button class="indicator-pill" onclick="setIndicator('overstroming','omgeving','kans')">📊 Overstromingskans 2050</button>
+        </div>
+
+        <!-- Maximale waterdiepte -->
+        <div class="indicator-panel active" id="ind-overstroming-omgeving-max">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-ov-max-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-ov-max-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-ov-max-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-ov-max-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-ov-max-def">
+            <h3>Definitie — Maximale waterdieptekaart (overstroomik.nl, 2021)</h3>
+            <p>Toont waar overstromingen tot ca. 1:100.000 jaar kunnen voorkomen. Gebaseerd op de Landelijke Database Overstromingen (LDO) en het LIWO-systeem.</p>
+          </div>
+          <div class="detail-tab-content" id="dt-ov-max-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>Rijkswaterstaat / LIWO</td></tr>
+              <tr><td>Jaar</td><td>2021</td></tr>
+              <tr><td>Resolutie</td><td>100 m × 100 m (onderliggende scenario's soms fijner)</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-ov-max-score">
+            <h3>Scoring Maximale waterdiepte</h3>
+            <table>
+              <tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr>
+              <tr><td>> 2,6 m (plafondhoogte Bouwbesluit 2012)</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>> 1 m – 2,6 m</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>> 0,2 – 1 m</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>≤ 0,2 m</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
+              <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-ov-max-toel">
+            <h3>Toelichting</h3>
+            <p>De kaart toont mogelijke overstromingen die in werkelijkheid niet allemaal tegelijkertijd zullen optreden. De classificatie is gebaseerd op de plafondhoogte uit het Bouwbesluit 2012 (2,6 m) en aannames voor vloerpeil en hoogte van stopcontacten/meterkast.</p>
+          </div>
+        </div>
+
+        <!-- Overstromingskans -->
+        <div class="indicator-panel" id="ind-overstroming-omgeving-kans">
+          <div class="detail-tabs">
+            <button class="detail-tab-btn active" onclick="openDetailTab(this,'dt-ov-kans-def')">Definitie</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-ov-kans-data')">Dataset</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-ov-kans-score')">Scoring</button>
+            <button class="detail-tab-btn" onclick="openDetailTab(this,'dt-ov-kans-toel')">Toelichting</button>
+          </div>
+          <div class="detail-tab-content active" id="dt-ov-kans-def">
+            <h3>Definitie — Plaatsgebonden overstromingskans 2050 (≥ 20 cm)</h3>
+            <p>Kans op overstroming ≥ 20 cm in 2050, gebaseerd op veiligheidseisen van waterkeringen (Waterwet) en provinciale norm voor regionale keringen.</p>
+          </div>
+          <div class="detail-tab-content" id="dt-ov-kans-data">
+            <h3>Dataset specificaties</h3>
+            <table>
+              <tr><th>Eigenschap</th><th>Waarde</th></tr>
+              <tr><td>Bron</td><td>LIWO</td></tr>
+              <tr><td>Jaar</td><td>2021</td></tr>
+              <tr><td>Resolutie</td><td>Binnendijks 100 m; buitendijks 10 m</td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-ov-kans-score">
+            <h3>Scoring Overstromingskans 2050</h3>
+            <table>
+              <tr><th>Kans</th><th>Omgevingsscore</th></tr>
+              <tr><td>Grote kans: > 1/30 per jaar</td><td><span class="score-box s-high">Hoog</span></td></tr>
+              <tr><td>Middelgrote kans: 1/30 tot 1/300 per jaar</td><td><span class="score-box s-mid">Middel</span></td></tr>
+              <tr><td>Kleine kans: 1/300 tot 1/3.000 per jaar</td><td><span class="score-box s-low">Laag</span></td></tr>
+              <tr><td>Zeer/extreem kleine kans: > 1/3.000 per jaar</td><td><span class="score-box s-vlow">Zeer laag</span></td></tr>
+              <tr><td>NoData</td><td><span class="score-box s-none">Geen</span></td></tr>
+            </table>
+          </div>
+          <div class="detail-tab-content" id="dt-ov-kans-toel">
+            <h3>Toelichting</h3>
+            <p>De kansen zijn conservatieve schattingen: er is geen rekening gehouden met systeemwerking (doorbraak op één plek verlaagt kans elders) of noodmaatregelen. De kaart is beter geschikt voor eerste signalering dan voor investeringsbeslissingen.</p>
+          </div>
+        </div>
+      </div><!-- end omgeving -->
+
+      <!-- GEBOUW -->
+      <div class="score-panel" id="panel-overstroming-gebouw">
+        <div class="deel-badge">DEEL 2 — GEBOUWSCORE</div>
+        <h2>Relevante gebouwkenmerken — Overstroming</h2>
         <table>
-          <tr><th>#</th><th>Maatregel</th><th>Niveau</th><th>Kosten</th></tr>
-          <tr><td>74</td><td>Tijdelijke waterkeringen / schotten</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>76</td><td>Permanente waterkeringen, drempels</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>75</td><td>Installaties boven overstromingsniveau</td><td>Gebouw</td><td class="cost-m">Middel</td></tr>
-          <tr><td>72</td><td>Wet floodproofing / wetproofing</td><td>Gebouw</td><td class="cost-l">Laag</td></tr>
-          <tr><td>19</td><td>Waterberging / buffervijvers rondom gebouw</td><td>Gebied</td><td class="cost-l">Laag</td></tr>
+          <tr><th>Kenmerk</th><th>Relevantie</th></tr>
+          <tr><td>Vloerpeil t.o.v. maaiveld</td><td>Hoger vloerpeil verlaagt kwetsbaarheid</td></tr>
+          <tr><td>Hoogte stopcontacten/meterkast</td><td>Laag geplaatste installaties beschadigen snel</td></tr>
+          <tr><td>Wet floodproofing / wetproofing</td><td>Water toelaten zonder structuurschade</td></tr>
+          <tr><td>Dry floodproofing / dryproofing</td><td>Water volledig weren uit het gebouw</td></tr>
+          <tr><td>Tijdelijke waterkeringen</td><td>Schotten/zandzakken bij acute dreiging</td></tr>
+          <tr><td>Permanente drempels/waterkeringen</td><td>Hogere drempels of vaste schotten voor ramen</td></tr>
+          <tr><td>Installaties boven overstromingsniveau</td><td>Verhoogde plaatsing vermindert schade</td></tr>
         </table>
       </div>
     </div>
 
-    <!-- ══ GEBOUWSCORE ══ -->
-    <div class="page" id="page-gebouw">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>Gebouwscore</span></div>
-      <h1>Gebouwscore</h1>
-      <p class="page-subtitle">FCAB-2 — Kwetsbaarheid van een gebouw op basis van gebouwspecifieke kenmerken</p>
-      <div class="info-block"><strong>Definitie:</strong> De gebouwscore beschrijft de kwetsbaarheid van een gebouw voor de verschillende klimaateffecten door te kijken naar de gebouwspecifieke eigenschappen. Samen met de omgevingsscore bepaalt de gebouwscore de <strong>klimaatrisicoscore</strong>.</div>
-      <h2>Aanpak</h2>
-      <p>Via expert judgement van specialisten binnen de FCAB-alliantie is een selectie gemaakt van de meest relevante gebouwkenmerken per klimaatthema — kenmerken met de grootste impact op het klimaatrisico. Door slechts een beperkte set kenmerken te kiezen blijft de methodiek schaalbaar voor grote portefeuilles.</p>
-      <div class="note-block">De gebouwscore is gebaseerd op een beperkte set kenmerken, primair afgeleid uit open databronnen (BAG, energielabels, BRP). Een locatiebezoek (deep-dive) kan aanvullende, voor het gebouw specifieke kenmerken in kaart brengen die de score beïnvloeden.</div>
-      <h2>Rode vlaggen</h2>
-      <p>Een klimaatrisicoscore van <span class="score-box s-high">Hoog</span> of <span class="score-box s-vhigh">Zeer hoog</span> wordt aangemerkt als een <strong>rode vlag</strong> en geeft aanleiding om:</p>
-      <ul class="step-list">
-        <li>Een deep-dive uit te voeren (nauwkeurigere data, locatiebezoek)</li>
-        <li>Een impactanalyse uit te voeren (gezondheid, financieel, erfgoed, reputatie)</li>
-        <li>Een risicohouding te bepalen (Terminate / Treat / Transfer / Take)</li>
-        <li>Mitigerende maatregelen te selecteren en in te plannen</li>
-      </ul>
-      <h2>Gebouwkenmerken per klimaatthema</h2>
+    <!-- ══ HAGEL & STORM ══ -->
+    <div class="page" id="page-hagelstorm">
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Deel 1 — Omgevingsscore</span> <span class="sep">›</span> <span>Hagel & Storm</span></div>
+      <div class="deel-badge">DEEL 1 — IN ONTWIKKELING</div>
+      <h1>⛈️ Hagel &amp; Storm</h1>
+      <p class="page-subtitle">Nieuw klimaatthema — wordt opgenomen in een toekomstige versie van FCAB</p>
+
+      <div class="placeholder-block">
+        <div class="ph-icon">🚧</div>
+        <div class="ph-title">Hagel & Storm — In ontwikkeling</div>
+        <div class="ph-desc">Dit thema is nog niet opgenomen in FCAB-1 en FCAB-2, maar wordt verkend voor een toekomstige update op basis van de KNMI'23-klimaatscenario's.</div>
+      </div>
+
+      <div class="info-block">
+        <strong>Waarom nieuw?</strong> Ten tijde van het schrijven van FCAB-1 en FCAB-2 was er in de KNMI'14-klimaatscenario's geen aanleiding om storm en hagel als apart klimaatthema mee te nemen. De KNMI'23-scenario's geven echter aanleiding dit te heroverwegen:
+        <ul style="margin-top:8px;">
+          <li><strong>Hagel:</strong> Hagelstenen worden naar verwachting groter onder invloed van klimaatverandering.</li>
+          <li><strong>Wind:</strong> Hevigere zomerbuien gaan gepaard met zwaardere windstoten. Voor storm is nog geen directe relatie met klimaatverandering aangetoond.</li>
+          <li><strong>BES-eilanden:</strong> Licht hogere frequentie van tropische cyclonen verwacht.</li>
+        </ul>
+      </div>
+
+      <h2>Wat is al beschikbaar?</h2>
+      <p>In de <strong>FCAB-3 Maatregelentabel</strong> zijn al maatregelen opgenomen die de gebouwkwetsbaarheid voor storm en hagel kunnen verminderen. Zie de sectie <a href="#" onclick="navigate('maatregelen',null);return false;" style="color:var(--accent);font-weight:600;">Maatregelen</a> voor het volledige overzicht.</p>
+
+      <h2>Geplande indicatoren (voorlopig)</h2>
       <table>
-        <tr><th>Klimaatthema</th><th>Voorbeelden van bepalende gebouwkenmerken</th></tr>
-        <tr><td>🌡️ Hitte</td><td>Glasoppervlak zonzijde, buitenzonwering, isolatie, spuiventilatie, actieve koeling, groen dak</td></tr>
-        <tr><td>🏜️ Droogte</td><td>Bouwjaar (< 1975), funderingstype (hout / staal), bodemtype in directe omgeving</td></tr>
-        <tr><td>🌧️ Wateroverlast</td><td>Drempelhoogte, afdichting, aanwezigheid anti-terugslagklep, kelderruimten, regenton</td></tr>
-        <tr><td>🌊 Overstroming</td><td>Vloerpeil t.o.v. maaiveld, hoogte stopcontacten/meterkast, wet/dry floodproofing, tijdelijke waterkeringen</td></tr>
+        <tr><th>Indicator</th><th>Status</th><th>Bron (verwacht)</th></tr>
+        <tr><td>Hagelgevoeligheidskaart</td><td><span class="tag blue">In verkenning</span></td><td>IVM / KNMI'23</td></tr>
+        <tr><td>Windstoten-intensiteitskaart (zomerbuien)</td><td><span class="tag blue">In verkenning</span></td><td>KNMI'23</td></tr>
+        <tr><td>Gebouwkwetsbaarheid storm/hagel</td><td><span class="tag blue">In verkenning</span></td><td>FCAB-2 update</td></tr>
       </table>
+
+      <div class="note-block">Feedback over dit thema is welkom bij DGBC. De FCAB-gebruikersgroepen die vanaf zomer 2024 worden georganiseerd zijn het aangewezen kanaal voor inhoudelijke bijdragen.</div>
     </div>
 
     <!-- ══ STRATEGIE ══ -->
     <div class="page" id="page-strategie">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>Adaptatiestrategie</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Deel 3 — Adaptatiestrategie</span></div>
+      <div class="deel-badge">DEEL 3</div>
       <h1>Risicomanagementcyclus</h1>
       <p class="page-subtitle">FCAB-3 — Van klimaatrisico naar handelingsperspectief</p>
       <h2>De 7 stappen</h2>
@@ -1057,16 +1536,6 @@
         <li><strong>Rapporteren</strong> — Rapporteer conform CSRD/SFDR/EU Taxonomie over klimaatrisico's en voortgang maatregelen.</li>
         <li><strong>Evalueren</strong> — Herzie periodiek op basis van nieuwe data, beleid of gewijzigde omstandigheden.</li>
       </ol>
-      <h2>Impactanalyse categorieën</h2>
-      <table>
-        <tr><th>Categorie</th><th>Toelichting</th></tr>
-        <tr><td>Gezondheid & veiligheid</td><td>Impact op gebouwgebruikers, kwetsbare groepen (ouderen, kinderen, mensen met beperking)</td></tr>
-        <tr><td>Fysieke schade</td><td>Schade in euro's, structurele schade aan het gebouw</td></tr>
-        <tr><td>Financiële impact</td><td>Climate Value at Risk (CVaR): hogere premies, huurderving, waardedaling, herstelkosten</td></tr>
-        <tr><td>Erfgoed impact</td><td>Verlies van culturele of monumentale waarde</td></tr>
-        <tr><td>Milieu-impact</td><td>Effecten op biodiversiteit, bodem, water</td></tr>
-        <tr><td>Reputatieschade</td><td>Zichtbaarheid van risico's in taxatierapporten, jaarverslagen en media</td></tr>
-      </table>
       <h2>Vier risicohoudings-opties (4 T's)</h2>
       <div class="score-cards">
         <div class="score-card"><div class="label">Terminate (Avoid)</div><div class="desc">Beëindig de activiteit of stoot het risicovol pand af</div></div>
@@ -1078,7 +1547,8 @@
 
     <!-- ══ MAATREGELEN ══ -->
     <div class="page" id="page-maatregelen">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>Maatregelen</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Deel 3 — Adaptatiestrategie</span> <span class="sep">›</span> <span>Maatregelen</span></div>
+      <div class="deel-badge">DEEL 3</div>
       <h1>Maatregelentabel</h1>
       <p class="page-subtitle">Overzicht van fysieke en niet-fysieke adaptatiemaatregelen per klimaatthema</p>
       <div class="info-block"><strong>Voorkeursvolgorde:</strong> (1) Niet-fysieke maatregelen → (2) Gebiedsmaatregelen → (3) Gebouwmaatregelen. Deze volgorde sluit aan op de EU Taxonomie-vereisten.</div>
@@ -1094,7 +1564,7 @@
           <tr><td>1</td><td>Early warning systems</td><td>Alle</td><td class="cost-m">Middel</td><td>Eenvoudig</td></tr>
           <tr><td>2</td><td>Uitleg en training gebouwgebruikers</td><td>Alle</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
           <tr><td>3</td><td>Evacuatie(plan)</td><td>Meerdere</td><td class="cost-m">Middel</td><td>Eenvoudig</td></tr>
-          <tr><td>4</td><td>Tijdelijke zorgmaatregelen (hitte)</td><td>Hitte</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
+          <tr><td>4</td><td>Tijdelijke zorgmaatregelen (hitte)</td><td>🌡️</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
           <tr><td>5</td><td>Commissioning van het gebouw</td><td>Alle</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
           <tr><td>6</td><td>Communicatie en educatie bewoners</td><td>Alle</td><td class="cost-l">Laag</td><td>Eenvoudig</td></tr>
           <tr><td>7</td><td>Hitte- of overstromingsprotocol</td><td>Alle</td><td class="cost-l">Laag</td><td>Gemiddeld</td></tr>
@@ -1125,122 +1595,38 @@
           <tr><td>74</td><td>Tijdelijke waterkeringen</td><td>🌊</td><td>✓</td><td class="cost-l">Laag</td></tr>
           <tr><td>76</td><td>Permanente drempels/waterkeringen</td><td>🌊</td><td>✓</td><td class="cost-l">Laag</td></tr>
           <tr><td>39</td><td>Sterkere, diepere fundamenten</td><td>🏜️</td><td>—</td><td class="cost-h">Hoog</td></tr>
-          <tr><td>100</td><td>Groene daken met waterretentie</td><td>🌧️</td><td>✓</td><td class="cost-l">Laag</td></tr>
+          <tr><td>81</td><td>Betere bevestiging dakpannen</td><td>⛈️</td><td>—</td><td class="cost-l">Laag</td></tr>
+          <tr><td>85</td><td>Bliksemafleiders</td><td>⛈️</td><td>—</td><td class="cost-l">Laag</td></tr>
+          <tr><td>93</td><td>Slagvaste zonnepanelen</td><td>⛈️</td><td>—</td><td class="cost-m">Middel</td></tr>
         </table>
-        <div class="note-block">Kolom 'FCAB-2?' geeft aan of dit gebouwkenmerk direct meeweegt in de berekening van de gebouwscore. Maatregelen die als gebouwkenmerk zijn opgenomen leiden bij implementatie direct tot een herberekende, verbeterde klimaatrisicoscore.</div>
+        <div class="note-block">Kolom 'FCAB-2?' geeft aan of dit gebouwkenmerk direct meeweegt in de berekening van de gebouwscore.</div>
       </div>
     </div>
 
     <!-- ══ API ══ -->
     <div class="page" id="page-api">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>API Documentatie</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>API Documentatie</span></div>
       <h1>API Documentatie</h1>
-      <p class="page-subtitle">Technische referentie voor de FCAB API — bedoeld voor professionals en developers</p>
-      <div class="note-block">De FCAB API biedt programmatische toegang tot omgevingsscore-berekeningen op basis van adres of coördinaten. Uitvoer per klimaatthema conform de FCAB-1 methodiek.</div>
+      <p class="page-subtitle">Technische referentie voor de FCAB API</p>
+      <div class="note-block">De FCAB API biedt programmatische toegang tot omgevingsscore-berekeningen op basis van adres of coördinaten.</div>
       <h2>Basis URL</h2>
       <pre>https://api.fcab.nl/v1</pre>
-      <h2>Authenticatie</h2>
-      <p>Alle API-aanroepen vereisen een Bearer token in de <span class="inline-code">Authorization</span>-header.</p>
-      <pre>Authorization: Bearer &lt;your_api_token&gt;</pre>
-      <h2>Endpoints</h2>
-      <h3>GET /omgevingsscore</h3>
-      <p>Retourneert de omgevingsscore voor alle klimaatthema's op basis van een adres of RD-coördinaten.</p>
+      <h2>GET /omgevingsscore</h2>
       <h4>Parameters</h4>
       <table>
         <tr><th>Parameter</th><th>Type</th><th>Verplicht</th><th>Beschrijving</th></tr>
-        <tr><td><span class="inline-code">postcode</span></td><td>string</td><td>Ja*</td><td>Postcode (bijv. <span class="inline-code">2596AL</span>)</td></tr>
+        <tr><td><span class="inline-code">postcode</span></td><td>string</td><td>Ja*</td><td>Postcode (bijv. 2596AL)</td></tr>
         <tr><td><span class="inline-code">huisnummer</span></td><td>integer</td><td>Ja*</td><td>Huisnummer</td></tr>
-        <tr><td><span class="inline-code">x</span></td><td>float</td><td>Ja*</td><td>RD-coördinaat X (alternatief voor adres)</td></tr>
-        <tr><td><span class="inline-code">y</span></td><td>float</td><td>Ja*</td><td>RD-coördinaat Y (alternatief voor adres)</td></tr>
-        <tr><td><span class="inline-code">thema</span></td><td>string</td><td>Nee</td><td>Filter op thema: <span class="inline-code">hitte</span>, <span class="inline-code">droogte</span>, <span class="inline-code">wateroverlast</span>, <span class="inline-code">overstroming</span></td></tr>
+        <tr><td><span class="inline-code">x</span></td><td>float</td><td>Ja*</td><td>RD-coördinaat X</td></tr>
+        <tr><td><span class="inline-code">y</span></td><td>float</td><td>Ja*</td><td>RD-coördinaat Y</td></tr>
+        <tr><td><span class="inline-code">thema</span></td><td>string</td><td>Nee</td><td>Filter: hitte, droogte, wateroverlast, overstroming</td></tr>
       </table>
-      <p style="font-size:12px;margin-top:6px;">* Óf adres (postcode + huisnummer) óf coördinaten (x + y) vereist.</p>
-      <h4>Voorbeeld aanroep</h4>
-      <pre>GET /v1/omgevingsscore?postcode=2596AL&amp;huisnummer=7
-Authorization: Bearer eyJ...</pre>
-      <h4>Voorbeeld response</h4>
-      <pre>{
-  "adres": {
-    "postcode": "2596AL",
-    "huisnummer": 7,
-    "woonplaats": "Den Haag",
-    "bag_id": "0518100000258879",
-    "bouwjaar": 1985,
-    "rd_x": 81432.7,
-    "rd_y": 454812.3
-  },
-  "omgevingsscore": {
-    "hitte": {
-      "indicator": "hittestress_warme_nachten_2050_hoog",
-      "waarde_kaart": "2-3_weken",
-      "score": "middel",
-      "scenario": "KNMI14_WH",
-      "tijdshorizon": 2050
-    },
-    "droogte": {
-      "natuurbrand": {
-        "indicator": "natuurbrandgevoeligheid_2050_hoog",
-        "waarde_kaart": 1,
-        "score": "geen"
-      },
-      "paalrot": {
-        "indicator": "risico_paalrot_2050_hoog",
-        "waarde_index": 1.2,
-        "score": "laag",
-        "bouwjaar_check": "van_toepassing"
-      },
-      "verschilzetting": {
-        "indicator": "risico_verschilzetting_2050_hoog",
-        "waarde_index": 4.1,
-        "score": "laag",
-        "bouwjaar_check": "van_toepassing"
-      }
-    },
-    "wateroverlast": {
-      "hevige_bui": {
-        "indicator": "waterdiepte_70mm_2uur_1op100",
-        "waarde_cm": 12,
-        "score": "laag",
-        "bouwjaar_check": "van_toepassing"
-      },
-      "grondwater_index": {
-        "score": "middel",
-        "index_totaal": 2
-      }
-    },
-    "overstroming": {
-      "max_waterdiepte": {
-        "indicator": "max_waterdiepte_overstroomik_2021",
-        "waarde_m": 0.8,
-        "score": "laag"
-      },
-      "overstromingskans": {
-        "indicator": "plaatsgebonden_kans_2050_20cm",
-        "kans_klasse": "kleine_kans",
-        "score": "laag"
-      }
-    }
-  },
-  "metadata": {
-    "fcab_versie": "1.0",
-    "berekend_op": "2025-04-15T10:32:00Z",
-    "databronnen": [
-      {"naam": "WENR_hittestress_2016", "jaar": 2016},
-      {"naam": "Deltares_paalrot_2021", "jaar": 2021},
-      {"naam": "Deltares_verschilzetting_2021", "jaar": 2021},
-      {"naam": "ROR_wateroverlast_2018", "jaar": 2018},
-      {"naam": "LIWO_overstroming_2021", "jaar": 2021}
-    ]
-  }
-}</pre>
       <h2>Score waarden</h2>
-      <p>Alle <span class="inline-code">score</span>-velden retourneren één van de volgende waarden:</p>
       <pre>"geen" | "zeer_laag" | "laag" | "middel" | "hoog" | "zeer_hoog" | "onbekend" | "niet_van_toepassing"</pre>
       <h2>Foutcodes</h2>
       <table>
-        <tr><th>HTTP status</th><th>Code</th><th>Omschrijving</th></tr>
+        <tr><th>HTTP</th><th>Code</th><th>Omschrijving</th></tr>
         <tr><td>400</td><td><span class="inline-code">INVALID_ADDRESS</span></td><td>Adres niet gevonden in BAG</td></tr>
-        <tr><td>400</td><td><span class="inline-code">MISSING_PARAMS</span></td><td>Verplichte parameters ontbreken</td></tr>
         <tr><td>401</td><td><span class="inline-code">UNAUTHORIZED</span></td><td>Ongeldig of ontbrekend Bearer token</td></tr>
         <tr><td>404</td><td><span class="inline-code">NO_DATA</span></td><td>Geen data beschikbaar voor locatie</td></tr>
         <tr><td>429</td><td><span class="inline-code">RATE_LIMIT</span></td><td>Verzoek limiet overschreden (100/min)</td></tr>
@@ -1250,207 +1636,75 @@ Authorization: Bearer eyJ...</pre>
 
     <!-- ══ DATABRONNEN ══ -->
     <div class="page" id="page-databronnen">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>Databronnen</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Databronnen</span></div>
       <h1>Databronnen</h1>
-      <p class="page-subtitle">Overzicht van de externe open databronnen die FCAB gebruikt — inclusief beperkingen en updatefrequentie</p>
-      <div class="info-block">FCAB is volledig gebaseerd op <strong>vrij beschikbare, landelijk dekkende open data</strong>. Alle bronnen zijn openbaar en gratis te downloaden. Primaire bron voor kaartlagen: <a href="https://www.klimaateffectatlas.nl" target="_blank" style="color:var(--accent);">Klimaateffectatlas</a>.</div>
+      <p class="page-subtitle">Overzicht van de externe open databronnen die FCAB gebruikt</p>
+      <div class="info-block">FCAB is volledig gebaseerd op <strong>vrij beschikbare, landelijk dekkende open data</strong>. Primaire bron voor kaartlagen: <a href="https://www.klimaateffectatlas.nl" target="_blank" style="color:var(--accent);">Klimaateffectatlas</a>.</div>
 
-      <h2>Kaartlagen per thema</h2>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Hittestress door warme nachten — 2050 Hoog</div>
-          <div class="source-meta">Bron: WENR · Jaar: 2016 · Resolutie: 100 m · Thema: 🌡️ Hitte</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Aantal verwachte tropische nachten in 2050 (WH-scenario). Basis voor omgevingsscore hitte.<br><strong>Beperkingen:</strong> Gebaseerd op omgevingskenmerken Rotterdam, geëxtrapoleerd naar Nederland. Minder nauwkeurig voor kleine gemeenten. Update gewenst.</div>
-        </div>
-        <a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Open bron</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Natuurbrandgevoeligheid — 2050 Hoog</div>
-          <div class="source-meta">Bron: WENR & Deltares · Jaar: 2021 · Resolutie: 250 m · Thema: 🏜️ Droogte</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Gevoeligheidskaart op basis van brandbaar materiaal en klimaatfactoren.<br><strong>Beperkingen:</strong> Grote stedelijke gebieden en water zijn niet meegenomen. 25% van geregistreerde branden viel buiten 'matig/hoog gevoelig'.</div>
-        </div>
-        <a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Open bron</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Risico Paalrot 2050 Hoog</div>
-          <div class="source-meta">Bron: Deltares · Jaar: 2021 · Resolutie: CBS Wijk- en Buurtenkaart 2020 · Thema: 🏜️ Droogte</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Index: percentage houten palen × kwetsbaarheid, op buurtniveau.<br><strong>Beperkingen:</strong> Hoge onzekerheid door gebruik van landelijke data. Alleen relevant voor bouwjaar &lt; 1975.</div>
-        </div>
-        <a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Open bron</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Risico Verschilzetting 2050 Hoog</div>
-          <div class="source-meta">Bron: Deltares · Jaar: 2021 · Resolutie: CBS Wijk- en Buurtenkaart 2020 · Thema: 🏜️ Droogte</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Index: percentage funderingen op staal × kwetsbaarheid.<br><strong>Beperkingen:</strong> Zuid-Limburg niet meegenomen. Hogere onzekerheid in rivierengebied (krimp-zwel klei). Bouwjaar &lt; 1975 vereist.</div>
-        </div>
-        <a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Open bron</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Waterdiepte bij hevige bui — 70 mm / 2 uur (ROR)</div>
-          <div class="source-meta">Bron: Europese Richtlijn Overstromingsrisico's / Deltares · Jaar: 2018 · Modelresolutie: 2 m · Thema: 🌧️ Wateroverlast</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Maximale waterdiepte bij extreme bui. BAG-voetafdruk + 2 m buffer.<br><strong>Beperkingen:</strong> AHN2-basis (2007–2012): gebouwen na 2012 → 'Onbekend'. Klimaatverandering niet meegenomen in bui-intensiteit.</div>
-        </div>
-        <a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Open bron</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Ontwikkeling kans grondwateroverlast 2050 Hoog</div>
-          <div class="source-meta">Bron: Deltares / Nationaal Water Model · Jaar: 2017 · Resolutie: 250 m · Thema: 🌧️ Wateroverlast</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Verandering in kans op grondwateroverlast tot 2050. Deel van de grondwaterindex.<br><strong>Beperkingen:</strong> Toont alleen <em>verandering</em>, niet de huidige situatie. Drainage niet meegenomen. Signaalfunctie.</div>
-        </div>
-        <a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Open bron</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Maximale waterdieptekaart (overstroomik.nl, 2021)</div>
-          <div class="source-meta">Bron: Rijkswaterstaat / LIWO · Jaar: 2021 · Resolutie: 100 m · Thema: 🌊 Overstroming</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Maximale waterdiepte bij overstromingen tot ca. 1:100.000 jaar.<br><strong>Beperkingen:</strong> Conservatieve schatting. Scenarios treden in werkelijkheid niet tegelijkertijd op.</div>
-        </div>
-        <a href="https://overstroomik.nl" target="_blank" class="source-link">→ overstroomik.nl</a>
-      </div>
-
-      <div class="source-card">
-        <div>
-          <div class="source-name">Plaatsgebonden overstromingskans 2050 (20 cm, LIWO)</div>
-          <div class="source-meta">Bron: LIWO · Jaar: 2021 · Resolutie: 100 m (binnendijks) / 10 m (buitendijks) · Thema: 🌊 Overstroming</div>
-          <div class="source-meta" style="margin-top:4px;"><strong>Gebruik:</strong> Totale overstromingskans per locatie in 2050 (primair + regionaal watersysteem).<br><strong>Beperkingen:</strong> Conservatieve faalkansen zonder systeemwerking of noodmaatregelen. Beter geschikt voor eerste signalering dan investeringsbeslissingen.</div>
-        </div>
-        <a href="https://www.helpdeskwater.nl" target="_blank" class="source-link">→ Helpdesk Water</a>
-      </div>
+      <div class="source-card"><div><div class="source-name">Hittestress door warme nachten — 2050 Hoog</div><div class="source-meta">WENR · 2016 · 100 m · 🌡️ Hitte</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Klimaateffectatlas</a></div>
+      <div class="source-card"><div><div class="source-name">Natuurbrandgevoeligheid — 2050 Hoog</div><div class="source-meta">WENR & Deltares · 2021 · 250 m · 🏜️ Droogte</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Klimaateffectatlas</a></div>
+      <div class="source-card"><div><div class="source-name">Risico Paalrot 2050 Hoog</div><div class="source-meta">Deltares · 2021 · CBS Wijk- en Buurtenkaart · 🏜️ Droogte</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Klimaateffectatlas</a></div>
+      <div class="source-card"><div><div class="source-name">Risico Verschilzetting 2050 Hoog</div><div class="source-meta">Deltares · 2021 · CBS Wijk- en Buurtenkaart · 🏜️ Droogte</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Klimaateffectatlas</a></div>
+      <div class="source-card"><div><div class="source-name">Waterdiepte bij hevige bui — 70 mm / 2 uur</div><div class="source-meta">Europese Richtlijn Overstromingsrisico's / Deltares · 2018 · 2 m · 🌧️ Wateroverlast</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Klimaateffectatlas</a></div>
+      <div class="source-card"><div><div class="source-name">Ontwikkeling kans grondwateroverlast 2050 Hoog</div><div class="source-meta">Deltares / Nationaal Water Model · 2017 · 250 m · 🌧️ Wateroverlast</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="source-link">→ Klimaateffectatlas</a></div>
+      <div class="source-card"><div><div class="source-name">Maximale waterdieptekaart (overstroomik.nl, 2021)</div><div class="source-meta">Rijkswaterstaat / LIWO · 2021 · 100 m · 🌊 Overstroming</div></div><a href="https://overstroomik.nl" target="_blank" class="source-link">→ overstroomik.nl</a></div>
+      <div class="source-card"><div><div class="source-name">Plaatsgebonden overstromingskans 2050 (20 cm)</div><div class="source-meta">LIWO · 2021 · 100 m / 10 m · 🌊 Overstroming</div></div><a href="https://www.helpdeskwater.nl" target="_blank" class="source-link">→ Helpdesk Water</a></div>
     </div>
 
     <!-- ══ CHANGELOG ══ -->
     <div class="page" id="page-changelog">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>Changelog</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>Changelog</span></div>
       <h1>Changelog</h1>
-      <p class="page-subtitle">Versiehistorie van het Framework for Climate Adaptive Buildings</p>
-      <div class="info-block">De huidige versie is <strong>FCAB v1.0</strong>. Een eerste update staat gepland voor voorjaar 2025.</div>
-
       <div class="changelog-item">
-        <div>
-          <div class="changelog-ver">v1.0</div>
-          <div class="changelog-date">Juni 2024</div>
-        </div>
+        <div><div class="changelog-ver">v1.0</div><div class="changelog-date">Juni 2024</div></div>
         <div class="changelog-content">
           <strong>FCAB-3: Strategie en maatregelen</strong>
-          <p style="margin:6px 0 8px;">Publicatie van het derde en laatste deel van het Framework. Bevat de risicomanagementcyclus, maatregelentabel (115+ maatregelen) en de kennisagenda.</p>
+          <p style="margin:6px 0 8px;">Publicatie van het derde deel. Bevat de risicomanagementcyclus, maatregelentabel (115+ maatregelen) en de kennisagenda.</p>
           <span class="changelog-tag ct-new">Nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br>
           <span class="changelog-tag ct-new">Nieuw</span> Risicomanagementcyclus 7 stappen<br>
-          <span class="changelog-tag ct-new">Nieuw</span> Impactanalyse framework (CVaR, gezondheid, erfgoed)<br>
-          <span class="changelog-tag ct-new">Nieuw</span> Storm en hagel toegevoegd als thema in maatregelentabel<br>
-          <span class="changelog-tag ct-upd">Update</span> Afstemming met EU Taxonomie sectie 7.7 (Verwerving & Eigendom gebouwen)
+          <span class="changelog-tag ct-new">Nieuw</span> Storm en hagel als thema in maatregelentabel<br>
+          <span class="changelog-tag ct-upd">Update</span> Afstemming met EU Taxonomie sectie 7.7
         </div>
       </div>
-
       <div class="changelog-item">
-        <div>
-          <div class="changelog-ver">v0.9</div>
-          <div class="changelog-date">Juli 2023</div>
-        </div>
+        <div><div class="changelog-ver">v0.9</div><div class="changelog-date">Juli 2023</div></div>
         <div class="changelog-content">
           <strong>FCAB-2: De gebouwscore</strong>
-          <p style="margin:6px 0 8px;">Publicatie van het tweede deel. Gebouwkenmerken per klimaatthema, scoring en red-flagging methodiek.</p>
           <span class="changelog-tag ct-new">Nieuw</span> Gebouwscore methodiek<br>
           <span class="changelog-tag ct-new">Nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br>
           <span class="changelog-tag ct-new">Nieuw</span> Red-flagging procedure
         </div>
       </div>
-
       <div class="changelog-item">
-        <div>
-          <div class="changelog-ver">v0.5</div>
-          <div class="changelog-date">November 2022</div>
-        </div>
+        <div><div class="changelog-ver">v0.5</div><div class="changelog-date">November 2022</div></div>
         <div class="changelog-content">
-          <strong>FCAB-1: De omgevingsscore — versie 1.0</strong>
-          <p style="margin:6px 0 8px;">Eerste release van de FCAB-methodiek. Bevat de standaard-aanpak voor het inschatten van de omgevingsscore voor bestaande gebouwen op basis van open, landelijke data.</p>
+          <strong>FCAB-1: De omgevingsscore</strong>
           <span class="changelog-tag ct-new">Nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br>
           <span class="changelog-tag ct-new">Nieuw</span> 8 kaartlagen met classificatietabellen<br>
           <span class="changelog-tag ct-new">Nieuw</span> Aansluiting EU Taxonomie & TCFD
         </div>
       </div>
-
       <h2>Geplande updates</h2>
       <div class="card">
         <div class="card-title">v1.1 — Voorjaar 2025 (gepland)</div>
-        <div class="card-body">
-          Integratie KNMI'23-klimaatscenario's (AR6/CMIP6) · Actualisatie wateroverlastkaart (AHN4-basis) · Verbeterde nachtelijke hittekaart · Kwantitatieve weging maatregelen (startpunt)
-        </div>
+        <div class="card-body">Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel & Storm als volwaardig thema</div>
       </div>
     </div>
 
     <!-- ══ FAQ ══ -->
     <div class="page" id="page-faq">
-      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span><span class="sep">›</span><span>FAQ</span></div>
+      <div class="breadcrumbs"><span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span>FAQ</span></div>
       <h1>Veelgestelde vragen</h1>
-      <p class="page-subtitle">Antwoorden op veelgestelde vragen over toepassing, interpretatie en scope van FCAB</p>
 
       <h2>Toepassing</h2>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is FCAB ook geschikt voor nieuwbouw? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Nee. FCAB is uitsluitend ontwikkeld voor <strong>bestaande gebouwen</strong>. De methodiek is niet geschikt voor nieuwbouwlocaties, het ontwikkelen van groene gebieden of herontwikkeling van voormalige industrieterreinen. Voor nieuwbouw verwijzen we naar de <em>Landelijke Maatlat voor een groene, klimaatadaptieve gebouwde omgeving</em>.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Kan ik de FCAB-methodiek gebruiken als commercieel product? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Ja. Doordat de standaard-aanpak gebaseerd is op open data, kan iedereen deze toepassen zonder beperkingen. Het is ook mogelijk voor adviesbureaus of softwareontwikkelaars om maatwerk-toepassingen te bouwen die op deze aanpak voortborduren. De open methodiek borgt vergelijkbaarheid.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Hoe verschilt FCAB van andere klimaatrisico-tools op de markt? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Veel commerciële tools werken als een 'black box': de gebruikte methodes zijn niet transparant, wat vergelijking bemoeilijkt. FCAB is volledig transparant en gebaseerd op publiek beschikbare data. Hierdoor zijn scores onderling vergelijkbaar en reproduceerbaar. Onderzoek (Morgan Stanley, 2021) toonde lage correlatie tussen uitkomsten van verschillende commerciële aanbieders — FCAB wil dit 'level playing field' juist creëren.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Hoe gebruik ik FCAB voor de EU Taxonomie-rapportage? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">FCAB voldoet aan de criteria voor de uitvoering van een klimaatrisicobeoordeling (stap I van de DNSH-criteria voor klimaatadaptatie, EU Taxonomie sectie 7.2 en 7.7). De methodiek sluit aan op de vereiste transparante aanpak voor klimaatrisico-screening. Een adaptatieplan (stap III) valt buiten FCAB maar wordt ondersteund door de maatregelentabel in FCAB-3. Zie ook de DGBC Handreiking EU Taxonomie.</div>
-      </div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is FCAB ook geschikt voor nieuwbouw? <span class="faq-chevron">▼</span></div><div class="faq-a">Nee. FCAB is uitsluitend ontwikkeld voor <strong>bestaande gebouwen</strong>. Voor nieuwbouw verwijzen we naar de <em>Landelijke Maatlat voor een groene, klimaatadaptieve gebouwde omgeving</em>.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Wat is het verschil tussen Deel 1 en Deel 2? <span class="faq-chevron">▼</span></div><div class="faq-a"><strong>Deel 1 (Omgevingsscore)</strong> beschrijft de klimaateffecten in de directe omgeving van een gebouw op basis van landelijke open data. <strong>Deel 2 (Gebouwscore)</strong> beschrijft de kwetsbaarheid van het gebouw zelf op basis van gebouwspecifieke kenmerken. Samen vormen zij de klimaatrisicoscore.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Kan ik de vier thema-scores optellen tot één totaalscore? <span class="faq-chevron">▼</span></div><div class="faq-a">Dat is <strong>niet aanbevolen</strong>. Een hoge score op wateroverlast laat zich niet uitmiddelen met een lage score op hittestress. Elke thema-score staat op zichzelf en vergt specifieke aandacht.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Wanneer wordt Hagel & Storm een volledig thema? <span class="faq-chevron">▼</span></div><div class="faq-a">Dit wordt verkend voor een toekomstige update (v1.1, voorjaar 2025) op basis van de KNMI'23-klimaatscenario's. In de FCAB-3 Maatregelentabel zijn al maatregelen voor storm en hagel opgenomen.</div></div>
 
       <h2>Interpretatie</h2>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Kan ik de vier thema-scores optellen tot één totaalscore? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Dat is <strong>niet aanbevolen</strong>. Een hoge score op wateroverlast laat zich niet uitmiddelen met een lage score op hittestress — dit zijn afzonderlijke risico's met afzonderlijke maatregelen. Uit proefprojecten bleek dat een opgetelde totaalscore de transparantie en eenduidigheid in de weg staat. Elke thema-score staat op zichzelf en vergt specifieke aandacht.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Wat betekent de score 'Onbekend' bij wateroverlast? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">De kaart voor wateroverlast (70 mm / 2 uur) is gebaseerd op AHN2-data, ingemeten tussen 2007 en 2012. Gebouwen die na 2012 zijn gebouwd vallen buiten de opnameperiode en krijgen de score 'Onbekend'. In sommige gevallen kan als indicatie 'onbekend, oude situatie: hoog' worden vermeld als de oude situatie dit zou hebben opgeleverd.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Zijn de overstromingsscores niet te conservatief? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Ja, bewust. De kansen in de plaatsgebonden overstromingskans-kaarten zijn conservatieve schattingen, gebaseerd op de faalkansen die ook voor het normeren en beoordelen van waterkeringen worden gebruikt. Er is geen rekening gehouden met systeemwerking (doorbraak op één plek verlaagt kans elders) of noodmaatregelen (zandzakken etc.). FCAB geeft zo een bovengrens. Data die beter geschikt zijn voor investeringsbeslissingen zijn deels nog niet publiek beschikbaar.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Wat kan ik doen als de score voor mijn gebouw 'hoog' of 'zeer hoog' is? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Een 'rode vlag' is het startpunt voor verdere analyse, niet een eindconclusie. De aanbevolen stappen zijn: (1) Deep-dive met nauwkeurigere lokale data of een locatiebezoek, (2) impactanalyse om de gevolgen in kaart te brengen, (3) bepalen van de risicohouding (Terminate / Treat / Transfer / Take), en (4) selecteren en plannen van mitigerende maatregelen uit de FCAB-3 maatregelentabel.</div>
-      </div>
-
-      <h2>Wat doet FCAB wel/niet</h2>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Wat doet FCAB NIET? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">
-          FCAB doet <strong>niet</strong>:
-          <ul style="margin-top:8px;">
-            <li>Uitspraken op individueel gebouwniveau zonder aanvullende lokale data</li>
-            <li>Een kwantitatieve financiële schadeberekening</li>
-            <li>Aggregeren van scores tot één totale klimaatrisicoscore</li>
-            <li>Beoordelen van nieuwbouwprojecten of locatiekeuzes</li>
-            <li>Directe koppeling tussen maatregel en verbeterde score (uitgezonderd de gebouwkenmerken in FCAB-2)</li>
-            <li>Maatschappelijke kosten-batenanalyse van maatregelen</li>
-          </ul>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Hoe vaak wordt de FCAB-methodiek bijgewerkt? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">DGBC streeft naar regelmatige updates zodra betere open data beschikbaar komen. Een eerste update (v1.1) staat gepland voor voorjaar 2025, met als focus: integratie KNMI'23-scenario's, actualisatie wateroverlastkaart (AHN4) en verfijning van de nachtelijke hittekaart. Feedback is welkom via DGBC.</div>
-      </div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Wat betekent de score 'Onbekend' bij wateroverlast? <span class="faq-chevron">▼</span></div><div class="faq-a">De kaart voor wateroverlast is gebaseerd op AHN2-data, ingemeten tussen 2007 en 2012. Gebouwen die na 2012 zijn gebouwd vallen buiten de opnameperiode en krijgen de score 'Onbekend'.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Wat kan ik doen als de score voor mijn gebouw 'hoog' of 'zeer hoog' is? <span class="faq-chevron">▼</span></div><div class="faq-a">Een 'rode vlag' is het startpunt voor verdere analyse. De aanbevolen stappen zijn: (1) Deep-dive met nauwkeurigere lokale data of locatiebezoek, (2) impactanalyse, (3) bepalen van de risicohouding (Terminate / Treat / Transfer / Take), (4) selecteren en plannen van maatregelen uit de FCAB-3 maatregelentabel.</div></div>
     </div>
 
   </main>
@@ -1459,37 +1713,111 @@ Authorization: Bearer eyJ...</pre>
 <script>
 // ── Navigation ──
 const PAGES = {
-  home: {id:'page-home', crumb:'Home', parent:null},
-  process: {id:'page-process', crumb:'Methodiek', parent:'home'},
-  omgeving: {id:'page-omgeving', crumb:'Omgevingsscore', parent:'home'},
-  hitte: {id:'page-hitte', crumb:'Hitte', parent:'omgeving'},
-  droogte: {id:'page-droogte', crumb:'Droogte', parent:'omgeving'},
-  wateroverlast: {id:'page-wateroverlast', crumb:'Wateroverlast', parent:'omgeving'},
-  overstroming: {id:'page-overstroming', crumb:'Overstroming', parent:'omgeving'},
-  gebouw: {id:'page-gebouw', crumb:'Gebouwscore', parent:'home'},
-  strategie: {id:'page-strategie', crumb:'Risicomanagement', parent:'home'},
-  maatregelen: {id:'page-maatregelen', crumb:'Maatregelen', parent:'home'},
-  api: {id:'page-api', crumb:'API', parent:'home'},
-  databronnen: {id:'page-databronnen', crumb:'Databronnen', parent:'home'},
-  changelog: {id:'page-changelog', crumb:'Changelog', parent:'home'},
-  faq: {id:'page-faq', crumb:'FAQ', parent:'home'},
+  home:             {id:'page-home'},
+  process:          {id:'page-process'},
+  omgeving:         {id:'page-omgeving'},
+  hitte:            {id:'page-hitte'},
+  droogte:          {id:'page-droogte'},
+  wateroverlast:    {id:'page-wateroverlast'},
+  overstroming:     {id:'page-overstroming'},
+  hagelstorm:       {id:'page-hagelstorm'},
+  gebouw:           {id:'page-gebouw'},
+  klimaatrisicoscore:{id:'page-klimaatrisicoscore'},
+  strategie:        {id:'page-strategie'},
+  maatregelen:      {id:'page-maatregelen'},
+  api:              {id:'page-api'},
+  databronnen:      {id:'page-databronnen'},
+  changelog:        {id:'page-changelog'},
+  faq:              {id:'page-faq'},
 };
 
 let currentPage = 'home';
 
 function navigate(pageKey, clickedEl) {
   if (!PAGES[pageKey]) return;
-  // hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(PAGES[pageKey].id).classList.add('active');
-  // update nav
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (clickedEl) clickedEl.classList.add('active');
   currentPage = pageKey;
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
+
+  // Update breadcrumbs for theme pages
+  updateThemeBreadcrumb(pageKey);
 }
 
-// ── Tabs ──
+// Default view state for each theme
+const themeViews = {hitte:'omgeving', droogte:'omgeving', wateroverlast:'omgeving', overstroming:'omgeving'};
+
+function setThemeView(theme, view) {
+  themeViews[theme] = view;
+
+  // Switch buttons
+  const sw1 = document.getElementById(`sw-${theme}-omgeving`);
+  const sw2 = document.getElementById(`sw-${theme}-gebouw`);
+  if (sw1) { sw1.classList.toggle('active', view==='omgeving'); }
+  if (sw2) { sw2.classList.toggle('active', view==='gebouw'); }
+
+  // Switch panels
+  const p1 = document.getElementById(`panel-${theme}-omgeving`);
+  const p2 = document.getElementById(`panel-${theme}-gebouw`);
+  if (p1) p1.classList.toggle('active', view==='omgeving');
+  if (p2) p2.classList.toggle('active', view==='gebouw');
+
+  // navigate to that page if not already there
+  if (currentPage !== theme) navigate(theme, null);
+
+  updateThemeBreadcrumb(theme, view);
+}
+
+function updateThemeBreadcrumb(pageKey, view) {
+  const bcMap = {
+    hitte: 'bc-hitte', droogte: 'bc-droogte',
+    wateroverlast: 'bc-wateroverlast', overstroming: 'bc-overstroming'
+  };
+  const nameMap = {hitte:'Hitte', droogte:'Droogte', wateroverlast:'Wateroverlast', overstroming:'Overstroming'};
+  const el = document.getElementById(bcMap[pageKey]);
+  if (!el) return;
+  const v = view || themeViews[pageKey] || 'omgeving';
+  const deel = v === 'omgeving' ? 'Deel 1 — Omgevingsscore' : 'Deel 2 — Gebouwscore';
+  el.innerHTML = `<span onclick="navigate('home',null)">Home</span> <span class="sep">›</span> <span onclick="navigate('${v==='omgeving'?'omgeving':'gebouw'}',null)">${deel}</span> <span class="sep">›</span> <span>${nameMap[pageKey]||''}</span>`;
+}
+
+// ── Indicator pills ──
+function setIndicator(theme, view, indicator) {
+  const prefix = `ind-${theme}-${view}-`;
+  // Reset all indicator panels in this theme/view
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(`${prefix}${indicator}`);
+  if (target) target.classList.add('active');
+
+  // Reset pills
+  const panelEl = document.getElementById(`panel-${theme}-${view}`);
+  if (panelEl) {
+    panelEl.querySelectorAll('.indicator-pill').forEach(p => p.classList.remove('active'));
+    // find and activate the clicked pill by matching onclick
+    panelEl.querySelectorAll('.indicator-pill').forEach(p => {
+      if (p.getAttribute('onclick') && p.getAttribute('onclick').includes(`'${indicator}'`)) {
+        p.classList.add('active');
+      }
+    });
+  }
+}
+
+// ── Detail tabs ──
+function openDetailTab(btn, tabId) {
+  // Find sibling tabs within same detail-tabs group
+  const tabsEl = btn.closest('.detail-tabs');
+  if (tabsEl) tabsEl.querySelectorAll('.detail-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Find sibling tab contents: go up to indicator-panel, then find all detail-tab-content
+  const panel = btn.closest('.indicator-panel') || btn.closest('.tab-content') || document;
+  panel.querySelectorAll('.detail-tab-content').forEach(c => c.classList.remove('active'));
+  const el = document.getElementById(tabId);
+  if (el) el.classList.add('active');
+}
+
+// ── Regular tabs ──
 function openTab(btn, tabId) {
   const parent = btn.closest('.page') || document;
   parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1509,20 +1837,22 @@ function toggleFaq(qEl) {
 
 // ── Search ──
 const SEARCH_INDEX = [
-  {title:'Omgevingsscore', page:'omgeving', crumb:'Stap 1', keywords:['omgeving','bruto','klimaatrisico','hazard','blootstelling']},
-  {title:'Gebouwscore', page:'gebouw', crumb:'Stap 2', keywords:['gebouw','kwetsbaarheid','netto','kenmerken']},
-  {title:'Adaptatiestrategie & Maatregelen', page:'strategie', crumb:'Stap 3', keywords:['adaptatie','strategie','risicomanagement','maatregel']},
-  {title:'Hitte — Omgevingsscore', page:'hitte', crumb:'Omgevingsscore › Hitte', keywords:['hitte','warmte','tropisch','nacht','uhi','eiland','koeling']},
-  {title:'Droogte — Omgevingsscore', page:'droogte', crumb:'Omgevingsscore › Droogte', keywords:['droogte','paalrot','verschilzetting','natuurbrand','fundering','grondwater']},
-  {title:'Wateroverlast — Omgevingsscore', page:'wateroverlast', crumb:'Omgevingsscore › Wateroverlast', keywords:['wateroverlast','bui','regen','grondwater','riool','kelders']},
-  {title:'Overstroming — Omgevingsscore', page:'overstroming', crumb:'Omgevingsscore › Overstroming', keywords:['overstroming','dijk','zeespiegel','liwo','waterkering']},
-  {title:'Maatregelentabel', page:'maatregelen', crumb:'Adaptatiestrategie', keywords:['maatregel','groen dak','zonwering','wadi','isolatie','buitenzonwering']},
+  {title:'Introductie', page:'home', crumb:'Home', keywords:['fcab','introductie','methodiek','dgbc']},
+  {title:'FCAB Methodiek', page:'process', crumb:'Overzicht', keywords:['methodiek','meten','weten','doen','klimaatrisicoscore','ipcc']},
+  {title:'Omgevingsscore — Deel 1', page:'omgeving', crumb:'Deel 1', keywords:['omgeving','bruto','klimaatrisico','hazard','blootstelling','deel 1']},
+  {title:'Gebouwscore — Deel 2', page:'gebouw', crumb:'Deel 2', keywords:['gebouw','kwetsbaarheid','netto','kenmerken','deel 2']},
+  {title:'Klimaatrisicoscore', page:'klimaatrisicoscore', crumb:'Deel 2 — Gebouwscore', keywords:['klimaatrisicoscore','totstandkoming','rode vlag','netto','combinatie']},
+  {title:'Hitte — Omgevingsscore', page:'hitte', crumb:'Deel 1 › Hitte', keywords:['hitte','warmte','tropisch','nacht','uhi','eiland','koeling','warme nachten']},
+  {title:'Droogte — Omgevingsscore', page:'droogte', crumb:'Deel 1 › Droogte', keywords:['droogte','paalrot','verschilzetting','natuurbrand','fundering','grondwater']},
+  {title:'Wateroverlast — Omgevingsscore', page:'wateroverlast', crumb:'Deel 1 › Wateroverlast', keywords:['wateroverlast','bui','regen','grondwater','riool','kelders','70mm']},
+  {title:'Overstroming — Omgevingsscore', page:'overstroming', crumb:'Deel 1 › Overstroming', keywords:['overstroming','dijk','zeespiegel','liwo','waterkering','overstromingskans']},
+  {title:'Hagel & Storm', page:'hagelstorm', crumb:'Deel 1 › Hagel & Storm', keywords:['hagel','storm','windstoot','knmi23','nieuw thema']},
+  {title:'Adaptatiestrategie — Deel 3', page:'strategie', crumb:'Deel 3', keywords:['adaptatie','strategie','risicomanagement','maatregel','4t','terminate','treat','deel 3']},
+  {title:'Maatregelentabel', page:'maatregelen', crumb:'Deel 3', keywords:['maatregel','groen dak','zonwering','wadi','isolatie','buitenzonwering','storm']},
   {title:'API Documentatie', page:'api', crumb:'Referentie', keywords:['api','endpoint','json','token','aanroep','developer']},
   {title:'Databronnen', page:'databronnen', crumb:'Referentie', keywords:['data','bron','ahn','klimaateffectatlas','deltares','wenr','liwo']},
   {title:'Changelog', page:'changelog', crumb:'Referentie', keywords:['versie','update','changelog','v1.0','knmi23']},
   {title:'FAQ', page:'faq', crumb:'Referentie', keywords:['faq','vraag','nieuwbouw','totaalscore','onbekend','taxonomie']},
-  {title:'EU Taxonomie aansluiting', page:'home', crumb:'Introductie', keywords:['eu taxonomie','csrd','sfdr','tcfd','rapportage','dnsh']},
-  {title:'KNMI14 klimaatscenario', page:'process', crumb:'Methodiek', keywords:['knmi14','wh','scenario','rcp85','2050','klimaatscenario']},
 ];
 
 const searchInput = document.getElementById('search-input');
@@ -1535,7 +1865,7 @@ searchInput.addEventListener('input', function() {
     item.title.toLowerCase().includes(q) ||
     item.crumb.toLowerCase().includes(q) ||
     item.keywords.some(k => k.includes(q))
-  ).slice(0, 6);
+  ).slice(0, 7);
   if (!hits.length) { searchResults.classList.remove('active'); return; }
   searchResults.innerHTML = hits.map(h =>
     `<div class="search-result-item" onclick="navigate('${h.page}',null);searchResults.classList.remove('active');searchInput.value='';">
