@@ -95,7 +95,7 @@ body{font-family:var(--sans);background:var(--cream);color:var(--text);font-size
 }
 .ni:hover{color:var(--text);background:rgba(0,0,0,.02);}
 .ni.on{border-left-color:var(--accent);color:var(--accent);font-weight:500;background:var(--accent-s);}
-.ni.sub{padding-left:36px;font-size:12.5px;}
+.ni.sub{font-size:12.5px;}
 .ni.sub.on{border-left-color:var(--accent);color:var(--accent);background:var(--accent-s);}
 .rdiv{height:1px;background:var(--border);margin:8px 16px;}
 .nchip{font-size:10px;font-weight:600;color:var(--text3);min-width:16px;font-variant-numeric:tabular-nums;}
@@ -412,7 +412,7 @@ li strong{color:var(--text);font-weight:600;}
 
 <!-- TOPBAR -->
 <header class="topbar">
-  <a class="logo" href="#" onclick="nav('start',null);return false;" style="text-decoration:none;display:flex;align-items:center;gap:12px;">
+  <a class="logo" href="#" onclick="nav('home',null);return false;" style="text-decoration:none;display:flex;align-items:center;gap:12px;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;flex-shrink:0;">
       <div style="width:22px;height:22px;border-radius:3px;background:#4BAE8A;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">F</div>
       <div style="width:22px;height:22px;border-radius:3px;background:#E8B84B;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">C</div>
@@ -438,28 +438,13 @@ li strong{color:var(--text);font-weight:600;}
 
 <!-- LEFT RAIL -->
 <nav class="rail">
-  <div class="ni" onclick="nav('home',this)">Introductie</div>
-  <div class="subnav" id="subnav-home">
-    <div class="ni-sub2" onclick="jump('sec-structuur',this)">1. Structuur</div>
-    <div class="ni-sub2" onclick="jump('sec-klimaatthemas',this)">2. Klimaatthema's</div>
-    <div class="ni-sub2" onclick="jump('sec-wetregelgeving',this)">3. Wet- en regelgeving</div>
-    <div class="ni-sub2" onclick="jump('sec-faq',this)">4. Veelgestelde vragen</div>
-  </div>
-  <div class="ni" onclick="nav('process',this)">Methodiek</div>
-  <div class="subnav" id="subnav-process">
-    <div class="ni-sub2" onclick="jump('sec-klimaatrisicoscore',this)">1. Klimaatrisicoscore</div>
-    <div class="ni-sub2" onclick="jump('sec-scoringsschaal',this)">2. Scoringsschaal</div>
-    <div class="ni-sub2" onclick="jump('sec-risicomatrix',this)">3. Risicomatrix</div>
-    <div class="ni-sub2" onclick="jump('sec-adaptatiestrategie',this)">4. Adaptatiestrategie</div>
-  </div>
+  <div class="ni on" data-key="home" onclick="nav('home',this)">Start</div>
   <div class="rdiv"></div>
-  <div class="ni sub" onclick="nav('hitte',this)">Hitte</div>
-  <div class="ni sub" onclick="nav('droogte',this)">Droogte</div>
-  <div class="ni sub" onclick="nav('wateroverlast',this)">Wateroverlast</div>
-  <div class="ni sub" onclick="nav('overstroming',this)">Overstroming</div>
-  <div class="ni sub" onclick="nav('hagelstorm',this)">Hagel &amp; Storm</div>
-  <div class="rdiv"></div>
-  <div class="ni" onclick="nav('strategie',this)">Strategie &amp; maatregelen</div>
+  <div class="rail-label">Framework for Climate Adaptive Buildings</div>
+  <div class="ni" data-key="process" onclick="nav('process',this)">Introductie</div>
+  <div class="ni" data-key="omgevingsscore" onclick="nav('omgevingsscore',this)">1. Omgevingsscore</div>
+  <div class="ni" data-key="gebouwscore" onclick="nav('gebouwscore',this)">2. Gebouwscore</div>
+  <div class="ni" data-key="strategie" onclick="nav('strategie',this)">3. Adaptatiestrategie</div>
   <div class="subnav" id="subnav-strategie">
     <div class="ni-sub2" onclick="jump('sec-strat-1',this)">1. Climate proof gebouwde omgeving</div>
     <div class="ni-sub2" onclick="jump('sec-strat-2',this)">2. Risicomanagementcyclus</div>
@@ -472,28 +457,40 @@ li strong{color:var(--text);font-weight:600;}
     <div class="ni-sub2" onclick="jump('sec-strat-8',this)">Bijlage 2: Afstemming stakeholders</div>
     <div class="ni-sub2" onclick="jump('sec-strat-9',this)">Bijlage 3: Kwantitatieve effecten</div>
   </div>
+  <div class="rdiv"></div>
+  <div class="rail-label">Klimaatthema's</div>
+  <div class="ni sub" data-key="hitte" onclick="nav('hitte',this)">Hitte</div>
+  <div class="ni sub" data-key="droogte" onclick="nav('droogte',this)">Droogte</div>
+  <div class="ni sub" data-key="wateroverlast" onclick="nav('wateroverlast',this)">Wateroverlast</div>
+  <div class="ni sub" data-key="overstroming" onclick="nav('overstroming',this)">Overstroming</div>
+  <div class="ni sub" data-key="hagelstorm" onclick="nav('hagelstorm',this)">Hagel &amp; Storm</div>
 </nav>
 
 <!-- CONTENT -->
 <main class="canvas">
 
 <!-- ══ START (cover) ══ -->
-<div class="page on" id="page-start">
-  <h1 style="font-size:38px;margin-bottom:18px;">Welkom bij <em>FCAB</em></h1>
-  <p class="lead" style="font-size:16px;max-width:640px;">Het Framework for Climate Adaptive Buildings (FCAB) maakt klimaatadaptatie voor gebouwen inzichtelijk, meetbaar en vergelijkbaar. De methodiek helpt vastgoedeigenaren, financiers, adviseurs en overheden om de weerbaarheid van gebouwen tegen klimaatverandering te beoordelen en te verbeteren.</p>
-  <p style="max-width:640px;">Deze online omgeving geeft toegang tot de FCAB-methodiek en de onderliggende beoordelingscriteria.</p>
-  <div class="ib" style="max-width:640px;">Deze online omgeving is momenteel beschikbaar als bètaversie.</div>
+<div class="page on" id="page-home">
+  <h1>Framework for<br><em>Climate Adaptive Buildings</em></h1>
+  <p class="lead">Open, transparante methodiek voor het vaststellen van fysieke klimaatrisico's op gebouwniveau, volledig gebaseerd op vrij beschikbare, landelijk dekkende open data.</p>
+  <div class="ib">Deze online omgeving is momenteel beschikbaar als bètaversie.</div>
 </div>
 
-<!-- ══ HOME ══ -->
-<div class="page" id="page-home">
-    <h1>Framework for<br><em>Climate Adaptive Buildings</em></h1>
-  <p class="lead">Open, transparante methodiek voor het vaststellen van fysieke klimaatrisico's op gebouwniveau, volledig gebaseerd op vrij beschikbare, landelijk dekkende open data.</p>
-  <div class="ib"><strong>FCAB</strong> is een gestandaardiseerde, open-source methodiek ontwikkeld door Dutch Green Building Council (DGBC) samen met een brede alliantie van financiële instellingen, kennisinstituten en adviseurs.</div>
+<!-- ══ PROCESS (Framework for Climate Adaptive Buildings) ══ -->
+<div class="page" id="page-process">
+  <h1>Introductie</h1>
+  <p class="lead">Een duurzame gebouwde omgeving is voorbereid op een veranderend klimaat. De gevolgen zijn nu al merkbaar — wateroverlast door hoosbuien, verzakkingen door droogte, schade door hitte en overstroming. FCAB brengt dat fysieke klimaatrisico voor bestaande gebouwen in kaart, op basis van een omgevingsscore en een gebouwscore.</p>
+  <p>Klimaatrisico ontstaat door de interactie tussen drie dimensies: de <strong>klimaatdreiging</strong> (hazard — de kans op en intensiteit van een klimaateffect), de <strong>blootstelling</strong> (in hoeverre gebouwen in getroffen gebieden staan) en de <strong>kwetsbaarheid</strong> (de weerstand van een gebouw tegen die dreiging). Financiële toezichthouders, beleggers en woningcorporaties vragen in toenemende mate om inzicht hierin, mede vanuit CSRD, SFDR en de EU Taxonomie.</p>
+  <p>FCAB is een gestandaardiseerde, open-source methodiek ontwikkeld door Dutch Green Building Council (DGBC) samen met een brede alliantie van financiële instellingen, kennisinstituten en adviseurs. De aanpak is volledig transparant en gebaseerd op vrij beschikbare, landelijk dekkende open data — zodat resultaten van verschillende gebruikers onderling vergelijkbaar zijn.</p>
+  <div class="pflow">
+    <div class="pstep"><div class="pnum">1</div><div class="plbl">Omgevingsscore</div><div class="psub">Klimaatblootstelling op basis van open data (FCAB-1)</div></div>
+    <div class="pstep"><div class="pnum">2</div><div class="plbl">Gebouwscore</div><div class="psub">Kwetsbaarheid van het gebouw (FCAB-2)</div></div>
+    <div class="pstep"><div class="pnum">3</div><div class="plbl">Adaptatiestrategie</div><div class="psub">Handelingsperspectief en maatregelen (FCAB-3)</div></div>
+  </div>
   <h2 id="sec-structuur"><span class="h2-num">1</span>Structuur</h2>
   <div class="overview-grid">
-    <div class="ov-card" onclick="nav('omgeving',null)"><div class="ov-num">1</div><div class="ov-title">Omgevingsscore</div><div class="ov-desc">Klimaateffecten in de directe omgeving op basis van landelijke open data</div></div>
-    <div class="ov-card" onclick="nav('gebouw',null)"><div class="ov-num">2</div><div class="ov-title">Gebouwscore</div><div class="ov-desc">Kwetsbaarheid van het gebouw op basis van gebouwspecifieke kenmerken</div></div>
+    <div class="ov-card" onclick="nav('omgevingsscore',null)"><div class="ov-num">1</div><div class="ov-title">Omgevingsscore</div><div class="ov-desc">Klimaateffecten in de directe omgeving op basis van landelijke open data</div></div>
+    <div class="ov-card" onclick="nav('gebouwscore',null)"><div class="ov-num">2</div><div class="ov-title">Gebouwscore</div><div class="ov-desc">Kwetsbaarheid van het gebouw op basis van gebouwspecifieke kenmerken</div></div>
     <div class="ov-card" onclick="nav('strategie',null)"><div class="ov-num">3</div><div class="ov-title">Adaptatiestrategie</div><div class="ov-desc">Handelingsperspectief via maatregelen op gebieds- en gebouwniveau</div></div>
   </div>
   <h2 id="sec-klimaatthemas"><span class="h2-num">2</span>Klimaatthema's</h2>
@@ -512,7 +509,6 @@ li strong{color:var(--text);font-weight:600;}
     <tr><td><code>TCFD</code></td><td>Risicomanagement en indicatoren &amp; doelstellingen op gebouwniveau</td></tr>
     <tr><td><code>DPRA</code></td><td>Thema-indeling sluit aan op de vier DPRA-thema's</td></tr>
   </table>
-
   <h2 id="sec-faq"><span class="h2-num">4</span>Veelgestelde vragen</h2>
   <h3>Toepassing</h3>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Is FCAB ook geschikt voor nieuwbouw? <span class="faqc">▼</span></div><div class="faqa">Nee. FCAB is uitsluitend ontwikkeld voor <strong>bestaande gebouwen</strong>. Voor nieuwbouw verwijzen we naar de <em>Landelijke Maatlat voor een groene, klimaatadaptieve gebouwde omgeving</em>.</div></div>
@@ -524,17 +520,34 @@ li strong{color:var(--text);font-weight:600;}
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Wat kan ik doen als de score 'hoog' of 'zeer hoog' is? <span class="faqc">▼</span></div><div class="faqa">Een 'rode vlag' is het startpunt voor verdere analyse: (1) Deep-dive met nauwkeurigere data of locatiebezoek, (2) impactanalyse, (3) risicohouding bepalen (Terminate / Treat / Transfer / Take), (4) maatregelen selecteren uit de FCAB-3 maatregelentabel.</div></div>
 </div>
 
-<!-- ══ PROCESS ══ -->
-<div class="page" id="page-process">
-  <h1>Methodiek</h1>
-  <p class="lead">FCAB bestaat uit drie delen die samen leiden van klimaatmeting naar een concreet handelingsperspectief.</p>
-  <div class="pflow">
-    <div class="pstep"><div class="pnum">1</div><div class="plbl">Omgevingsscore</div><div class="psub">Klimaatblootstelling op basis van open data (FCAB-1)</div></div>
-    <div class="pstep"><div class="pnum">2</div><div class="plbl">Gebouwscore</div><div class="psub">Kwetsbaarheid van het gebouw (FCAB-2)</div></div>
-    <div class="pstep"><div class="pnum">3</div><div class="plbl">Adaptatiestrategie</div><div class="psub">Handelingsperspectief en maatregelen (FCAB-3)</div></div>
+<!-- ══ OMGEVINGSSCORE (FCAB-1) ══ -->
+<div class="page" id="page-omgevingsscore">
+  <h1>Omgevingsscore</h1>
+  <p class="lead">De omgevingsscore — door sommige vastgoedpartijen ook wel <strong>'bruto-klimaatrisico'</strong> genoemd — beschrijft de klimaateffecten voor de directe omgeving van een gebouw: de klimaatdreiging, de blootstelling van de omgeving daaraan, en de kwetsbaarheid van die omgeving. Dit is het onderwerp van <strong>FCAB-1</strong> (DGBC, november 2022).</p>
+  <p>De omgevingsscore is volledig gebaseerd op de best beschikbare, <strong>vrij toegankelijke landelijke open data</strong> uit de Klimaateffectatlas, en werkt met het hoge klimaatscenario (KNMI'14 WH, vergelijkbaar met RCP 8.5) voor het jaar 2050. Vier klimaatthema's worden onderscheiden, elk opgebouwd uit een of meer kaartlagen:</p>
+  <div class="theme-grid" style="margin-top:8px;">
+    <div class="tc th-hitte" onclick="nav('hitte',null)"><div class="tic"></div><div><div class="tn">Hitte</div><div class="td">Hittestress door warme nachten (tropische nachten, 2050 hoog)</div></div></div>
+    <div class="tc th-droogte" onclick="nav('droogte',null)"><div class="tic"></div><div><div class="tn">Droogte</div><div class="td">Natuurbrandgevoeligheid, risico paalrot, risico verschilzetting</div></div></div>
+    <div class="tc th-water" onclick="nav('wateroverlast',null)"><div class="tic"></div><div><div class="tn">Wateroverlast</div><div class="td">Waterdiepte bij hevige bui en grondwateroverlast (index)</div></div></div>
+    <div class="tc th-overstr" onclick="nav('overstroming',null)"><div class="tic"></div><div><div class="tn">Overstroming</div><div class="td">Maximale waterdiepte en plaatsgebonden overstromingskans</div></div></div>
   </div>
-  <h2 id="sec-klimaatrisicoscore"><span class="h2-num">1</span>Klimaatrisicoscore</h2>
-  <p>De omgevingsscore en gebouwscore vormen samen de klimaatrisicoscore per thema. Scores worden <strong>niet</strong> opgeteld — elk thema staat op zichzelf.</p>
+  <p style="margin-top:14px;">De aanpak is ontwikkeld voor <strong>bestaande gebouwen</strong> en niet geschikt voor nieuwbouw, groene gebieden of herontwikkeling van industrieterreinen. Details per thema — inclusief brondata, resolutie en classificatietabellen — staan op de themapagina's (Hitte, Droogte, Wateroverlast, Overstroming), via het tabblad 'Omgevingsscore'.</p>
+  <h2 id="sec-scoringsschaal">Scoringsschaal</h2>
+  <p>Elke omgevingsscore wordt uitgedrukt in een kwalitatieve schaal:</p>
+  <div class="scale">
+    <div class="sb sn">Geen</div><div class="sb svl">Zeer laag</div><div class="sb sl">Laag</div>
+    <div class="sb sm">Middel</div><div class="sb sh">Hoog</div><div class="sb svh">Zeer hoog</div><div class="sb su">Onbekend</div>
+  </div>
+  <p style="font-size:13px;color:var(--text3);margin-top:8px;">Scores Hoog en Zeer hoog zijn rode vlaggen en geven aanleiding tot nader onderzoek — zie <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);" onclick="nav('gebouwscore',null)">Gebouwscore</span> voor hoe dit doorwerkt in de klimaatrisicoscore.</p>
+</div>
+
+<!-- ══ GEBOUWSCORE (FCAB-2) ══ -->
+<div class="page" id="page-gebouwscore">
+  <h1>Gebouwscore</h1>
+  <p class="lead">Waar de omgevingsscore naar de omgeving kijkt, kijkt de gebouwscore naar het <strong>gebouw zelf</strong>: naar de gebouwspecifieke eigenschappen die het meest bepalend zijn voor de impact van een klimaatdreiging. Dit is het onderwerp van <strong>FCAB-2</strong> (DGBC, juli 2023).</p>
+  <p>Denk aan de hoeveelheid glas in de gevel en de aanwezigheid van buitenzonwering (hitte), het bouwjaar en type fundering (droogte), de drempelhoogte (wateroverlast) of de hoogte van installaties (overstroming). De gebouwscore-classificatie per thema — met de exacte gebouwkenmerken en puntentelling — staat uitgewerkt op de themapagina's, via het tabblad 'Gebouwscore'.</p>
+  <h2 id="sec-klimaatrisicoscore">Klimaatrisicoscore</h2>
+  <p>Door de omgevingsscore en de gebouwscore te combineren ontstaat de <strong>klimaatrisicoscore</strong> per klimaatthema — ook wel het 'netto-klimaatrisico' genoemd. Scores worden <strong>niet</strong> opgeteld over thema's heen — elk thema staat op zichzelf. Een gebouw met een hoge omgevingsscore maar een lage kwetsbaarheid (bijvoorbeeld dankzij goede isolatie en zonwering) kan zo alsnog een lagere klimaatrisicoscore krijgen.</p>
   <div class="rd">
     <div class="rbox"><div class="rbl">Omgevingsscore</div><div class="rbv">Hazard × Blootstelling</div></div>
     <div class="rop">×</div>
@@ -542,26 +555,11 @@ li strong{color:var(--text);font-weight:600;}
     <div class="rop">=</div>
     <div class="rbox res"><div class="rbl">Klimaatrisicoscore</div><div class="rbv">Per klimaatthema</div></div>
   </div>
-  <h2 id="sec-scoringsschaal"><span class="h2-num">2</span>Scoringsschaal</h2>
-  <div class="scale">
-    <div class="sb sn">Geen</div><div class="sb svl">Zeer laag</div><div class="sb sl">Laag</div>
-    <div class="sb sm">Middel</div><div class="sb sh">Hoog</div><div class="sb svh">Zeer hoog</div><div class="sb su">Onbekend</div>
-  </div>
-  <p style="font-size:13px;color:var(--text3);margin-top:8px;">Scores Hoog en Zeer hoog zijn rode vlaggen en geven aanleiding tot nader onderzoek.</p>
-  <h2 id="sec-risicomatrix"><span class="h2-num">3</span>Risicomatrix</h2>
+  <div class="ib">Een klimaatrisicoscore van <strong>hoog</strong> of <strong>zeer hoog</strong> geldt als een 'rode vlag' — het gebouw krijgt daarmee prioriteit voor nader onderzoek (een deep-dive) en voor het overwegen van maatregelen.</div>
+  <h2 id="sec-risicomatrix">Risicomatrix</h2>
   <div id="mx-generic"></div>
   <div class="wb" style="margin-top:14px;"><strong>Uitzondering — Hitte:</strong> bij hitte weegt de gebouwscore zwaarder. Goede isolatie, buitenzonwering en spuiventilatie kunnen een hoge omgevingsscore compenseren.</div>
-  <h2 id="sec-adaptatiestrategie"><span class="h2-num">4</span>Adaptatiestrategie</h2>
-  <p>De risicomanagementcyclus biedt een gestructureerd handelingsperspectief in zeven stappen.</p>
-  <ol class="slist">
-    <li><strong>Organisatiedoelen en risicobereidheid</strong> — Formuleer ambities en bepaal de risk appetite.</li>
-    <li><strong>Fysieke klimaatrisico's identificeren</strong> — Voer FCAB-1 en FCAB-2 analyse uit op portfolioniveau.</li>
-    <li><strong>Fysieke klimaatrisico's beoordelen</strong> — Deep-dive, impactanalyse en risicohouding bepalen.</li>
-    <li><strong>Maatregelen kiezen</strong> — Selecteer niet-fysieke, gebieds- en gebouwmaatregelen in die volgorde.</li>
-    <li><strong>Maatregelen plannen, uitvoeren en monitoren</strong> — Leg vast in adaptatieplan; koppel aan MJOP.</li>
-    <li><strong>Rapporteren</strong> — Rapporteer conform CSRD / SFDR / EU Taxonomie.</li>
-    <li><strong>Evalueren</strong> — Herzie periodiek op basis van nieuwe data of gewijzigde omstandigheden.</li>
-  </ol>
+  <div class="ib" style="margin-top:14px;">Het <strong>handelingsperspectief</strong> na een rode vlag — risicomanagementcyclus, impactanalyse, risicohouding en maatregelen — is uitgewerkt onder <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);font-weight:600;" onclick="nav('strategie',null)">Adaptatiestrategie</span> (FCAB-3).</div>
 </div>
 
 <div class="page" id="page-hitte">
@@ -941,31 +939,13 @@ li strong{color:var(--text);font-weight:600;}
 <div class="page" id="page-hagelstorm">
   <h1>Hagel &amp; Storm</h1>
   <p class="lead">Nieuw klimaatthema dat wordt verkend voor opname in een toekomstige versie van FCAB op basis van de KNMI'23-klimaatscenario's.</p>
-  <div class="phb"><div class="phi">\\</div><div class="pht">In ontwikkeling</div><div class="phd">Indicatoren en gebouwscore worden verkend. In de FCAB-3 Maatregelentabel zijn al maatregelen voor storm en hagel opgenomen.</div></div>
-  <div class="ib"><strong>Waarom nieuw?</strong> De KNMI'23-scenario's geven aanleiding dit te heroverwegen:<ul style="margin-top:10px;"><li><strong>Hagel:</strong> Hagelstenen worden naar verwachting groter.</li><li><strong>Wind:</strong> Hevigere zomerbuien gaan gepaard met zwaardere windstoten.</li><li><strong>BES-eilanden:</strong> Licht hogere frequentie van tropische cyclonen verwacht.</li></ul></div>
-  <h2><span class="h2-num">1</span>Geplande indicatoren</h2>
-  <table><tr><th>Indicator</th><th>Status</th><th>Bron (verwacht)</th></tr><tr><td>Hagelgevoeligheidskaart</td><td><span class="tag tag-blue">In verkenning</span></td><td>IVM / KNMI'23</td></tr><tr><td>Windstoten-intensiteitskaart</td><td><span class="tag tag-blue">In verkenning</span></td><td>KNMI'23</td></tr><tr><td>Gebouwkwetsbaarheid storm/hagel</td><td><span class="tag tag-blue">In verkenning</span></td><td>FCAB-2 update</td></tr></table>
-
-  <div class="ip on">
-    <div class="dtabs">
-      <button class="dtb on" onclick="odt(this,'ds-hagelstorm')">Dataset</button>
-      <button class="dtb" onclick="odt(this,'cl-hagelstorm')">Versiebeheer</button>
-    </div>
-    <div class="dtc on" id="ds-hagelstorm">
-      <p style="color:var(--text3);font-size:13px;">Nog geen dataset beschikbaar. Indicatoren worden verkend voor v1.1 op basis van de KNMI'23-klimaatscenario's (zie 'Geplande indicatoren' hierboven).</p>
-    </div>
-    <div class="dtc" id="cl-hagelstorm">
-      <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-      <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-      <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-      <div class="ib"><strong>v1.1 — Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-    </div>
-  </div>
+  <div class="phb"><div class="pht">In ontwikkeling</div><div class="phd">Indicatoren en gebouwscore worden verkend. In de FCAB-3 Maatregelentabel zijn al maatregelen voor storm en hagel opgenomen.</div></div>
+  <div class="ib"><strong>Waarom nieuw?</strong> De KNMI'23-scenario's geven aanleiding dit te heroverwegen:<ul style="margin-top:10px;"><li><strong>Hagel:</strong> Hagelstenen worden naar verwachting groter.</li><li><strong>Wind:</strong> Hevigere zomerbuien gaan gepaard met zwaardere windstoten.</li></ul></div>
 </div>
 
 <!-- ══ STRATEGIE & MAATREGELEN (FCAB-3) ══ -->
 <div class="page" id="page-strategie">
-  <h1>Strategie &amp; maatregelen</h1>
+  <h1>Adaptatiestrategie</h1>
   <p class="lead">FCAB Deel 3 — van geconstateerd klimaatrisico naar een concreet handelingsperspectief: risicomanagement, impactanalyse, risicohouding en ruim 100 adaptatiemaatregelen op gebieds- en gebouwniveau.</p>
   <div class="ib"><strong>FCAB-3</strong> is het derde deel van het Framework for Climate Adaptive Buildings (DGBC, juni 2024, versie 1.0). Waar FCAB-1 en FCAB-2 gaan over <em>meten</em> en <em>weten</em>, gaat dit deel over <em>doen</em>.</div>
   
@@ -1800,8 +1780,8 @@ if(localStorage.getItem('fcab_gate_ok')==='1'){
   document.getElementById('app').style.display='';
 }
 
-const PG={start:'page-start',home:'page-home',process:'page-process',omgeving:'page-home',hitte:'page-hitte',droogte:'page-droogte',wateroverlast:'page-wateroverlast',overstroming:'page-overstroming',hagelstorm:'page-hagelstorm',gebouw:'page-home',klimaatrisicoscore:'page-home',strategie:'page-strategie',maatregelen:'page-strategie'};
-let cur='start';
+const PG={home:'page-home',process:'page-process',omgevingsscore:'page-omgevingsscore',gebouwscore:'page-gebouwscore',hitte:'page-hitte',droogte:'page-droogte',wateroverlast:'page-wateroverlast',overstroming:'page-overstroming',hagelstorm:'page-hagelstorm',strategie:'page-strategie',maatregelen:'page-strategie'};
+let cur='home';
 const TV={hitte:'omgeving',droogte:'omgeving',wateroverlast:'omgeving',overstroming:'omgeving'};
 
 function nav(k,el){
@@ -1809,11 +1789,13 @@ function nav(k,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById(PG[k]).classList.add('on');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.querySelectorAll('.ni-sub2').forEach(n=>n.classList.remove('on'));
   if(el)el.classList.add('on');
+  document.querySelectorAll(`[data-key="${k}"]`).forEach(n=>n.classList.add('on'));
   cur=k;window.scrollTo(0,0);
   ubc(k);
-  const subMap={home:'home',process:'process',strategie:'strategie',maatregelen:'strategie'};
-  ['home','process','strategie'].forEach(key=>{
+  const subMap={strategie:'strategie',maatregelen:'strategie'};
+  ['process','strategie'].forEach(key=>{
     const sp=document.getElementById('subnav-'+key);
     if(!sp)return;
     sp.classList.toggle('open',subMap[k]===key);
@@ -1927,19 +1909,19 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 /* ── SEARCH ── */
 const IDX=[
-  {t:'Introductie',p:'home',c:'FCAB Docs',kw:['fcab','dgbc','methodiek','introductie']},
-  {t:'Methodiek',p:'process',c:'FCAB Docs',kw:['methodiek','meten','weten','doen','klimaatrisicoscore']},
-  {t:'Omgevingsscore',p:'omgeving',c:'Methodiek',kw:['omgeving','bruto','hazard','blootstelling']},
-  {t:'Gebouwscore',p:'gebouw',c:'Methodiek',kw:['gebouw','kwetsbaarheid','kenmerken']},
-  {t:'Klimaatrisicoscore',p:'klimaatrisicoscore',c:'Methodiek',kw:['klimaatrisicoscore','matrix','rode vlag','netto']},
+  {t:'Start',p:'home',c:'FCAB Docs',kw:['fcab','dgbc','start','introductie','beta']},
+  {t:"Klimaatthema's",p:'process',c:'FCAB Docs',kw:['klimaatthema','hitte','droogte','wateroverlast','overstroming']},
+  {t:'Introductie',p:'process',c:'Framework for Climate Adaptive Buildings',kw:['introductie','klimaatverandering','gebouwen','framework','fcab','meten','weten','doen','structuur','wet','regelgeving','faq']},
+  {t:'Omgevingsscore',p:'omgevingsscore',c:'FCAB Docs',kw:['omgeving','bruto','hazard','blootstelling','fcab-1','scoringsschaal']},
+  {t:'Gebouwscore',p:'gebouwscore',c:'FCAB Docs',kw:['gebouw','kwetsbaarheid','kenmerken','fcab-2','netto','klimaatrisicoscore','risicomatrix']},
   {t:'Hitte',p:'hitte',c:"Thema's",kw:['hitte','warmte','tropisch','nacht','uhi','koeling','zonwering','isolatie','databronnen','versiebeheer']},
   {t:'Droogte',p:'droogte',c:"Thema's",kw:['droogte','paalrot','verschilzetting','natuurbrand','fundering','databronnen','versiebeheer']},
   {t:'Wateroverlast',p:'wateroverlast',c:"Thema's",kw:['wateroverlast','bui','regen','grondwater','riool','kelder','databronnen','versiebeheer']},
   {t:'Overstroming',p:'overstroming',c:"Thema's",kw:['overstroming','dijk','liwo','floodproofing','databronnen','versiebeheer']},
   {t:'Hagel & Storm',p:'hagelstorm',c:"Thema's",kw:['hagel','storm','windstoot','knmi23','versiebeheer']},
-  {t:'Strategie & maatregelen',p:'strategie',c:'Deel 3',kw:['adaptatie','strategie','4t','terminate','treat','risicomanagement','risicohouding','impactanalyse','deep-dive']},
+  {t:'Adaptatiestrategie',p:'strategie',c:'Deel 3',kw:['adaptatie','strategie','4t','terminate','treat','risicomanagement','risicohouding','impactanalyse','deep-dive']},
   {t:'Maatregelentabel',p:'maatregelen',c:'Deel 3',kw:['maatregel','zonwering','wadi','isolatie','bijlage 1','excel','kosten','complexiteit']},
-  {t:'FAQ',p:'home',c:'Introductie',kw:['faq','vraag','nieuwbouw','totaalscore']},
+  {t:'FAQ',p:'process',c:'Introductie',kw:['faq','vraag','nieuwbouw','totaalscore']},
 ];
 const inp=document.getElementById('si');
 const res=document.getElementById('sr');
