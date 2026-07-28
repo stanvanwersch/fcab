@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCAB — Tool | Klimaatrisicoscore berekenen</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS (identiek aan FCAB Docs) ─── */
+:root{
+  --cream:   #faf9f7;
+  --white:   #ffffff;
+  --border:  #e8e4de;
+  --border2: #d4cfc8;
+  --text:    #1c1a17;
+  --text2:   #5a5650;
+  --text3:   #9c9690;
+  --accent:  #e07a2f;
+  --accent-s:rgba(224,122,47,.09);
+  --accent-b:rgba(224,122,47,.22);
+  --blue:    #1d5fa8;
+  --blue-s:  rgba(29,95,168,.07);
+  --blue-b:  rgba(29,95,168,.18);
+  --green:   #1a6e3c;
+  --green-s: rgba(26,110,60,.08);
+  --green-b: rgba(26,110,60,.18);
+  --amber:   #b45309;
+  --amber-s: rgba(180,83,9,.08);
+  --amber-b: rgba(180,83,9,.18);
+  --red:     #b91c1c;
+  --red-s:   rgba(185,28,28,.07);
+  --red-b:   rgba(185,28,28,.16);
+  --sans:    'Poppins', system-ui, sans-serif;
+  --r:       4px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--cream);color:var(--text);font-size:15px;line-height:1.72;}
+
+/* ─── TOPBAR ─── */
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 40px;height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.vbadge{font-size:11px;font-weight:500;color:var(--text3);background:var(--cream);border:1px solid var(--border);padding:3px 10px;border-radius:20px;}
+.topbtn{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--white);background:var(--accent);border:none;padding:8px 16px;border-radius:var(--r);cursor:pointer;transition:opacity .15s;}
+.topbtn:hover{opacity:.9;}
+.topbtn.ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+
+/* ─── SHELL ─── */
+.shell{display:flex;min-height:calc(100vh - 58px);max-width:1400px;margin:0 auto;}
+.rail{
+  width:250px;min-width:250px;padding:32px 0 40px;
+  position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;
+  border-right:1px solid var(--border);
+}
+.rail-label{font-size:10px;font-weight:600;letter-spacing:.3px;color:var(--text3);padding:10px 24px 5px;}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 24px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:400;border-left:2px solid transparent;transition:all .13s;}
+.ni:hover{color:var(--text);background:rgba(0,0,0,.02);}
+.ni.on{border-left-color:var(--accent);color:var(--accent);font-weight:500;background:var(--accent-s);}
+.rdiv{height:1px;background:var(--border);margin:8px 16px;}
+.progress-mini{padding:14px 24px;}
+.pm-bar{height:5px;border-radius:3px;background:var(--border);overflow:hidden;margin-top:8px;}
+.pm-fill{height:100%;background:var(--accent);transition:width .25s;}
+.pm-label{font-size:11px;color:var(--text3);}
+
+.canvas{flex:1;min-width:0;padding:56px 72px 120px 72px;max-width:860px;}
+
+/* ─── HEADERS ─── */
+.section-eyebrow{font-size:11px;font-weight:500;letter-spacing:.4px;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:var(--accent-b);}
+h1{font-size:32px;font-weight:700;color:var(--text);line-height:1.2;letter-spacing:-.7px;margin-bottom:10px;}
+h1 em{font-style:italic;font-weight:300;color:var(--text2);}
+.lead{font-size:16px;font-weight:300;color:var(--text2);line-height:1.7;margin-bottom:36px;max-width:640px;}
+hr.section-rule{border:none;border-top:1px solid var(--border);margin:40px 0;}
+h2{font-size:20px;font-weight:600;color:var(--text);margin:52px 0 16px;padding-bottom:12px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:10px;}
+.h2-num{font-weight:600;}
+.h2-num::after{content:'. ';}
+h3{font-size:16px;font-weight:600;color:var(--text);margin:32px 0 6px;display:flex;align-items:center;gap:8px;}
+h3 .thdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+h4{font-size:11px;font-weight:600;color:var(--blue);margin:18px 0 8px;text-transform:uppercase;letter-spacing:1px;}
+p{margin-bottom:14px;color:var(--text2);font-weight:300;}
+p strong{color:var(--text);font-weight:600;}
+.subnote{font-size:12.5px;color:var(--text3);font-weight:300;margin:-4px 0 18px;}
+
+/* ─── INFO BLOCKS ─── */
+.ib{background:var(--accent-s);border-left:3px solid var(--accent);padding:13px 18px;margin:16px 0;font-size:13.5px;color:var(--text2);font-weight:300;}
+.ib strong{color:var(--text);font-weight:600;}
+.nb{background:var(--blue-s);border-left:3px solid var(--blue);padding:13px 18px;margin:16px 0;font-size:13.5px;color:var(--text2);font-weight:300;}
+.wb{background:var(--red-s);border-left:3px solid var(--red);padding:13px 18px;margin:16px 0;font-size:13.5px;color:var(--text2);font-weight:300;}
+.skipnote{background:var(--cream);border:1px dashed var(--border2);padding:12px 16px;margin:14px 0;font-size:12.5px;color:var(--text3);font-weight:300;}
+
+/* ─── TABLES ─── */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;}
+th{background:var(--accent-s);color:var(--text2);font-weight:600;font-size:11px;letter-spacing:.3px;padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--accent-b);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;font-weight:300;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--cream);}
+
+/* ─── OVERVIEW / RESULT CARDS ─── */
+.ov-grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:28px 0;}
+.ov-card2{background:var(--white);padding:22px 24px;}
+.ov-card2-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;}
+.ov-card2-title{font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.ov-card2-desc{font-size:12px;color:var(--text3);font-weight:300;line-height:1.5;margin-top:8px;}
+
+/* ─── RISK BADGE ─── */
+.rbadge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;white-space:nowrap;}
+.rb-geen{background:#f0ede8;color:var(--text3);border:1px solid var(--border);}
+.rb-zeerlaag{background:var(--green-s);color:var(--green);border:1px solid var(--green-b);}
+.rb-laag{background:var(--green-s);color:var(--green);border:1px solid var(--green-b);}
+.rb-gemiddeld{background:var(--amber-s);color:var(--amber);border:1px solid var(--amber-b);}
+.rb-hoog{background:var(--red-s);color:var(--red);border:1px solid var(--red-b);}
+.rb-zeerhoog{background:var(--red-s);color:var(--red);border:2px solid var(--red-b);}
+.rb-nvt{background:#f0ede8;color:var(--text3);border:1px solid var(--border);}
+.rb-onbekend{background:var(--white);color:var(--text3);border:1px dashed var(--border2);}
+.rbig{font-size:14px;padding:8px 16px;}
+
+/* ─── QUESTIONS ─── */
+.qcard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.qlabel{font-size:13.5px;font-weight:500;color:var(--text);line-height:1.5;}
+.qlabel .qn{color:var(--text3);font-weight:600;margin-right:4px;}
+.qhint{font-size:11.5px;color:var(--text3);font-weight:300;margin-bottom:10px;}
+.qflag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.qflag.ok{background:var(--green-s);color:var(--green);}
+.qflag.todo{background:var(--amber-s);color:var(--amber);}
+.choices{display:flex;flex-wrap:wrap;gap:8px;}
+.choice{
+  padding:8px 14px;border-radius:20px;border:1px solid var(--border);
+  cursor:pointer;font-family:var(--sans);font-size:12.5px;font-weight:500;
+  color:var(--text2);background:var(--white);transition:all .13s;
+}
+.choice:hover:not(.on){border-color:var(--border2);color:var(--text);background:var(--cream);}
+.choice.on{background:var(--accent);color:var(--white);border-color:var(--accent);}
+.qgrid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.tfield{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.tfield label{font-size:12.5px;font-weight:500;color:var(--text2);}
+.tfield input{
+  border:1px solid var(--border2);border-radius:var(--r);padding:9px 12px;
+  font-family:var(--sans);font-size:13.5px;color:var(--text);background:var(--white);outline:none;
+}
+.tfield input:focus{border-color:var(--accent);}
+
+.qsection{display:none;}
+.qsection.active-block{display:block;}
+.conditional{display:none;}
+.conditional.show{display:block;}
+
+/* ─── THEME DOT COLORS ─── */
+.dot-water{background:#1d5fa8;}
+.dot-hitte{background:#C0392B;}
+.dot-droogte{background:#B45309;}
+.dot-overstr{background:#0e7490;}
+
+/* ─── STICKY CALC BAR ─── */
+.calcbar{
+  position:sticky;bottom:0;left:0;right:0;
+  background:var(--white);border-top:1px solid var(--border);
+  padding:16px 24px;margin:40px -72px -120px;display:flex;
+  align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  box-shadow:0 -6px 20px rgba(0,0,0,.04);
+}
+.calcbar-info{font-size:12px;color:var(--text3);}
+.calcbtn{
+  font-family:var(--sans);font-size:14px;font-weight:600;color:#fff;
+  background:var(--accent);border:none;padding:12px 28px;border-radius:var(--r);
+  cursor:pointer;transition:opacity .15s;
+}
+.calcbtn:hover{opacity:.9;}
+
+/* ─── DETAIL TOGGLE ─── */
+.detail-toggle{font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:6px;user-select:none;}
+.detail-toggle:hover{text-decoration:underline;}
+.detail-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.detail-body.open{display:block;}
+.dbrow{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--border);}
+.dbrow:last-child{border-bottom:none;}
+.dbrow .k{color:var(--text3);}
+.dbrow .v{color:var(--text);font-weight:500;text-align:right;}
+
+@media(max-width:960px){
+  .rail{display:none;}
+  .canvas{padding:32px 24px 140px;}
+  .ov-grid4{grid-template-columns:1fr;}
+  .qgrid2{grid-template-columns:1fr;}
+  .calcbar{margin:40px -24px -140px;}
+}
+
+/* ─── MODE TOGGLE ─── */
+.modetabs{display:inline-flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--white);margin-bottom:32px;}
+.modebtn{padding:10px 22px;border:none;background:transparent;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-right:1px solid var(--border);transition:all .13s;}
+.modebtn:last-child{border-right:none;}
+.modebtn.on{background:var(--accent);color:#fff;}
+.modebtn:hover:not(.on){background:var(--cream);}
+
+/* ─── UPLOAD BOX ─── */
+.uploadbox{
+  border:1.5px dashed var(--border2);border-radius:var(--r);background:var(--white);
+  padding:36px 24px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:16px;
+}
+.uploadbox:hover{border-color:var(--accent);background:var(--accent-s);}
+.uploadbox-icon{font-size:28px;margin-bottom:10px;}
+.uploadbox-text{font-size:13px;color:var(--text2);font-weight:300;}
+.uploadbox-text strong{color:var(--text);}
+.upload-msg{font-size:12.5px;padding:10px 14px;border-radius:var(--r);margin:12px 0;font-weight:500;}
+.upload-msg.ok{background:var(--green-s);color:var(--green);border:1px solid var(--green-b);}
+.upload-msg.warn{background:var(--amber-s);color:var(--amber);border:1px solid var(--amber-b);}
+.upload-msg.err{background:var(--red-s);color:var(--red);border:1px solid var(--red-b);}
+
+/* ─── BULK TABLE ─── */
+#bulk-table td, #bulk-table th{font-size:12.5px;}
+#bulk-table .bname{font-weight:600;color:var(--text);}
+#bulk-table .baddr{font-size:11px;color:var(--text3);font-weight:300;}
+.warncell{font-size:11px;color:var(--amber);cursor:pointer;}
+.warncell.none{color:var(--text3);}
+.warnlist{display:none;margin-top:6px;font-size:11px;color:var(--text3);font-weight:300;}
+.warnlist.open{display:block;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="#" style="text-decoration:none;display:flex;align-items:center;gap:12px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;flex-shrink:0;">
+      <div style="width:22px;height:22px;border-radius:3px;background:#4BAE8A;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">F</div>
+      <div style="width:22px;height:22px;border-radius:3px;background:#E8B84B;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">C</div>
+      <div style="width:22px;height:22px;border-radius:3px;background:#E8710A;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">A</div>
+      <div style="width:22px;height:22px;border-radius:3px;background:#C0392B;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">B</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;padding-bottom:1px;">
+      <div style="font-size:9px;font-weight:300;color:var(--text3);letter-spacing:.3px;line-height:1.4;">Framework for Climate</div>
+      <div style="font-size:9px;font-weight:300;color:var(--text3);letter-spacing:.3px;line-height:1.4;">Adaptive Buildings</div>
+    </div>
+    <span class="vbadge">QuickScan tool</span>
+  </a>
+  <div class="topbar-right">
+    <button class="topbtn ghost" onclick="resetTool()">Opnieuw beginnen</button>
+    <button class="topbtn" onclick="scrollToResults()">Naar resultaten</button>
+  </div>
+</header>
+
+<div class="shell">
+
+<nav class="rail">
+  <div class="rail-label">Gebouwgegevens</div>
+  <div class="ni" onclick="jump('sec-gebouwgegevens')">Naam &amp; adres</div>
+  <div class="rdiv"></div>
+  <div class="rail-label">1. Omgevingsscore</div>
+  <div class="ni" onclick="jump('sec-env-water')"><span class="thdot dot-water" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Wateroverlast</div>
+  <div class="ni" onclick="jump('sec-env-hitte')"><span class="thdot dot-hitte" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Hittestress</div>
+  <div class="ni" onclick="jump('sec-env-droogte')"><span class="thdot dot-droogte" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Droogte</div>
+  <div class="ni" onclick="jump('sec-env-overstr')"><span class="thdot dot-overstr" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Overstroming</div>
+  <div class="rdiv"></div>
+  <div class="rail-label">2. Gebouwscore</div>
+  <div class="ni" onclick="jump('sec-geb-fundering')">Fundering</div>
+  <div class="ni" onclick="jump('sec-geb-water')"><span class="thdot dot-water" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Wateroverlast</div>
+  <div class="ni" onclick="jump('sec-geb-hitte')"><span class="thdot dot-hitte" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Hittestress</div>
+  <div class="ni" onclick="jump('sec-geb-droogte')"><span class="thdot dot-droogte" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Droogte</div>
+  <div class="ni" onclick="jump('sec-geb-overstr')"><span class="thdot dot-overstr" style="width:7px;height:7px;border-radius:50%;display:inline-block;"></span>&nbsp;Overstroming</div>
+  <div class="rdiv"></div>
+  <div class="ni" onclick="jump('sec-resultaten')" style="font-weight:600;color:var(--text);">3. Resultaten →</div>
+  <div class="progress-mini">
+    <div class="pm-label"><span id="pm-count">0</span> van <span id="pm-total">0</span> vragen beantwoord</div>
+    <div class="pm-bar"><div class="pm-fill" id="pm-fill" style="width:0%;"></div></div>
+  </div>
+</nav>
+
+<main class="canvas">
+
+<div class="section-eyebrow">FCAB QuickScan</div>
+<h1>Bereken de <em>klimaatrisicoscore</em><br>van een gebouw</h1>
+<p class="lead">Doorloop de omgevings- en gebouwvragen hieronder, of analyseer een hele vastgoedportefeuille in één keer via een tabel. Beide werken volgens dezelfde rekenmethodiek als het officiële FCAB-rekenmodel.</p>
+
+<div class="modetabs">
+  <button class="modebtn on" id="modebtn-single" onclick="switchMode('single')">Eén gebouw</button>
+  <button class="modebtn" id="modebtn-bulk" onclick="switchMode('bulk')">Meerdere gebouwen (tabel)</button>
+</div>
+
+<div id="mode-single">
+
+<div id="sec-gebouwgegevens">
+<h4>Gebouwgegevens</h4>
+<div class="qgrid2">
+  <div class="tfield"><label>Gebouwnaam</label><input type="text" id="inp-naam" placeholder="Bijv. Kantoorpand De Linde"></div>
+  <div class="tfield"><label>Adres</label><input type="text" id="inp-adres" placeholder="Bijv. Hoofdstraat 1, Utrecht"></div>
+</div>
+</div>
+
+<hr class="section-rule">
+
+<h2><span class="h2-num">1</span>Omgevingsscore</h2>
+<p class="lead" style="margin-bottom:24px;">Klimaatgegevens over de locatie van het gebouw, gebaseerd op landelijk dekkende open data (o.a. Klimaateffectatlas).</p>
+
+<div id="sec-env-water">
+<h3><span class="thdot dot-water"></span>Wateroverlast</h3>
+
+<div class="qcard" data-qid="env_gw_kans">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.1</span>Ontwikkeling kans grondwateroverlast (scenario "2050 Hoog")</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_gw_kans"></div>
+</div>
+
+<div class="qcard" data-qid="env_gw_hoogte">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.2</span>Gemiddelde hoogste grondwaterstand (scenario "Huidig")</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_gw_hoogte"></div>
+</div>
+
+<div class="qcard" data-qid="env_bodemdaling">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.3</span>Bodemdaling door ophoging 2020–2050 (scenario "2050 Hoog")</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_bodemdaling"></div>
+</div>
+
+<div class="qcard" data-qid="env_waterdiepte_bui">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.4</span>Waterdiepte bij hevige bui (70 mm / 2 uur)</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_waterdiepte_bui"></div>
+</div>
+</div>
+
+<div id="sec-env-hitte">
+<h3><span class="thdot dot-hitte"></span>Hittestress</h3>
+<div class="qcard" data-qid="env_hitte_nachten">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.5</span>Hittestress door warme nachten (scenario "2050 Hoog") — aantal weken</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_hitte_nachten"></div>
+</div>
+</div>
+
+<div id="sec-env-droogte">
+<h3><span class="thdot dot-droogte"></span>Droogte</h3>
+<div class="qcard" data-qid="env_natuurbrand">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.6</span>Natuurbrandgevoeligheid (scenario "2050 Hoog")</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_natuurbrand"></div>
+  <div class="qhint">Informatief — telt niet mee in de eindscore Droogte (funderingen).</div>
+</div>
+<div class="qcard" data-qid="env_paalrot">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.7</span>Risico paalrot (scenario "2050 Hoog")</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_paalrot"></div>
+  <div class="qhint">Informatief — de eindscore Droogte wordt bepaald bij de gebouwvragen (funderingstype).</div>
+</div>
+<div class="qcard" data-qid="env_verschilzetting">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.8</span>Risico verschilzetting (scenario "2050 Hoog")</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_verschilzetting"></div>
+  <div class="qhint">Informatief — de eindscore Droogte wordt bepaald bij de gebouwvragen (funderingstype).</div>
+</div>
+</div>
+
+<div id="sec-env-overstr">
+<h3><span class="thdot dot-overstr"></span>Overstroming</h3>
+<div class="qcard" data-qid="env_max_waterdiepte">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.9</span>Maximale waterdiepte (kaart)</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_max_waterdiepte"></div>
+  <div class="qhint">Informatief.</div>
+</div>
+<div class="qcard" data-qid="env_overstromingskans_20">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.10</span>Plaatsgebonden overstromingskans 2050, &gt; 20 cm</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_overstromingskans_20"></div>
+</div>
+<div class="qcard conditional" id="qcard-env_overstromingskans_50" data-qid="env_overstromingskans_50">
+  <div class="qhead"><div class="qlabel"><span class="qn">1.11</span>Plaatsgebonden overstromingskans 2050, &gt; 50 cm</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="env_overstromingskans_50"></div>
+  <div class="qhint">Alleen relevant wanneer de kans bij &gt;20 cm "Gemiddelde" of "Hoge kwetsbaarheid" is.</div>
+</div>
+</div>
+
+<hr class="section-rule">
+
+<h2><span class="h2-num">2</span>Gebouwscore</h2>
+<p class="lead" style="margin-bottom:24px;">Kenmerken van het gebouw die de kwetsbaarheid voor klimaateffecten bepalen.</p>
+
+<div id="sec-geb-fundering">
+<h3>Funderingstype</h3>
+<div class="qcard" data-qid="geb_fundering_type">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.1</span>Wat voor soort fundering heeft het gebouw?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_fundering_type"></div>
+</div>
+</div>
+
+<div id="sec-geb-water">
+<h3><span class="thdot dot-water"></span>Wateroverlast</h3>
+<div class="qcard" data-qid="geb_water_ingang">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.2</span>Hoogte van de ingang t.o.v. het omringende maaiveld</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_water_ingang"></div>
+</div>
+<div class="qcard" data-qid="geb_water_kelder">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.3</span>Parkeerkelder/ondergrondse ruimte: drempelhoogte van ingang/helling</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_water_kelder"></div>
+</div>
+<div class="qcard" data-qid="geb_water_instroom">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.4</span>Instroompunten (kelderraam, spouw, kruipruimteventilatie)</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_water_instroom"></div>
+</div>
+<div class="qcard" data-qid="geb_water_riool">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.5</span>Soort riool en aanwezigheid ontlastput/terugslagklep</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_water_riool"></div>
+</div>
+<div class="qcard" data-qid="geb_water_apparatuur">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.6</span>Locatie vaste apparatuur en installaties</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_water_apparatuur"></div>
+</div>
+</div>
+
+<div id="sec-geb-hitte">
+<h3><span class="thdot dot-hitte"></span>Hittestress</h3>
+<div class="ib"><strong>Let op:</strong> controleer eerst of een TOjuli- of GTO-berekening beschikbaar is — die geeft een nauwkeuriger resultaat dan deze quickscan.</div>
+<h4>Opwarming</h4>
+<div class="qcard" data-qid="geb_hitte_glas">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.7</span>Percentage glasoppervlak aan de west-, zuid- en oostzijde</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_glas"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_massa">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.8</span>Thermische massa</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_massa"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_zonwering">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.9</span>Zijn er buitenzonweringen/rolluiken aanwezig?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_zonwering"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_zontoetreding">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.10</span>Zontoetredingsfactor in het gebouw</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_zontoetreding"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_dak">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.11</span>Kleur van het dak</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_dak"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_gevel">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.12</span>Kleur van de gevel</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_gevel"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_overstek">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.13</span>Bouwkundige overstekken boven de ramen</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_overstek"></div>
+</div>
+<h4>Afkoeling</h4>
+<div class="qcard" data-qid="geb_hitte_koeling">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.14</span>Zijn er koelsystemen aanwezig?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_koeling"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_isolatie">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.15</span>Isolatiewaarde van het gebouw</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_isolatie"></div>
+</div>
+<div class="qcard" data-qid="geb_hitte_ramen">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.16</span>Op hoeveel gevels kunnen de ramen open?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_hitte_ramen"></div>
+  <div class="qhint">De score hangt af van de omgevingsscore Hittestress (vraag 1.5) — vul die eerst in.</div>
+</div>
+</div>
+
+<div id="sec-geb-droogte">
+<h3><span class="thdot dot-droogte"></span>Droogte (funderingen)</h3>
+<div class="qhint" style="margin-bottom:14px;">Deze vragen zijn afhankelijk van het funderingstype dat je bij vraag 2.1 hebt gekozen.</div>
+
+<div class="conditional" id="block-houten">
+<div class="qcard" data-qid="geb_droogte_bouwjaar_h">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.17</span>Wat is het bouwjaar?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_droogte_bouwjaar_h"></div>
+</div>
+<div class="qcard" data-qid="geb_droogte_env_h">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.18</span>Omgevingsscore voor gebouwen op houten palen (GIS-kaart)</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_droogte_env_h"></div>
+  <div class="qhint">Codes combineren omgevingsscore (L = laag, M = middel, H = hoog) met bodemtype (C = klei, P = veen, S = zand). Zie <a href="https://data.openearth.nl/funderingschade/?folders=180769602" target="_blank" style="color:var(--accent);">GIS-kaart funderingschade</a>.</div>
+</div>
+</div>
+
+<div class="conditional" id="block-staal">
+<div class="qcard" data-qid="geb_droogte_bouwjaar_s">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.17</span>Wat is het bouwjaar?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_droogte_bouwjaar_s"></div>
+</div>
+<div class="qcard" data-qid="geb_droogte_kelder_s">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.18</span>Wat voor soort kelder is er aanwezig?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_droogte_kelder_s"></div>
+</div>
+<div class="qcard" data-qid="geb_droogte_env_s">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.19</span>Omgevingsscore voor gebouwen op stalen palen (GIS-kaart, 0–5)</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_droogte_env_s"></div>
+  <div class="qhint">Zie <a href="https://data.openearth.nl/funderingschade/?folders=180769602" target="_blank" style="color:var(--accent);">GIS-kaart funderingschade</a>.</div>
+</div>
+</div>
+
+<div class="skipnote conditional show" id="block-beton">Fundering op betonnen palen: geen aanvullende vragen nodig — dit betekent standaard <strong>"Geen kwetsbaarheid"</strong>.</div>
+<div class="skipnote conditional" id="block-onbekend">Funderingstype onbekend: er kan geen risicoscore worden berekend voor Droogte — dit vereist eerst funderingsonderzoek (indicatie: circa € 5.000).</div>
+<div class="skipnote conditional show" id="block-fundering-leeg">Kies eerst bij vraag 2.1 het funderingstype om de vervolgvragen te zien.</div>
+</div>
+
+<div id="sec-geb-overstr">
+<h3><span class="thdot dot-overstr"></span>Overstroming</h3>
+<div class="skipnote conditional show" id="block-overstr-nvt">Deze vragen zijn alleen nodig als de plaatsgebonden overstromingskans (&gt;20 cm en &gt;50 cm) bij de omgevingsscore op "Gemiddelde kwetsbaarheid" uitkomt. Vul eerst vraag 1.10 en 1.11 in.</div>
+<div class="conditional" id="block-overstr-vragen">
+<div class="qcard" data-qid="geb_overstr_ingang">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.20</span>Hoogte van de ingang t.o.v. het maaiveld</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_overstr_ingang"></div>
+</div>
+<div class="qcard" data-qid="geb_overstr_kelder">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.21</span>Parkeerkelder/ondergrondse ruimte: drempelhoogte van ingang/helling</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_overstr_kelder"></div>
+</div>
+<div class="qcard" data-qid="geb_overstr_instroom">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.22</span>Instroompunten aanwezig?</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_overstr_instroom"></div>
+</div>
+<div class="qcard" data-qid="geb_overstr_riool">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.23</span>Soort riool en terugslagklep</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_overstr_riool"></div>
+</div>
+<div class="qcard" data-qid="geb_overstr_apparatuur">
+  <div class="qhead"><div class="qlabel"><span class="qn">2.24</span>Locatie vaste apparatuur en installaties</div><div class="qflag todo">Nog in te vullen</div></div>
+  <div class="choices" data-options="geb_overstr_apparatuur"></div>
+</div>
+</div>
+</div>
+
+<div class="calcbar">
+  <div class="calcbar-info"><span id="calcbar-count">0</span> van <span id="calcbar-total">0</span> vragen beantwoord</div>
+  <button class="calcbtn" onclick="calculateAndShow()">Bereken klimaatrisicoscore →</button>
+</div>
+
+<hr class="section-rule">
+
+<div id="sec-resultaten">
+<h2><span class="h2-num">3</span>Resultaten</h2>
+<p class="lead" id="results-empty">Beantwoord de vragen hierboven en klik op "Bereken klimaatrisicoscore" om de resultaten te zien.</p>
+<div id="results-content" style="display:none;"></div>
+</div>
+
+</div><!-- /mode-single -->
+
+<div id="mode-bulk" style="display:none;">
+
+<div class="section-eyebrow">Portefeuille</div>
+<h2 style="margin-top:0;border-bottom:none;padding-bottom:0;">Meerdere gebouwen tegelijk analyseren</h2>
+<p class="lead">Download het sjabloon, vul per gebouw één rij in en upload het bestand. De tool berekent per gebouw dezelfde vier klimaatrisicoscores als bij de losse vragenlijst.</p>
+
+<div class="ib">
+  <strong>Werkwijze:</strong> 1) download het sjabloon &nbsp;→&nbsp; 2) vul in Excel per gebouw één rij in (het tabblad "Toegestane waarden" toont exact welke tekst is toegestaan per kolom) &nbsp;→&nbsp; 3) upload het ingevulde bestand hieronder.
+</div>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;">
+  <button class="topbtn" onclick="downloadTemplate()">⬇ Download sjabloon (.xlsx)</button>
+</div>
+
+<h4>Bestand uploaden</h4>
+<div class="uploadbox" id="uploadbox" onclick="document.getElementById('file-upload').click()">
+  <input type="file" id="file-upload" accept=".xlsx,.xls,.csv" onchange="handleFileUpload(event)" style="display:none;">
+  <div class="uploadbox-icon">📄</div>
+  <div class="uploadbox-text">Klik om een ingevuld <strong>.xlsx</strong>, <strong>.xls</strong> of <strong>.csv</strong>-bestand te selecteren</div>
+</div>
+<div id="upload-status"></div>
+
+<div id="bulk-results" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:36px;">
+    <h4 style="margin:0;">Resultaten — <span id="bulk-count">0</span> gebouwen</h4>
+    <button class="topbtn ghost" onclick="downloadResultsCsv()">⬇ Download resultaten (.csv)</button>
+  </div>
+  <div style="overflow-x:auto;">
+  <table id="bulk-table"><thead><tr>
+    <th>Gebouw</th><th>Wateroverlast</th><th>Hittestress</th><th>Droogte</th><th>Overstroming</th><th>Aandachtspunten</th>
+  </tr></thead><tbody id="bulk-tbody"></tbody></table>
+  </div>
+</div>
+
+</div><!-- /mode-bulk -->
+
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ============================================================
+   FCAB QuickScan — rekenlogica (1:1 gebaseerd op FCAB_tool.xlsx)
+   ============================================================ */
+
+const state = {}; // qid -> chosen option index
+
+/* ---------- OPTION TABLES ---------- */
+/* Elke optie: {l:label, s:score (numeriek, optioneel), c:categorie (optioneel)} */
+
+const OPT = {
+  env_gw_kans: [
+    {l:'Kleine kans', s:0},
+    {l:'Kleine toename kans', s:0},
+    {l:'Aanmerkelijke toename kans', s:1},
+    {l:'Grote toename kans', s:1},
+    {l:'Zeer grote toename kans', s:1},
+  ],
+  env_gw_hoogte: [
+    {l:'≤ 1 m', s:1},
+    {l:'> 1 m', s:0},
+    {l:'Geen data', s:0},
+  ],
+  env_bodemdaling: [
+    {l:'> 50 cm', s:1},
+    {l:'≤ 50 cm', s:0},
+    {l:'Geen voorspelling mogelijk', s:0},
+  ],
+  env_waterdiepte_bui: [
+    {l:'> 30 cm', c:'Zeer hoge kwetsbaarheid', s:5},
+    {l:'> 20–30 cm', c:'Hoge kwetsbaarheid', s:4},
+    {l:'> 15–20 cm', c:'Gemiddelde kwetsbaarheid', s:3},
+    {l:'> 10–15 cm', c:'Lage kwetsbaarheid', s:2},
+    {l:'< 10 cm', c:'Zeer lage kwetsbaarheid', s:1},
+    {l:'n.v.t. (gebouwd vanaf 2013)', c:'n.v.t.', s:0},
+  ],
+  env_hitte_nachten: [
+    {l:'Meer dan 3 weken', c:'Hoge kwetsbaarheid'},
+    {l:'2 tot 3 weken', c:'Gemiddelde kwetsbaarheid'},
+    {l:'Minder dan 2 weken', c:'Lage kwetsbaarheid'},
+    {l:'Niet van toepassing', c:'n.v.t.'},
+  ],
+  env_natuurbrand: [
+    {l:'Geen', c:'Geen kwetsbaarheid'},
+    {l:'Middel', c:'Gemiddelde kwetsbaarheid'},
+    {l:'Hoog', c:'Hoge kwetsbaarheid'},
+  ],
+  env_paalrot: [
+    {l:'Bouwjaar na 1975', c:'Geen kwetsbaarheid'},
+    {l:'Zeer laag (0 – 0,8)', c:'Zeer lage kwetsbaarheid'},
+    {l:'Laag (0,8 – 3)', c:'Lage kwetsbaarheid'},
+    {l:'Matig (3 – 6)', c:'Gemiddelde kwetsbaarheid'},
+    {l:'Hoog (6 – 15)', c:'Hoge kwetsbaarheid'},
+    {l:'Zeer hoog (15 – 100)', c:'Zeer hoge kwetsbaarheid'},
+  ],
+  env_verschilzetting: [
+    {l:'Zeer laag (0 – 1)', c:'Zeer lage kwetsbaarheid'},
+    {l:'Laag (1 – 5)', c:'Lage kwetsbaarheid'},
+    {l:'Middel (5 – 10)', c:'Gemiddelde kwetsbaarheid'},
+    {l:'Hoog (10 – 25)', c:'Hoge kwetsbaarheid'},
+    {l:'Zeer hoog (25 – 100)', c:'Zeer hoge kwetsbaarheid'},
+  ],
+  env_max_waterdiepte: [
+    {l:'≤ 0,2 m', c:'Zeer lage kwetsbaarheid'},
+    {l:'> 0,2 – 1 m', c:'Lage kwetsbaarheid'},
+    {l:'> 1 – 2,6 m', c:'Gemiddelde kwetsbaarheid'},
+    {l:'> 2,6 m', c:'Hoge kwetsbaarheid'},
+  ],
+  env_overstromingskans_20: [
+    {l:'Zeer tot extreem kleine kans (< 1/3000 per jaar)', c:'Zeer lage kwetsbaarheid'},
+    {l:'Kleine kans (1/300 – 1/3000 per jaar)', c:'Lage kwetsbaarheid'},
+    {l:'Middelgrote kans (1/30 – 1/300 per jaar)', c:'Gemiddelde kwetsbaarheid'},
+    {l:'Grote kans (> 1/30 per jaar)', c:'Hoge kwetsbaarheid'},
+  ],
+  env_overstromingskans_50: [
+    {l:'Lager dan de kans bij > 20 cm', c:'Gemiddelde kwetsbaarheid'},
+    {l:'Gelijk aan de kans bij > 20 cm', c:'Hoge kwetsbaarheid'},
+  ],
+
+  geb_fundering_type: [
+    {l:'Betonnen palen'}, {l:'Fundering op staal'}, {l:'Houten palen'}, {l:'Onbekend'},
+  ],
+
+  geb_water_ingang: [
+    {l:'< 0 cm', s:40}, {l:'1 tot 15 cm', s:28}, {l:'> 15 cm', s:4}, {l:'Aanwezigheid van waterkering (schot)', s:10},
+  ],
+  geb_water_kelder: [
+    {l:'Drempelhoogte < 0 cm', s:15}, {l:'Drempelhoogte 1–15 cm', s:10.5},
+    {l:'Drempelhoogte > 15 cm, of waterrooster/waterkering', s:6}, {l:'Geen ondergrondse ruimte aanwezig', s:0},
+  ],
+  geb_water_instroom: [
+    {l:'Aanwezig, binnen 15 cm boven maaiveld', s:20}, {l:'Waterkering aanwezig', s:8},
+    {l:'Niet aanwezig binnen 15 cm boven maaiveld', s:0},
+  ],
+  geb_water_riool: [
+    {l:'Geen ontlastput/terugslagklep, gemengd riool', s:5}, {l:'Ontlastput/terugslagklep aanwezig, of gescheiden riool', s:0},
+  ],
+  geb_water_apparatuur: [
+    {l:'Onder straatniveau (niet verhoogd)', s:20}, {l:'Begane grond, ingang op straatniveau', s:14},
+    {l:'Niet aanwezig onder straatniveau of begane grond', s:0}, {l:'Op poten van ≥ 15 cm', s:0},
+  ],
+
+  geb_hitte_glas: [
+    {l:'> 75%', s:30}, {l:'50 – 75%', s:21}, {l:'35 – 50%', s:12}, {l:'< 35%', s:1.5},
+  ],
+  geb_hitte_massa: [
+    {l:'Volledig houtskelet, massa < 250 kg/m²', s:10}, {l:'Gemengd licht, 250–500 kg/m²', s:7},
+    {l:'Traditioneel, 500–750 kg/m²', s:4}, {l:'Zwaar, > 750 kg/m²', s:1},
+  ],
+  geb_hitte_zonwering: [
+    {l:'Geen zonwering', s:20}, {l:'Wel zonwering', s:1},
+  ],
+  geb_hitte_zontoetreding: [
+    {l:'g-waarde ≥ 0,75 of enkelglas', s:15}, {l:'g-waarde 0,60–0,75 of dubbelglas', s:10.5},
+    {l:'g-waarde 0,40–0,60 of HR+/HR++/triple glas', s:6}, {l:'g-waarde ≤ 0,4 of zonwerende folie', s:1.5},
+  ],
+  geb_hitte_dak: [
+    {l:'Donkere kleur', s:2.5}, {l:'Lichte kleur of zonnepanelen', s:1}, {l:'Groendak of wit dak', s:0.25},
+  ],
+  geb_hitte_gevel: [
+    {l:'Donkere kleur', s:2.5}, {l:'Lichte kleur of groene gevel', s:1},
+  ],
+  geb_hitte_overstek: [
+    {l:'Afwezig of < 0,6 m', s:20}, {l:'> 0,6 m', s:8}, {l:'> 1,2 m', s:1},
+  ],
+  geb_hitte_koeling: [
+    {l:'Niet-condenserende koeling (woning, hoofd-/slaapvertrek)', s:-15},
+    {l:'Condenserende koeling (woning, hoofd-/slaapvertrek)', s:-30},
+    {l:'Niet-condenserende koeling (utiliteit, > 50%)', s:-20},
+    {l:'Condenserende koeling (utiliteit, > 50%)', s:-40},
+    {l:'Geen koelsysteem aanwezig', s:0},
+  ],
+  geb_hitte_isolatie: [
+    {l:'Rc < 1,3 of bouwjaar < 1976', s:-7}, {l:'Rc < 2,5 of bouwjaar 1976–1992', s:-5},
+    {l:'Rc < 3,5 of bouwjaar 1993–2013', s:-3}, {l:'Rc > 3,5 of bouwjaar > 2013', s:-1},
+  ],
+  geb_hitte_ramen: [
+    {l:'2 of meer gevels', sLow:-20, sHigh:-15}, {l:'1 gevel', sLow:-10, sHigh:-5}, {l:'Geen ramen die open kunnen', sLow:0, sHigh:0},
+  ],
+
+  geb_droogte_bouwjaar_h: [
+    {l:'< 1830'}, {l:'1830–1880'}, {l:'1880–1900'}, {l:'1900–1930'}, {l:'1930–1950'}, {l:'1950–1975'}, {l:'> 1975'},
+  ],
+  geb_droogte_env_h: [
+    {l:'LC — Laag / klei'}, {l:'LP — Laag / veen'}, {l:'LS — Laag / zand'},
+    {l:'MC — Middel / klei'}, {l:'MP — Middel / veen'}, {l:'MS — Middel / zand'},
+    {l:'HC — Hoog / klei'}, {l:'HP — Hoog / veen'}, {l:'HS — Hoog / zand'},
+  ],
+  geb_droogte_bouwjaar_s: [
+    {l:'< 1900'}, {l:'1900–1920'}, {l:'> 1920'},
+  ],
+  geb_droogte_kelder_s: [
+    {l:'Volledig souterrain'}, {l:'Onderkeldering (gedeeltelijke kelder)'}, {l:'Geen kelder aanwezig'},
+  ],
+  geb_droogte_env_s: [
+    {l:'0'}, {l:'1'}, {l:'2'}, {l:'3'}, {l:'4'}, {l:'5'},
+  ],
+
+  geb_overstr_ingang: [
+    {l:'< 50 cm', s:40}, {l:'≥ 50 cm', s:4},
+  ],
+  geb_overstr_kelder: [
+    {l:'Aanwezig, drempelhoogte < 50 cm', s:15}, {l:'Hoogte ingang ≥ 50 cm of afsluitmiddel > 50 cm', s:6}, {l:'Geen parkeerkelder of ondergrondse ruimte', s:0},
+  ],
+  geb_overstr_instroom: [
+    {l:'Aanwezig, binnen 50 cm boven maaiveld', s:20}, {l:'Afsluitmiddel bij instroompunt (schot)', s:8}, {l:'Niet aanwezig binnen 50 cm boven maaiveld', s:0},
+  ],
+  geb_overstr_riool: [
+    {l:'Geen terugslagklep, gemengd riool', s:5}, {l:'Terugslagklep aanwezig, of gescheiden riool', s:0},
+  ],
+  geb_overstr_apparatuur: [
+    {l:'Onder straatniveau (niet verhoogd)', s:20}, {l:'Begane grond, hoogte ingang 50 cm', s:14}, {l:'Niet onder straatniveau/begane grond, of op poten > 50 cm', s:0},
+  ],
+};
+
+/* ---------- MATRIX TABELLEN (uit tabblad 'Input scores') ---------- */
+
+const MX_WATEROVERLAST = {
+  'zeer hoge kwetsbaarheid': [[1,15,'Zeer lage kwetsbaarheid'],[16,30,'Lage kwetsbaarheid'],[31,45,'Gemiddelde kwetsbaarheid'],[46,100,'Zeer hoge kwetsbaarheid']],
+  'hoge kwetsbaarheid':      [[1,25,'Zeer lage kwetsbaarheid'],[26,40,'Lage kwetsbaarheid'],[41,60,'Gemiddelde kwetsbaarheid'],[61,85,'Hoge kwetsbaarheid'],[86,100,'Zeer hoge kwetsbaarheid']],
+  'gemiddelde kwetsbaarheid':[[1,30,'Zeer lage kwetsbaarheid'],[31,45,'Lage kwetsbaarheid'],[46,85,'Gemiddelde kwetsbaarheid'],[86,100,'Hoge kwetsbaarheid']],
+  'lage kwetsbaarheid':      [[1,40,'Zeer lage kwetsbaarheid'],[41,85,'Lage kwetsbaarheid'],[86,100,'Gemiddelde kwetsbaarheid']],
+  'zeer lage kwetsbaarheid': [[1,85,'Zeer lage kwetsbaarheid'],[86,100,'Lage kwetsbaarheid']],
+};
+
+const MX_HITTESTRESS = [[-1000,20,'Zeer lage kwetsbaarheid'],[21,40,'Lage kwetsbaarheid'],[41,60,'Gemiddelde kwetsbaarheid'],[61,80,'Hoge kwetsbaarheid'],[81,100000,'Zeer hoge kwetsbaarheid']];
+
+const MX_HOUTEN_ROWS = ['LC','LP','LS','MC','MP','MS','HC','HP','HS'];
+const MX_HOUTEN = {
+  LC:['Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage'],
+  LP:['Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage'],
+  LS:['Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage'],
+  MC:['Gemiddelde','Gemiddelde','Lage','Lage','Lage','Lage','Zeer lage'],
+  MP:['Hoge','Hoge','Gemiddelde','Gemiddelde','Lage','Lage','Lage'],
+  MS:['Zeer hoge','Zeer hoge','Hoge','Hoge','Gemiddelde','Gemiddelde','Lage'],
+  HC:['Hoge','Hoge','Gemiddelde','Gemiddelde','Lage','Lage','Lage'],
+  HP:['Zeer hoge','Zeer hoge','Hoge','Gemiddelde','Gemiddelde','Gemiddelde','Lage'],
+  HS:['Zeer hoge','Zeer hoge','Zeer hoge','Zeer hoge','Hoge','Gemiddelde','Gemiddelde'],
+};
+
+const MX_STAAL_BUILDINGSCORE = {
+  '< 1900':        {'Volledig souterrain':50, 'Onderkeldering (gedeeltelijke kelder)':100, 'Geen kelder aanwezig':75},
+  '1900–1920':     {'Volledig souterrain':25, 'Onderkeldering (gedeeltelijke kelder)':75,  'Geen kelder aanwezig':50},
+  '> 1920':        {'Volledig souterrain':0,  'Onderkeldering (gedeeltelijke kelder)':50,  'Geen kelder aanwezig':25},
+};
+const MX_STAAL_FINAL = {
+  0:['Zeer lage','Zeer lage','Zeer lage','Zeer lage','Zeer lage'],
+  1:['Zeer lage','Zeer lage','Zeer lage','Lage','Lage'],
+  2:['Zeer lage','Lage','Lage','Gemiddelde','Gemiddelde'],
+  3:['Lage','Gemiddelde','Gemiddelde','Hoge','Hoge'],
+  4:['Gemiddelde','Hoge','Hoge','Zeer hoge','Zeer hoge'],
+  5:['Hoge','Hoge','Zeer hoge','Zeer hoge','Zeer hoge'],
+};
+const STAAL_COLS = [0,25,50,75,100];
+
+/* ---------- HULPFUNCTIES ---------- */
+/* Alle calc-functies accepteren een optionele ctx (qid->index map).
+   Standaard = de globale 'state' (single-gebouw wizard). Voor bulk-analyse
+   wordt per gebouw een eigen ctx-object meegegeven. */
+
+function selLabel(qid, ctx){
+  ctx = ctx || state;
+  const i = ctx[qid];
+  if(i===undefined) return null;
+  return OPT[qid][i].l;
+}
+function selMeta(qid, ctx){
+  ctx = ctx || state;
+  const i = ctx[qid];
+  if(i===undefined) return null;
+  return OPT[qid][i];
+}
+function bandLookup(bands, val){
+  for(const b of bands){ if(val>=b[0] && val<=b[1]) return b[2]; }
+  return null;
+}
+function normCat(c){ return (c||'').toLowerCase().replace('kwetsbaarheid','').trim(); }
+
+/* ---------- OMGEVINGSSCORE BEREKENINGEN ---------- */
+
+function calcGrondwaterCategorie(ctx){
+  const a = selMeta('env_gw_kans',ctx), b = selMeta('env_gw_hoogte',ctx), c = selMeta('env_bodemdaling',ctx);
+  if(!a||!b||!c) return null;
+  const sum = a.s + b.s + c.s;
+  const map = {3:'Hoge kwetsbaarheid',2:'Gemiddelde kwetsbaarheid',1:'Lage kwetsbaarheid',0:'Geen kwetsbaarheid'};
+  return {score:sum, categorie:map[sum]};
+}
+function calcOmgevingsscoreWateroverlast(ctx){
+  const m = selMeta('env_waterdiepte_bui',ctx);
+  if(!m) return null;
+  return m.c;
+}
+
+/* ---------- GEBOUWSCORE BEREKENINGEN ---------- */
+
+function sumScores(qids, ctx){
+  let total = 0, allAnswered = true;
+  for(const id of qids){
+    const m = selMeta(id,ctx);
+    if(!m){ allAnswered=false; continue; }
+    total += m.s;
+  }
+  return {total, allAnswered};
+}
+
+function calcGebouwscoreWateroverlast(ctx){
+  return sumScores(['geb_water_ingang','geb_water_kelder','geb_water_instroom','geb_water_riool','geb_water_apparatuur'],ctx);
+}
+function calcGebouwscoreOverstroming(ctx){
+  return sumScores(['geb_overstr_ingang','geb_overstr_kelder','geb_overstr_instroom','geb_overstr_riool','geb_overstr_apparatuur'],ctx);
+}
+function calcGebouwscoreHitte(ctx){
+  ctx = ctx || state;
+  const ids7 = ['geb_hitte_glas','geb_hitte_massa','geb_hitte_zonwering','geb_hitte_zontoetreding','geb_hitte_dak','geb_hitte_gevel','geb_hitte_overstek'];
+  const idsRest = ['geb_hitte_koeling','geb_hitte_isolatie'];
+  let total = 0, allAnswered = true;
+  for(const id of ids7.concat(idsRest)){
+    const m = selMeta(id,ctx);
+    if(!m){ allAnswered=false; continue; }
+    total += m.s;
+  }
+  const envHitte = selMeta('env_hitte_nachten',ctx);
+  const ramenIdx = ctx['geb_hitte_ramen'];
+  if(ramenIdx===undefined || !envHitte){
+    allAnswered = false;
+  } else {
+    const opt = OPT.geb_hitte_ramen[ramenIdx];
+    const envCat = normCat(envHitte.c);
+    const useHigh = (envCat==='gemiddelde' || envCat==='hoge');
+    if(envCat==='n.v.t.' || envCat===''){ allAnswered=false; }
+    else total += useHigh ? opt.sHigh : opt.sLow;
+  }
+  return {total: Math.ceil(total), allAnswered};
+}
+
+function calcDroogteFundering(ctx){
+  ctx = ctx || state;
+  const type = selLabel('geb_fundering_type',ctx);
+  if(!type) return {status:'geen_type'};
+  if(type === 'Betonnen palen') return {status:'ok', categorie:'Geen kwetsbaarheid'};
+  if(type === 'Onbekend') return {status:'onbekend'};
+  if(type === 'Houten palen'){
+    const bj = ctx['geb_droogte_bouwjaar_h'];
+    const env = ctx['geb_droogte_env_h'];
+    if(bj===undefined || env===undefined) return {status:'incompleet'};
+    const rowKey = MX_HOUTEN_ROWS[env];
+    const cat = MX_HOUTEN[rowKey][bj] + ' kwetsbaarheid';
+    return {status:'ok', categorie:cat};
+  }
+  if(type === 'Fundering op staal'){
+    const bjIdx = ctx['geb_droogte_bouwjaar_s'];
+    const keldIdx = ctx['geb_droogte_kelder_s'];
+    const envIdx = ctx['geb_droogte_env_s'];
+    if(bjIdx===undefined || keldIdx===undefined || envIdx===undefined) return {status:'incompleet'};
+    const bjLabel = OPT.geb_droogte_bouwjaar_s[bjIdx].l;
+    const keldLabel = OPT.geb_droogte_kelder_s[keldIdx].l;
+    const buildingScore = MX_STAAL_BUILDINGSCORE[bjLabel][keldLabel];
+    const colIdx = STAAL_COLS.indexOf(buildingScore);
+    const envVal = Number(OPT.geb_droogte_env_s[envIdx].l);
+    const cat = MX_STAAL_FINAL[envVal][colIdx] + ' kwetsbaarheid';
+    return {status:'ok', categorie:cat, buildingScore};
+  }
+  return {status:'geen_type'};
+}
+
+function calcOverstromingFinal(ctx){
+  const c20 = selMeta('env_overstromingskans_20',ctx);
+  if(!c20) return {status:'incompleet'};
+  const cat20 = normCat(c20.c);
+  if(cat20==='zeer lage' || cat20==='lage'){
+    return {status:'ok', categorie:'Lage kwetsbaarheid'};
+  }
+  const c50 = selMeta('env_overstromingskans_50',ctx);
+  if(!c50) return {status:'incompleet_50'};
+  const cat50 = normCat(c50.c);
+  if(cat50==='hoge'){
+    return {status:'ok', categorie:'Hoge kwetsbaarheid'};
+  }
+  if(cat50==='gemiddelde'){
+    const gs = calcGebouwscoreOverstroming(ctx);
+    if(!gs.allAnswered) return {status:'incompleet_gebouw'};
+    if(gs.total < 30) return {status:'ok', categorie:'Lage kwetsbaarheid', gebouwscore:gs.total};
+    if(gs.total <= 60) return {status:'ok', categorie:'Gemiddelde kwetsbaarheid', gebouwscore:gs.total};
+    return {status:'ok', categorie:'Hoge kwetsbaarheid', gebouwscore:gs.total};
+  }
+  return {status:'incompleet'};
+}
+
+function calcWateroverlastFinal(ctx){
+  const envCat = calcOmgevingsscoreWateroverlast(ctx);
+  if(!envCat) return {status:'incompleet'};
+  const gs = calcGebouwscoreWateroverlast(ctx);
+  if(!gs.allAnswered) return {status:'incompleet_gebouw'};
+  const key = normCat(envCat) + ' kwetsbaarheid';
+  const bands = MX_WATEROVERLAST[key];
+  if(!bands) return {status:'incompleet'};
+  const score = Math.max(1, Math.min(100, Math.round(gs.total)));
+  const cat = bandLookup(bands, score);
+  return {status:'ok', categorie:cat, gebouwscore:gs.total};
+}
+
+function calcHittestressFinal(ctx){
+  const gs = calcGebouwscoreHitte(ctx);
+  if(!gs.allAnswered) return {status:'incompleet'};
+  const cat = bandLookup(MX_HITTESTRESS, gs.total);
+  return {status:'ok', categorie:cat, gebouwscore:gs.total};
+}
+
+function computeAllFor(ctx){
+  return {
+    water: calcWateroverlastFinal(ctx),
+    hitte: calcHittestressFinal(ctx),
+    droogte: calcDroogteFundering(ctx),
+    overstr: calcOverstromingFinal(ctx),
+  };
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+
+const ALL_QIDS = Object.keys(OPT);
+
+function renderChoices(){
+  document.querySelectorAll('.choices[data-options]').forEach(el=>{
+    const qid = el.getAttribute('data-options');
+    const opts = OPT[qid];
+    el.innerHTML = opts.map((o,i)=>`<div class="choice" data-qid="${qid}" data-idx="${i}" onclick="choose('${qid}',${i})">${o.l}</div>`).join('');
+  });
+}
+
+function choose(qid, idx){
+  state[qid] = idx;
+  document.querySelectorAll(`.choice[data-qid="${qid}"]`).forEach(el=>{
+    el.classList.toggle('on', Number(el.getAttribute('data-idx'))===idx);
+  });
+  const card = document.querySelector(`.qcard[data-qid="${qid}"]`);
+  if(card){
+    const flag = card.querySelector('.qflag');
+    if(flag){ flag.textContent='Beantwoord'; flag.classList.remove('todo'); flag.classList.add('ok'); }
+  }
+  updateVisibility();
+  updateProgress();
+}
+
+function updateVisibility(){
+  // overstromingskans_50 alleen tonen als kans20 gemiddeld/hoog is
+  const c20 = selMeta('env_overstromingskans_20');
+  const show50 = c20 && (normCat(c20.c)==='gemiddelde' || normCat(c20.c)==='hoge');
+  toggle('qcard-env_overstromingskans_50', show50);
+
+  // fundering-afhankelijke blokken
+  const ftype = selLabel('geb_fundering_type');
+  toggle('block-houten', ftype==='Houten palen');
+  toggle('block-staal', ftype==='Fundering op staal');
+  toggle('block-beton', ftype==='Betonnen palen');
+  toggle('block-onbekend', ftype==='Onbekend');
+  toggle('block-fundering-leeg', !ftype);
+
+  // overstroming gebouwvragen alleen als nodig
+  const of = calcOverstromingFinal();
+  const needsBuilding = (of.status==='incompleet_gebouw');
+  // ook tonen zodra kans20 gemiddeld/hoog EN kans50 gemiddeld (nog onbekend of exact 30-60 nodig is, dus altijd tonen zodra relevant pad ingeslagen is)
+  const c50 = selMeta('env_overstromingskans_50');
+  const relevantPath = c20 && (normCat(c20.c)==='gemiddelde'||normCat(c20.c)==='hoge') && c50 && normCat(c50.c)==='gemiddelde';
+  toggle('block-overstr-vragen', relevantPath);
+  toggle('block-overstr-nvt', !relevantPath);
+}
+function toggle(id, show){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('show', !!show);
+}
+
+function updateProgress(){
+  let visibleIds = getVisibleQids();
+  let answered = visibleIds.filter(id=>state[id]!==undefined).length;
+  const total = visibleIds.length;
+  document.getElementById('pm-count').textContent = answered;
+  document.getElementById('pm-total').textContent = total;
+  document.getElementById('pm-fill').style.width = total? Math.round(answered/total*100)+'%' : '0%';
+  document.getElementById('calcbar-count').textContent = answered;
+  document.getElementById('calcbar-total').textContent = total;
+}
+
+function getVisibleQids(){
+  return ALL_QIDS.filter(id=>{
+    const card = document.querySelector(`[data-qid="${id}"]`);
+    if(!card) return false;
+    // niet meetellen als card of een conditional-ouder verborgen is
+    let el = card;
+    while(el){
+      if(el.classList && el.classList.contains('conditional') && !el.classList.contains('show')) return false;
+      el = el.parentElement;
+    }
+    return true;
+  });
+}
+
+function jump(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function scrollToResults(){ jump('sec-resultaten'); }
+
+function resetTool(){
+  if(!confirm('Weet je zeker dat je alle antwoorden wilt wissen?')) return;
+  for(const k in state) delete state[k];
+  document.querySelectorAll('.choice.on').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.qflag').forEach(el=>{ el.textContent='Nog in te vullen'; el.classList.remove('ok'); el.classList.add('todo'); });
+  document.getElementById('inp-naam').value='';
+  document.getElementById('inp-adres').value='';
+  document.getElementById('results-content').style.display='none';
+  document.getElementById('results-empty').style.display='block';
+  updateVisibility();
+  updateProgress();
+  jump('sec-gebouwgegevens');
+}
+
+/* ---------- RESULTATEN RENDEREN ---------- */
+
+function riskBadgeClass(cat){
+  const c = normCat(cat);
+  if(!cat) return 'rb-onbekend';
+  if(c==='' && cat.toLowerCase().includes('n.v.t')) return 'rb-nvt';
+  if(c.includes('geen')) return 'rb-geen';
+  if(c==='zeer hoge') return 'rb-zeerhoog';
+  if(c==='hoge') return 'rb-hoog';
+  if(c==='gemiddelde') return 'rb-gemiddeld';
+  if(c==='lage') return 'rb-laag';
+  if(c==='zeer lage') return 'rb-zeerlaag';
+  return 'rb-onbekend';
+}
+function badge(cat, big){
+  if(!cat) return `<span class="rbadge rb-onbekend ${big?'rbig':''}">Nog niet compleet</span>`;
+  return `<span class="rbadge ${riskBadgeClass(cat)} ${big?'rbig':''}">${cat}</span>`;
+}
+
+function statusMessage(status){
+  const msgs = {
+    incompleet: 'Vul de bijbehorende vragen in om dit resultaat te berekenen.',
+    incompleet_gebouw: 'Vul de gebouwvragen voor dit thema in om het resultaat te berekenen.',
+    incompleet_50: 'Vul vraag 1.11 (overstromingskans > 50 cm) in.',
+    geen_type: 'Kies eerst het funderingstype (vraag 2.1).',
+    onbekend: 'Funderingstype is onbekend — hiervoor is eerst funderingsonderzoek nodig (indicatie € 5.000) voordat een risicoscore bepaald kan worden.',
+  };
+  return msgs[status] || 'Nog niet compleet.';
+}
+
+function calculateAndShow(){
+  const naam = document.getElementById('inp-naam').value.trim();
+  const adres = document.getElementById('inp-adres').value.trim();
+
+  const water = calcWateroverlastFinal();
+  const hitte = calcHittestressFinal();
+  const droogte = calcDroogteFundering();
+  const overstr = calcOverstromingFinal();
+
+  const cards = [
+    {title:'Wateroverlast', dot:'dot-water', res:water, extra: waterDetailHtml(water)},
+    {title:'Hittestress', dot:'dot-hitte', res:hitte, extra: hitteDetailHtml(hitte)},
+    {title:'Droogte (funderingen)', dot:'dot-droogte', res:droogte, extra: droogteDetailHtml(droogte)},
+    {title:'Overstroming', dot:'dot-overstr', res:overstr, extra: overstrDetailHtml(overstr)},
+  ];
+
+  let html = '';
+  if(naam || adres){
+    html += `<div class="ib" style="margin-bottom:20px;"><strong>${naam||'Gebouw'}</strong>${adres? ' — '+adres : ''}</div>`;
+  }
+  html += '<div class="ov-grid4">';
+  for(const c of cards){
+    const cat = c.res.status==='ok' ? c.res.categorie : null;
+    html += `
+    <div class="ov-card2">
+      <div class="ov-card2-head">
+        <div class="ov-card2-title"><span class="thdot ${c.dot}" style="width:9px;height:9px;border-radius:50%;display:inline-block;"></span>${c.title}</div>
+        ${badge(cat, true)}
+      </div>
+      ${c.res.status!=='ok' ? `<div class="ov-card2-desc">${statusMessage(c.res.status)}</div>` : ''}
+      ${c.extra}
+    </div>`;
+  }
+  html += '</div>';
+
+  document.getElementById('results-content').innerHTML = html;
+  document.getElementById('results-content').style.display = 'block';
+  document.getElementById('results-empty').style.display = 'none';
+  scrollToResults();
+}
+
+function detailToggleHtml(id, rows){
+  const body = rows.map(r=>`<div class="dbrow"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('');
+  return `<div class="detail-toggle" onclick="toggleDetail('${id}')">Details tonen <span id="${id}-arrow">▾</span></div>
+  <div class="detail-body" id="${id}">${body}</div>`;
+}
+function toggleDetail(id){
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function waterDetailHtml(res){
+  if(res.status!=='ok') return '';
+  const envCat = calcOmgevingsscoreWateroverlast();
+  return detailToggleHtml('det-water', [
+    ['Omgevingsscore Wateroverlast', envCat],
+    ['Gebouwscore Wateroverlast', res.gebouwscore + ' / 100'],
+  ]);
+}
+function hitteDetailHtml(res){
+  if(res.status!=='ok') return '';
+  return detailToggleHtml('det-hitte', [
+    ['Gebouwscore Hittestress', res.gebouwscore],
+  ]);
+}
+function droogteDetailHtml(res){
+  if(res.status!=='ok') return '';
+  const type = selLabel('geb_fundering_type');
+  const rows = [['Funderingstype', type]];
+  if(res.buildingScore!==undefined) rows.push(['Gebouwscore verschilzetting', res.buildingScore]);
+  return detailToggleHtml('det-droogte', rows);
+}
+function overstrDetailHtml(res){
+  if(res.status!=='ok') return '';
+  const rows = [];
+  const c20 = selMeta('env_overstromingskans_20');
+  if(c20) rows.push(['Overstromingskans > 20 cm', c20.c]);
+  const c50 = selMeta('env_overstromingskans_50');
+  if(c50) rows.push(['Overstromingskans > 50 cm', c50.c]);
+  if(res.gebouwscore!==undefined) rows.push(['Gebouwscore Overstroming', res.gebouwscore]);
+  return detailToggleHtml('det-overstr', rows);
+}
+
+/* ============================================================
+   MODE SWITCH (één gebouw vs. portefeuille)
+   ============================================================ */
+function switchMode(mode){
+  document.getElementById('mode-single').style.display = mode==='single' ? 'block' : 'none';
+  document.getElementById('mode-bulk').style.display = mode==='bulk' ? 'block' : 'none';
+  document.getElementById('modebtn-single').classList.toggle('on', mode==='single');
+  document.getElementById('modebtn-bulk').classList.toggle('on', mode==='bulk');
+}
+
+/* ============================================================
+   PORTEFEUILLE / BULK-ANALYSE
+   ============================================================ */
+
+/* Kolomdefinitie voor sjabloon, upload-parsing en export.
+   qid: null => vrije tekst (naam/adres). Anders: verwijst naar OPT-vraag. */
+const COLS = [
+  {header:'Gebouwnaam', qid:null, example:'Kantoorpand De Linde'},
+  {header:'Adres', qid:null, example:'Hoofdstraat 1, Utrecht'},
+  {header:'Grondwater: ontwikkeling kans (2050 hoog)', qid:'env_gw_kans', example:'Kleine kans'},
+  {header:'Grondwater: hoogste stand (huidig)', qid:'env_gw_hoogte', example:'> 1 m'},
+  {header:'Bodemdaling door ophoging 2020-2050', qid:'env_bodemdaling', example:'≤ 50 cm'},
+  {header:'Waterdiepte bij hevige bui 70mm/2u', qid:'env_waterdiepte_bui', example:'> 10–15 cm'},
+  {header:'Hittestress warme nachten (2050 hoog)', qid:'env_hitte_nachten', example:'2 tot 3 weken'},
+  {header:'Natuurbrandgevoeligheid (2050 hoog)', qid:'env_natuurbrand', example:'Geen'},
+  {header:'Risico paalrot — omgeving (2050 hoog)', qid:'env_paalrot', example:'Laag (0,8 – 3)'},
+  {header:'Risico verschilzetting — omgeving (2050 hoog)', qid:'env_verschilzetting', example:'Laag (1 – 5)'},
+  {header:'Maximale waterdiepte (kaart)', qid:'env_max_waterdiepte', example:'> 0,2 – 1 m'},
+  {header:'Overstromingskans > 20 cm (2050)', qid:'env_overstromingskans_20', example:'Kleine kans (1/300 – 1/3000 per jaar)'},
+  {header:'Overstromingskans > 50 cm (2050)', qid:'env_overstromingskans_50', example:'Lager dan de kans bij > 20 cm'},
+  {header:'Funderingstype', qid:'geb_fundering_type', example:'Betonnen palen'},
+  {header:'Wateroverlast: hoogte ingang', qid:'geb_water_ingang', example:'> 15 cm'},
+  {header:'Wateroverlast: kelder / drempelhoogte', qid:'geb_water_kelder', example:'Geen ondergrondse ruimte aanwezig'},
+  {header:'Wateroverlast: instroompunten', qid:'geb_water_instroom', example:'Niet aanwezig binnen 15 cm boven maaiveld'},
+  {header:'Wateroverlast: riool / terugslagklep', qid:'geb_water_riool', example:'Ontlastput/terugslagklep aanwezig, of gescheiden riool'},
+  {header:'Wateroverlast: locatie apparatuur', qid:'geb_water_apparatuur', example:'Niet aanwezig onder straatniveau of begane grond'},
+  {header:'Hitte: glasoppervlak %', qid:'geb_hitte_glas', example:'35 – 50%'},
+  {header:'Hitte: thermische massa', qid:'geb_hitte_massa', example:'Traditioneel, 500–750 kg/m²'},
+  {header:'Hitte: zonwering', qid:'geb_hitte_zonwering', example:'Wel zonwering'},
+  {header:'Hitte: zontoetredingsfactor', qid:'geb_hitte_zontoetreding', example:'g-waarde 0,40–0,60 of HR+/HR++/triple glas'},
+  {header:'Hitte: dakkleur', qid:'geb_hitte_dak', example:'Lichte kleur of zonnepanelen'},
+  {header:'Hitte: gevelkleur', qid:'geb_hitte_gevel', example:'Lichte kleur of groene gevel'},
+  {header:'Hitte: overstekken', qid:'geb_hitte_overstek', example:'> 0,6 m'},
+  {header:'Hitte: koeling', qid:'geb_hitte_koeling', example:'Geen koelsysteem aanwezig'},
+  {header:'Hitte: isolatie', qid:'geb_hitte_isolatie', example:'Rc < 3,5 of bouwjaar 1993–2013'},
+  {header:'Hitte: ramen open (aantal gevels)', qid:'geb_hitte_ramen', example:'2 of meer gevels'},
+  {header:'Droogte houten palen: bouwjaar', qid:'geb_droogte_bouwjaar_h', example:''},
+  {header:'Droogte houten palen: omgevingsscore (GIS)', qid:'geb_droogte_env_h', example:''},
+  {header:'Droogte stalen fundering: bouwjaar', qid:'geb_droogte_bouwjaar_s', example:''},
+  {header:'Droogte stalen fundering: kelder type', qid:'geb_droogte_kelder_s', example:''},
+  {header:'Droogte stalen fundering: omgevingsscore GIS (0-5)', qid:'geb_droogte_env_s', example:''},
+  {header:'Overstroming: hoogte ingang', qid:'geb_overstr_ingang', example:''},
+  {header:'Overstroming: kelder / drempelhoogte', qid:'geb_overstr_kelder', example:''},
+  {header:'Overstroming: instroompunten', qid:'geb_overstr_instroom', example:''},
+  {header:'Overstroming: riool / terugslagklep', qid:'geb_overstr_riool', example:''},
+  {header:'Overstroming: locatie apparatuur', qid:'geb_overstr_apparatuur', example:''},
+];
+
+function normStr(s){
+  return String(s).toLowerCase().trim().replace(/\s+/g,' ').replace(/[’']/g,"'").replace(/[–—]/g,'-');
+}
+function matchOption(qid, rawValue){
+  if(rawValue===undefined || rawValue===null || String(rawValue).trim()==='') return {idx:undefined, status:'empty'};
+  const norm = normStr(rawValue);
+  const opts = OPT[qid];
+  for(let i=0;i<opts.length;i++){
+    if(normStr(opts[i].l)===norm) return {idx:i, status:'ok'};
+  }
+  for(let i=0;i<opts.length;i++){
+    const ol = normStr(opts[i].l);
+    if(ol.includes(norm) || norm.includes(ol)) return {idx:i, status:'fuzzy'};
+  }
+  return {idx:undefined, status:'unrecognized', raw:rawValue};
+}
+
+function downloadTemplate(){
+  const headers = COLS.map(c=>c.header);
+  const example = COLS.map(c=>c.example||'');
+  const ws = XLSX.utils.aoa_to_sheet([headers, example]);
+  ws['!cols'] = headers.map(h=>({wch: Math.max(18, Math.min(40, h.length+4))}));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Gebouwen');
+
+  const legendRows = [['Kolom','Toegestane waarden (exacte tekst, hoofdletterongevoelig)']];
+  COLS.forEach(c=>{
+    legendRows.push([c.header, c.qid ? OPT[c.qid].map(o=>o.l).join('  |  ') : 'vrije tekst']);
+  });
+  const ws2 = XLSX.utils.aoa_to_sheet(legendRows);
+  ws2['!cols'] = [{wch:40},{wch:100}];
+  XLSX.utils.book_append_sheet(wb, ws2, 'Toegestane waarden');
+
+  XLSX.writeFile(wb, 'FCAB_sjabloon.xlsx');
+}
+
+let bulkResults = []; // {naam, adres, results:{water,hitte,droogte,overstr}, warnings:[...]}
+
+function handleFileUpload(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const statusEl = document.getElementById('upload-status');
+  statusEl.innerHTML = `<div class="upload-msg ok">Bestand "${file.name}" wordt verwerkt…</div>`;
+
+  const isCsv = /\.csv$/i.test(file.name);
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    try{
+      let rows;
+      if(isCsv){
+        const wb = XLSX.read(e.target.result, {type:'string'});
+        rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
+      } else {
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, {type:'array'});
+        rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
+      }
+      processRows(rows);
+    } catch(err){
+      statusEl.innerHTML = `<div class="upload-msg err">Kon het bestand niet lezen: ${err.message}</div>`;
+    }
+  };
+  if(isCsv) reader.readAsText(file); else reader.readAsArrayBuffer(file);
+}
+
+function processRows(rows){
+  const statusEl = document.getElementById('upload-status');
+  if(!rows || rows.length===0){
+    statusEl.innerHTML = `<div class="upload-msg err">Geen gegevens gevonden in het bestand.</div>`;
+    return;
+  }
+  bulkResults = [];
+  let totalWarnings = 0;
+
+  rows.forEach((row, rIdx)=>{
+    const ctx = {};
+    const warnings = [];
+    let naam = '', adres = '';
+    COLS.forEach(c=>{
+      // koppel op exacte header, met tolerantie voor kleine verschillen
+      let raw = row[c.header];
+      if(raw===undefined){
+        const key = Object.keys(row).find(k=>normStr(k)===normStr(c.header));
+        if(key) raw = row[key];
+      }
+      if(c.qid===null){
+        if(c.header==='Gebouwnaam') naam = raw || '';
+        if(c.header==='Adres') adres = raw || '';
+        return;
+      }
+      const m = matchOption(c.qid, raw);
+      if(m.status==='ok' || m.status==='fuzzy'){
+        ctx[c.qid] = m.idx;
+        if(m.status==='fuzzy') warnings.push(`"${c.header}": waarde "${raw}" is bij benadering herkend als "${OPT[c.qid][m.idx].l}"`);
+      } else if(m.status==='unrecognized'){
+        warnings.push(`"${c.header}": waarde "${raw}" wordt niet herkend en is genegeerd`);
+      }
+      // 'empty' => geen warning, gewoon onbeantwoord
+    });
+
+    const results = computeAllFor(ctx);
+    bulkResults.push({
+      naam: naam || `Gebouw ${rIdx+1}`,
+      adres: adres || '',
+      results,
+      warnings,
+    });
+    totalWarnings += warnings.length;
+  });
+
+  let msg = `<div class="upload-msg ok">${bulkResults.length} gebouwen ingelezen.</div>`;
+  if(totalWarnings>0) msg += `<div class="upload-msg warn">${totalWarnings} waarde(n) konden niet (exact) worden herkend — zie "Aandachtspunten" per rij in de resultatentabel.</div>`;
+  statusEl.innerHTML = msg;
+
+  renderBulkResults();
+}
+
+function renderBulkResults(){
+  const tbody = document.getElementById('bulk-tbody');
+  document.getElementById('bulk-count').textContent = bulkResults.length;
+  document.getElementById('bulk-results').style.display = bulkResults.length ? 'block' : 'none';
+
+  tbody.innerHTML = bulkResults.map((b, i)=>{
+    const r = b.results;
+    const cellFor = (res)=> res.status==='ok' ? badge(res.categorie) : badge(null);
+    const warnHtml = b.warnings.length
+      ? `<span class="warncell" onclick="toggleWarn(${i})">⚠ ${b.warnings.length}</span><div class="warnlist" id="warn-${i}">${b.warnings.map(w=>'• '+w).join('<br>')}</div>`
+      : `<span class="warncell none">—</span>`;
+    return `<tr>
+      <td><div class="bname">${b.naam}</div>${b.adres?`<div class="baddr">${b.adres}</div>`:''}</td>
+      <td>${cellFor(r.water)}</td>
+      <td>${cellFor(r.hitte)}</td>
+      <td>${cellFor(r.droogte)}</td>
+      <td>${cellFor(r.overstr)}</td>
+      <td>${warnHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleWarn(i){
+  document.getElementById(`warn-${i}`).classList.toggle('open');
+}
+
+function downloadResultsCsv(){
+  if(!bulkResults.length) return;
+  const header = ['Gebouwnaam','Adres','Wateroverlast','Hittestress','Droogte (funderingen)','Overstroming','Aandachtspunten'];
+  const lines = [header];
+  bulkResults.forEach(b=>{
+    const r = b.results;
+    const catOf = res => res.status==='ok' ? res.categorie : 'Nog niet compleet';
+    lines.push([b.naam, b.adres, catOf(r.water), catOf(r.hitte), catOf(r.droogte), catOf(r.overstr), b.warnings.join(' | ')]);
+  });
+  const csv = lines.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'FCAB_resultaten.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- INIT ---------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderChoices();
+  updateVisibility();
+  updateProgress();
+});
+</script>
+</body>
+</html>
