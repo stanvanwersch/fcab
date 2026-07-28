@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FCAB — Framework for Climate Adaptive Buildings</title>
+<title>FCAB - Framework for Climate Adaptive Buildings</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 /* ─── TOKENS ─── */
@@ -98,6 +98,9 @@ body{font-family:var(--sans);background:var(--cream);color:var(--text);font-size
 .ni.sub{font-size:12.5px;}
 .ni.sub.on{border-left-color:var(--accent);color:var(--accent);background:var(--accent-s);}
 .rdiv{height:1px;background:var(--border);margin:8px 16px;}
+.ni-ext{justify-content:space-between;text-decoration:none;color:var(--text3);}
+.ni-ext-ic{font-size:12px;color:var(--text3);}
+.ni-ext:hover .ni-ext-ic{color:var(--accent);}
 .nchip{font-size:10px;font-weight:600;color:var(--text3);min-width:16px;font-variant-numeric:tabular-nums;}
 .subnav{display:none;padding:2px 0 6px;}
 .subnav.open{display:block;}
@@ -489,6 +492,10 @@ li strong{color:var(--text);font-weight:600;}
   <div class="ni sub" data-key="wateroverlast" onclick="nav('wateroverlast',this)">Wateroverlast</div>
   <div class="ni sub" data-key="overstroming" onclick="nav('overstroming',this)">Overstroming</div>
   <div class="ni sub" data-key="hagelstorm" onclick="nav('hagelstorm',this)">Hagel &amp; Storm</div>
+  <div class="rdiv"></div>
+  <div class="rail-label">Tooling</div>
+  <a class="ni ni-ext" href="https://www.fcab.eu/tool" target="_blank" rel="noopener">Bereken klimaatrisicoscore<span class="ni-ext-ic">↗</span></a>
+  <a class="ni ni-ext" href="https://www.fcab.eu/vmv" target="_blank" rel="noopener">Dashboard VMV<span class="ni-ext-ic">↗</span></a>
 </nav>
 
 <!-- CONTENT -->
