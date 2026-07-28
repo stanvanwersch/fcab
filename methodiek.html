@@ -1929,6 +1929,12 @@ const TV={hitte:'omgeving',droogte:'omgeving',wateroverlast:'omgeving',overstrom
 
 function nav(k,el){
   if(!PG[k])return;
+  const subMap={process:'process',omgevingsscore:'omgevingsscore',gebouwscore:'gebouwscore',strategie:'strategie',maatregelen:'strategie'};
+  let collapse=false;
+  if(cur===k && subMap[k]){
+    const curSp=document.getElementById('subnav-'+subMap[k]);
+    if(curSp && curSp.classList.contains('open'))collapse=true;
+  }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById(PG[k]).classList.add('on');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1937,12 +1943,12 @@ function nav(k,el){
   document.querySelectorAll(`[data-key="${k}"]`).forEach(n=>n.classList.add('on'));
   cur=k;window.scrollTo(0,0);
   ubc(k);
-  const subMap={process:'process',omgevingsscore:'omgevingsscore',gebouwscore:'gebouwscore',strategie:'strategie',maatregelen:'strategie'};
   ['process','omgevingsscore','gebouwscore','strategie'].forEach(key=>{
     const sp=document.getElementById('subnav-'+key);
     if(!sp)return;
-    sp.classList.toggle('open',subMap[k]===key);
-    if(subMap[k]!==key)sp.querySelectorAll('.ni-sub2').forEach(n=>n.classList.remove('on'));
+    const shouldOpen=!collapse&&subMap[k]===key;
+    sp.classList.toggle('open',shouldOpen);
+    if(!shouldOpen)sp.querySelectorAll('.ni-sub2').forEach(n=>n.classList.remove('on'));
   });
   document.querySelectorAll('.ip').forEach(ip=>{
     const btns=ip.querySelectorAll('.dtabs .dtb');
