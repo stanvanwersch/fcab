@@ -220,9 +220,42 @@ tr:hover td{background:var(--cream);}
 .warncell.none{color:var(--text3);}
 .warnlist{display:none;margin-top:6px;font-size:11px;color:var(--text3);font-weight:300;}
 .warnlist.open{display:block;}
+
+/* ─── ACCESS GATE ─── */
+#gate{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px;}
+.gate-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center;}
+.gate-logo{display:flex;justify-content:center;gap:3px;margin-bottom:20px;}
+.gate-logo div{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:#fff;}
+.gate-card h1{font-size:19px;margin-bottom:8px;}
+.gate-card p{font-size:13px;color:var(--text3);margin-bottom:22px;font-weight:300;}
+#gate-input{width:100%;box-sizing:border-box;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;text-align:center;letter-spacing:1px;font-family:var(--sans);margin-bottom:12px;transition:border-color .15s;}
+#gate-input:focus{outline:none;border-color:var(--accent);}
+#gate-btn{width:100%;padding:11px 0;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .15s;}
+#gate-btn:hover{opacity:.9;}
+#gate-error{color:#C0392B;font-size:12.5px;margin-top:10px;display:none;font-weight:500;}
+#gate-error.on{display:block;}
 </style>
 </head>
 <body>
+
+<!-- ACCESS GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-logo">
+      <div style="background:#4BAE8A;">F</div>
+      <div style="background:#E8B84B;">C</div>
+      <div style="background:#E8710A;">A</div>
+      <div style="background:#C0392B;">B</div>
+    </div>
+    <h1>Toegang vereist</h1>
+    <p>Deze tool is afgeschermd. Voer de toegangscode in.</p>
+    <input type="password" id="gate-input" placeholder="Toegangscode" autocomplete="off">
+    <button id="gate-btn" onclick="checkGateCode()">Ontgrendelen</button>
+    <div id="gate-error">Onjuiste code. Probeer het opnieuw.</div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
 
 <header class="topbar">
   <a class="logo" href="#" style="text-decoration:none;display:flex;align-items:center;gap:12px;">
@@ -566,7 +599,8 @@ tr:hover td{background:var(--cream);}
 </div><!-- /mode-bulk -->
 
 </main>
-</div>
+</div><!-- /shell -->
+</div><!-- /app -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 /* ============================================================
@@ -1377,6 +1411,33 @@ function downloadResultsCsv(){
   a.href = url; a.download = 'FCAB_resultaten.csv';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+/* ─── ACCESS GATE ─── */
+const GATE_HASH='73e2822498c988475f994d5cbc7348677198694cb01830ef3182527acd0f6d0e';
+async function sha256Hex(str){
+  const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function checkGateCode(){
+  const val=document.getElementById('gate-input').value;
+  const hash=await sha256Hex(val);
+  const err=document.getElementById('gate-error');
+  if(hash===GATE_HASH){
+    localStorage.setItem('fcab_tool_gate_ok','1');
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app').style.display='';
+    err.classList.remove('on');
+  }else{
+    err.classList.add('on');
+  }
+}
+document.getElementById('gate-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter')checkGateCode();
+});
+if(localStorage.getItem('fcab_tool_gate_ok')==='1'){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='';
 }
 
 /* ---------- INIT ---------- */
