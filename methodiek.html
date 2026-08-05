@@ -4,16 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FCAB - Framework for Climate Adaptive Buildings</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 <script>
 (function(){
   function getPreferredTheme(){
     try{
       var saved = localStorage.getItem('fcab-theme');
       if(saved === 'dark' || saved === 'light') return saved;
-    }catch(e){}
-    try{
-      if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
     }catch(e){}
     return 'light';
   }
@@ -39,9 +36,9 @@
   --accent:  #e07a2f;
   --accent-s:rgba(224,122,47,.09);
   --accent-b:rgba(224,122,47,.22);
-  --blue:    #1d5fa8;
-  --blue-s:  rgba(29,95,168,.07);
-  --blue-b:  rgba(29,95,168,.18);
+  --blue:    #1C974D;
+  --blue-s:  rgba(28,151,77,.07);
+  --blue-b:  rgba(28,151,77,.18);
   --green:   #1a6e3c;
   --green-s: rgba(26,110,60,.08);
   --green-b: rgba(26,110,60,.18);
@@ -51,8 +48,12 @@
   --red:     #b91c1c;
   --red-s:   rgba(185,28,28,.07);
   --red-b:   rgba(185,28,28,.16);
-  --sans:    'Poppins', system-ui, sans-serif;
-  --r:       4px;
+  --sans:    'Inter', system-ui, -apple-system, sans-serif;
+  --wordmark:'Poppins', system-ui, sans-serif;
+  --serif:   'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --mono:    ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  --r:       10px;
+  --r-sm:    6px;
   --topbar-bg:  rgba(255,255,255,.78);
   --hover-tint: rgba(0,0,0,.02);
   --shadow-soft:rgba(28,26,23,.08);
@@ -60,6 +61,7 @@
   --neutral-s:  #f0ede8;
   --code-bg:    #1c1a17;
   --code-text:  #e8e0d4;
+  --gate-dot:   rgba(180,174,166,.75);
 }
 
 html[data-theme="dark"]{
@@ -77,6 +79,7 @@ html[data-theme="dark"]{
   --neutral-s:  #33302a;
   --code-bg:    #100f0d;
   --code-text:  #e8e0d4;
+  --gate-dot:   rgba(255,255,255,.14);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -130,11 +133,22 @@ html[data-theme="dark"] .theme-toggle .ti-sun{display:block;}
 }
 .lang-toggle:hover{color:var(--accent);border-color:var(--accent-b);background:var(--accent-s);}
 .lang-toggle.busy{opacity:.5;cursor:wait;}
+.dgbc-link{
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--border);background:var(--white);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  transition:border-color .15s,box-shadow .15s,transform .15s;
+}
+.dgbc-link:hover{border-color:var(--accent-b);box-shadow:0 0 0 3px var(--accent-s);transform:translateY(-1px);}
+.dgbc-link img{width:70%;height:70%;object-fit:contain;transform:translateX(2px);}
 
 /* ─── Google Translate: keep our own layout, hide Google's default chrome ─── */
-.goog-te-banner-frame{display:none!important;}
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate{display:none!important;visibility:hidden!important;height:0!important;}
+body > .skiptranslate{display:none!important;visibility:hidden!important;height:0!important;}
 .goog-te-gadget-icon{display:none!important;}
-body{top:0!important;position:static!important;}
+html,body{top:0!important;position:static!important;margin-top:0!important;}
 .goog-tooltip,.goog-tooltip:hover,#goog-gt-tt,.goog-te-balloon-frame{display:none!important;visibility:hidden!important;}
 .goog-text-highlight{background:none!important;box-shadow:none!important;}
 #google_translate_element{display:none!important;}
@@ -153,8 +167,8 @@ body{top:0!important;position:static!important;}
 }
 .rail-section{margin-bottom:4px;}
 .rail-label{
-  font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:none;
-  color:var(--text3);padding:10px 24px 5px;
+  font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:none;
+  color:var(--text2);padding:10px 24px 5px;
 }
 .ni{
   display:flex;align-items:center;gap:9px;
@@ -193,11 +207,8 @@ body{top:0!important;position:static!important;}
 .ni-ext-ic{font-size:12px;color:var(--text3);}
 .ni-ext:hover .ni-ext-ic{color:var(--accent);}
 .nchip{font-size:10px;font-weight:600;color:var(--text3);min-width:16px;font-variant-numeric:tabular-nums;}
-.subnav{display:none;padding:2px 0 6px;}
-.subnav.open{display:block;}
-.ni-sub2{padding:6px 24px 6px 44px;cursor:pointer;color:var(--text3);font-size:12px;font-weight:400;border-left:2px solid transparent;transition:all .13s;}
-.ni-sub2:hover{color:var(--text);background:var(--hover-tint);}
-.ni-sub2.on{border-left-color:var(--accent);color:var(--accent);font-weight:500;background:var(--accent-s);}
+.inline-link{cursor:pointer;color:var(--accent);transition:color .13s;}
+.inline-link:hover{color:var(--text);text-decoration:underline;}
 
 /* ─── SIDEBAR SEARCH ─── */
 .sidebar-search{padding:0 20px;margin-bottom:10px;position:relative;}
@@ -206,7 +217,6 @@ body{top:0!important;position:static!important;}
   border:1px solid var(--border2);border-radius:20px;background:var(--white);
   padding:8px 12px;color:var(--text3);transition:border-color .15s,box-shadow .15s;
 }
-.ss-box:focus-within{border-color:var(--accent-b);box-shadow:0 0 0 3px var(--accent-s);}
 .ss-box svg{flex-shrink:0;}
 .ss-box input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:var(--sans);font-size:13px;color:var(--text);}
 .ss-box input::placeholder{color:var(--text3);}
@@ -231,20 +241,34 @@ body{top:0!important;position:static!important;}
 /* ─── CONTENT CANVAS ─── */
 .canvas{
   flex:1;min-width:0;
-  padding:56px 72px 100px 72px;
+  padding:56px 56px 100px 72px;
   max-width:820px;
 }
+
+/* ─── ON THIS PAGE (right TOC rail) ─── */
+.toc-rail{
+  width:216px;min-width:216px;
+  padding:56px 24px 40px 0;
+  position:sticky;top:112px;height:calc(100vh - 112px);overflow-y:auto;
+}
+.toc-title{font-size:10.5px;font-weight:700;letter-spacing:.3px;color:var(--text2);margin-bottom:12px;}
+.toc-list{display:flex;flex-direction:column;gap:1px;border-left:1px solid var(--border);}
+.toc-link{font-size:12.5px;color:var(--text3);text-decoration:none;padding:5px 0 5px 15px;margin-left:-1px;
+  border-left:1.5px solid transparent;cursor:pointer;transition:color .12s,border-color .12s;line-height:1.45;}
+.toc-link:hover{color:var(--text);}
+.toc-link.on{color:var(--accent);border-left-color:var(--accent);font-weight:600;}
+
+/* ─── TABLE WRAP (auto-applied via JS to plain content tables) ─── */
+.table-wrap{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:16px 0;}
+.table-wrap table{margin:0;}
+
+@media(max-width:1240px){.toc-rail{display:none;}}
 
 /* ─── PAGE ROUTING ─── */
 .page{display:none;}
 .page.on{display:block;}
 
 /* ─── BREADCRUMBS ─── */
-.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);margin-bottom:36px;flex-wrap:wrap;}
-.bc span{cursor:pointer;transition:color .12s;}
-.bc span:hover{color:var(--accent);}
-.bc .sep{opacity:.4;}
-
 /* ─── SECTION HEADER ─── */
 .section-eyebrow{
   font-size:11px;font-weight:500;letter-spacing:.4px;text-transform:none;
@@ -261,6 +285,7 @@ h2{
   font-size:20px;font-weight:600;color:var(--text);
   margin:44px 0 16px;padding-bottom:12px;
   border-bottom:1.5px solid var(--border);
+  scroll-margin-top:130px;
 }
 .h2-num{font-weight:600;}
 .h2-num::after{content:'. ';}
@@ -270,9 +295,9 @@ p{margin-bottom:14px;color:var(--text2);font-weight:300;}
 p strong{color:var(--text);font-weight:600;}
 
 /* ─── OVERVIEW CARDS ─── */
-.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:28px 0;}
-.ov-card{background:var(--white);padding:24px;cursor:pointer;transition:background .15s;}
-.ov-card:hover{background:var(--cream);}
+.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.ov-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;cursor:pointer;box-shadow:0 1px 2px var(--shadow-soft);transition:box-shadow .18s,transform .18s,border-color .18s;}
+.ov-card:hover{box-shadow:0 10px 28px var(--shadow-card);transform:translateY(-2px);border-color:var(--accent-b);}
 .ov-num{font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums;}
 .ov-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}
 .ov-desc{font-size:12px;color:var(--text3);line-height:1.5;font-weight:300;}
@@ -280,11 +305,12 @@ p strong{color:var(--text);font-weight:600;}
 /* ─── THEME CARDS ─── */
 .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:20px 0;}
 .tc{
-  background:var(--white);border:1px solid var(--border);border-left-width:3px;border-radius:0;
-  padding:16px 18px;cursor:pointer;transition:background .15s;
+  background:var(--white);border:1px solid var(--border);border-left-width:3px;border-radius:var(--r);
+  padding:16px 18px;cursor:pointer;box-shadow:0 1px 2px var(--shadow-soft);
+  transition:box-shadow .18s,transform .18s;
   display:flex;align-items:flex-start;gap:14px;
 }
-.tc:hover{background:var(--cream);}
+.tc:hover{box-shadow:0 10px 24px var(--shadow-card);transform:translateY(-2px);}
 .tc.th-hitte{border-left-color:#C0392B;}
 .tc.th-droogte{border-left-color:#B45309;}
 .tc.th-water{border-left-color:#1d5fa8;}
@@ -294,47 +320,18 @@ p strong{color:var(--text);font-weight:600;}
 .tn{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
 .td{font-size:12px;color:var(--text3);line-height:1.4;font-weight:300;}
 
-/* ─── SWITCHER ─── */
-.switcher{
-  display:inline-flex;border:1px solid var(--border);border-radius:var(--r);
-  overflow:hidden;margin-bottom:28px;background:var(--white);
-}
-.sbtn{
-  padding:8px 22px;border:none;cursor:pointer;
-  font-family:var(--sans);font-size:12.5px;font-weight:500;
-  color:var(--text3);background:transparent;transition:all .15s;
-  border-right:1px solid var(--border);
-}
-.sbtn:last-child{border-right:none;}
-.sbtn.on{background:var(--accent);color:var(--white);font-weight:600;}
-.sbtn:hover:not(.on){background:var(--cream);color:var(--text);}
-.sp{display:none;}
-.sp.on{display:block;}
-
-/* ─── INDICATOR PILLS ─── */
-.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+/* ─── INDICATOR TABS (per klimaateffect binnen Omgevingsscore) ─── */
+.pills{display:flex;border-bottom:1.5px solid var(--border);margin:16px 0;flex-wrap:wrap;}
 .pill{
-  padding:6px 14px;border-radius:20px;border:1px solid var(--border);
-  cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;
-  color:var(--text2);background:var(--white);transition:all .13s;white-space:nowrap;
-}
-.pill.on{background:var(--accent);color:var(--white);border-color:var(--accent);}
-.pill:hover:not(.on){border-color:var(--border2);color:var(--text);}
-.ip{display:none;}
-.ip.on{display:block;}
-
-/* ─── DETAIL TABS ─── */
-.dtabs{display:flex;border-bottom:1.5px solid var(--border);margin:16px 0;}
-.dtb{
   padding:8px 16px;cursor:pointer;font-family:var(--sans);
   font-size:12.5px;font-weight:500;color:var(--text3);
-  background:transparent;border:none;border-bottom:2px solid transparent;
-  margin-bottom:-1.5px;transition:all .12s;
+  background:transparent;border:none;border-bottom:2px solid transparent;border-radius:0;
+  margin-bottom:-1.5px;transition:all .12s;white-space:nowrap;
 }
-.dtb.on{color:var(--accent);border-bottom-color:var(--accent);}
-.dtb:hover{color:var(--text);}
-.dtc{display:none;}
-.dtc.on{display:block;}
+.pill.on{color:var(--accent);border-bottom-color:var(--accent);}
+.pill:hover{color:var(--text);}
+.ip{display:none;}
+.ip.on{display:block;}
 
 /* ─── PAGE TABS ─── */
 .tabs{display:flex;border-bottom:1.5px solid var(--border);margin-bottom:24px;}
@@ -370,29 +367,39 @@ tr:hover td{background:var(--cream);}
 .scale .sb{flex:1;min-width:72px;padding:8px 4px;text-align:center;justify-content:center;font-size:11px;border:1px solid var(--border);}
 
 /* ─── INFO BLOCKS ─── */
-.ib{background:var(--accent-s);border-left:3px solid var(--accent);padding:13px 18px;margin:16px 0;font-size:13.5px;color:var(--text2);font-weight:300;}
+.ib,.wb,.nb{position:relative;border-radius:var(--r);border:1px solid;padding:13px 18px 13px 46px;margin:16px 0;font-size:13.5px;line-height:1.6;color:var(--text2);font-weight:400;}
+.ib::before,.wb::before,.nb::before{
+  content:'';position:absolute;left:16px;top:14px;width:18px;height:18px;
+  background-repeat:no-repeat;background-position:center;background-size:contain;
+}
+.ib{background:var(--accent-s);border-color:var(--accent-b);}
+.ib::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23e07a2f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5'/%3E%3C/svg%3E");}
 .dgbc-credit{display:flex;align-items:center;gap:18px;margin-top:56px;padding-top:28px;border-top:1px solid var(--border);text-decoration:none;transition:opacity .15s;}
 .dgbc-credit:hover{opacity:.75;}
 .dgbc-credit-logo{height:40px;width:auto;flex-shrink:0;}
 .dgbc-credit-text{font-size:12.5px;line-height:1.55;color:var(--text3);font-weight:300;}
 .dgbc-credit-text strong{color:var(--text2);font-weight:600;}
 .dgbc-credit-link{color:var(--accent);font-weight:500;}
-.ib strong{color:var(--text);font-weight:600;}
-.wb{background:var(--red-s);border-left:3px solid var(--red);padding:13px 18px;margin:16px 0;font-size:13.5px;color:var(--text2);font-weight:300;}
-.nb{background:var(--blue-s);border-left:3px solid var(--blue);padding:13px 18px;margin:16px 0;font-size:13.5px;color:var(--text2);font-weight:300;}
+.ib strong,.wb strong,.nb strong{color:var(--text);font-weight:600;}
+.wb{background:var(--red-s);border-color:var(--red-b);}
+.wb::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23b91c1c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13.5'/%3E%3Ccircle cx='12' cy='16.5' r='0.6' fill='%23b91c1c' stroke='none'/%3E%3C/svg%3E");}
+.nb{background:var(--blue-s);border-color:var(--blue-b);}
+.nb::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231C974D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5'/%3E%3C/svg%3E");}
 .phb{background:var(--white);border:1.5px dashed var(--border2);border-radius:var(--r);padding:40px;margin:24px 0;text-align:center;}
 .phb .phi{font-size:32px;margin-bottom:12px;}
 .phb .pht{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px;}
 .phb .phd{font-size:13px;color:var(--text3);font-weight:300;}
 
 /* ─── CODE / FORMULA ─── */
-code{background:none;border:none;padding:0;font-family:inherit;font-size:inherit;color:inherit;}
-pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--r);padding:18px 20px;font-size:12.5px;line-height:1.6;overflow-x:auto;margin:14px 0;}
-.fb{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 16px;margin:14px 0;font-family:'Courier New',monospace;font-size:13px;color:var(--blue);}
+code{background:var(--neutral-s);border:1px solid var(--border);border-radius:4px;padding:1.5px 5px;font-family:var(--mono);font-size:.9em;color:var(--text);}
+th code,td code{background:var(--white);}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--r);padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.6;overflow-x:auto;margin:14px 0;}
+pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit;}
+.fb{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 16px;margin:14px 0;font-family:var(--mono);font-size:13px;color:var(--blue);}
 
 /* ─── PROCESS FLOW ─── */
-.pflow{display:flex;align-items:stretch;margin:24px 0;flex-wrap:wrap;gap:1px;background:var(--border);border:1px solid var(--border);}
-.pstep{flex:1;min-width:140px;background:var(--white);padding:20px 18px;text-align:center;position:relative;}
+.pflow{display:flex;align-items:stretch;margin:24px 0;flex-wrap:wrap;gap:16px;}
+.pstep{flex:1;min-width:140px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 1px 2px var(--shadow-soft);padding:20px 18px;text-align:center;position:relative;}
 .pstep::after{content:'→';position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:18px;font-weight:700;z-index:1;}
 .pstep:last-child::after{display:none;}
 .pnum{font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;}
@@ -497,19 +504,47 @@ li strong{color:var(--text);font-weight:600;}
 .mrow-body p:last-child{margin-bottom:0;}
 .mrow-body strong{color:var(--text);font-weight:600;}
 
-/* ─── ACCESS GATE ─── */
-#gate{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px;}
-.gate-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:100%;box-shadow:0 8px 30px var(--shadow-card);text-align:center;}
-.gate-logo{display:flex;justify-content:center;gap:3px;margin-bottom:20px;}
-.gate-logo div{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:#fff;}
-.gate-card h1{font-size:19px;margin-bottom:8px;}
-.gate-card p{font-size:13px;color:var(--text3);margin-bottom:22px;font-weight:300;}
-#gate-input{width:100%;box-sizing:border-box;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;text-align:center;letter-spacing:1px;font-family:var(--sans);margin-bottom:12px;transition:border-color .15s;}
+/* ─── ACCESS GATE (volgt nu de site-theme, net als de rest van de app) ─── */
+#gate{
+  position:fixed;inset:0;overflow-y:auto;
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  z-index:9999;
+}
+#gate::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle, var(--gate-dot) 1px, transparent 1px);
+  background-size:17px 17px;
+  -webkit-mask-image:radial-gradient(circle at center, transparent 0, transparent 120px, black 260px);
+  mask-image:radial-gradient(circle at center, transparent 0, transparent 120px, black 260px);
+}
+.gate-topbar{
+  position:relative;z-index:2;flex-shrink:0;
+  background:var(--topbar-bg);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  height:72px;
+  margin:16px 16px 0 16px;
+  border-radius:18px;
+  box-shadow:0 4px 24px var(--shadow-soft);
+}
+.gate-body{
+  position:relative;z-index:1;flex:1;min-height:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px 60px;
+}
+.gate-brand{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;margin-bottom:36px;}
+.gate-brand-mark{display:flex;gap:5px;}
+.gate-brand-mark div{width:40px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--wordmark);font-size:17px;font-weight:700;color:#fff;}
+.gate-card{position:relative;z-index:1;background:var(--white);border:1px solid var(--border);border-radius:20px;padding:30px 30px 26px;max-width:400px;width:100%;box-shadow:0 16px 44px var(--shadow-card);text-align:center;}
+#gate-input{width:100%;box-sizing:border-box;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14.5px;text-align:center;letter-spacing:.5px;font-family:var(--sans);margin-bottom:12px;transition:border-color .15s;background:var(--white);color:var(--text);}
 #gate-input:focus{outline:none;border-color:var(--accent);}
-#gate-btn{width:100%;padding:11px 0;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .15s;}
+#gate-btn{width:100%;padding:12px 0;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:14.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .15s;}
 #gate-btn:hover{opacity:.9;}
 #gate-error{color:#C0392B;font-size:12.5px;margin-top:10px;display:none;font-weight:500;}
 #gate-error.on{display:block;}
+.gate-legal{font-size:12.5px;color:var(--text2);font-weight:300;line-height:1.55;margin-top:18px;}
+.gate-card-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text3);font-weight:300;text-align:center;}
 
 @media(max-width:960px){.rail{display:none;}.canvas{padding:32px 24px 60px;}.overview-grid{grid-template-columns:1fr;}}
 
@@ -539,18 +574,51 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 
 <!-- ACCESS GATE -->
 <div id="gate">
-  <div class="gate-card">
-    <div class="gate-logo">
-      <div style="background:#4BAE8A;">F</div>
-      <div style="background:#E8B84B;">C</div>
-      <div style="background:#E8710A;">A</div>
-      <div style="background:#C0392B;">B</div>
+  <header class="topbar gate-topbar">
+    <div class="topbar-inner">
+      <div class="logo" style="display:flex;align-items:center;gap:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;flex-shrink:0;">
+          <div style="width:22px;height:22px;border-radius:3px;background:#4BAE8A;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">F</div>
+          <div style="width:22px;height:22px;border-radius:3px;background:#E8B84B;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">C</div>
+          <div style="width:22px;height:22px;border-radius:3px;background:#E8710A;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">A</div>
+          <div style="width:22px;height:22px;border-radius:3px;background:#C0392B;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">B</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1px;padding-bottom:1px;">
+          <div style="font-size:13.6px;font-weight:400;color:var(--text2);letter-spacing:.1px;line-height:1.35;white-space:nowrap;">Framework for Climate</div>
+          <div style="font-size:13.6px;font-weight:400;color:var(--text2);letter-spacing:.1px;line-height:1.35;white-space:nowrap;">Adaptive Buildings</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button type="button" class="lang-toggle notranslate" translate="no" onclick="toggleLanguage()" aria-label="Vertaal pagina naar Engels" title="Nederlands / English">
+          <span class="lt-label notranslate" translate="no">EN</span>
+        </button>
+        <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Wissel donkere modus" title="Licht / donker">
+          <svg class="ti-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="ti-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <a class="dgbc-link" href="https://www.dgbc.nl" target="_blank" rel="noopener" aria-label="Naar www.dgbc.nl" title="Dutch Green Building Council">
+      <img src="data:image/png;base64,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" alt="DGBC">
+    </a>
+        <span class="notranslate" translate="no" style="font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;font-style:italic;color:#fff;background:#1c1a17;padding:4px 12px;border-radius:20px;display:inline-block;">beta</span>
+      </div>
     </div>
-    <h1>Toegang vereist</h1>
-    <p>Deze omgeving is momenteel afgeschermd. Voer de toegangscode in.</p>
-    <input type="password" id="gate-input" placeholder="Toegangscode" autocomplete="off">
-    <button id="gate-btn" onclick="checkGateCode()">Ontgrendelen</button>
-    <div id="gate-error">Onjuiste code. Probeer het opnieuw.</div>
+  </header>
+  <div class="gate-body">
+    <div class="gate-brand">
+      <div class="gate-brand-mark">
+        <div style="background:#4BAE8A;">F</div>
+        <div style="background:#E8B84B;">C</div>
+        <div style="background:#E8710A;">A</div>
+        <div style="background:#C0392B;">B</div>
+      </div>
+    </div>
+    <div class="gate-card">
+      <input type="password" id="gate-input" placeholder="Toegangscode" autocomplete="off">
+      <button id="gate-btn" onclick="checkGateCode()">Ontgrendelen</button>
+      <div id="gate-error">Onjuiste code. Probeer het opnieuw.</div>
+      <p class="gate-legal">Deze omgeving is momenteel afgeschermd. Voer de toegangscode in om verder te gaan.</p>
+      <div class="gate-card-footer">Ontwikkeld door Dutch Green Building Council</div>
+    </div>
   </div>
 </div>
 
@@ -571,8 +639,8 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
       <div style="width:22px;height:22px;border-radius:3px;background:#C0392B;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:white;">B</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:1px;padding-bottom:1px;">
-      <div style="font-size:9px;font-weight:300;color:var(--text3);letter-spacing:.3px;line-height:1.4;">Framework for Climate</div>
-      <div style="font-size:9px;font-weight:300;color:var(--text3);letter-spacing:.3px;line-height:1.4;">Adaptive Buildings</div>
+      <div style="font-size:13.6px;font-weight:400;color:var(--text2);letter-spacing:.1px;line-height:1.35;white-space:nowrap;">Framework for Climate</div>
+      <div style="font-size:13.6px;font-weight:400;color:var(--text2);letter-spacing:.1px;line-height:1.35;white-space:nowrap;">Adaptive Buildings</div>
     </div>
   </a>
   <div class="topbar-right">
@@ -583,7 +651,10 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
       <svg class="ti-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg class="ti-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
     </button>
-    <span class="notranslate" translate="no" style="font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;font-style:italic;color:#fff;background:#1c1a17;padding:4px 12px;border-radius:20px;transform:rotate(-6deg);display:inline-block;">beta</span>
+    <a class="dgbc-link" href="https://www.dgbc.nl" target="_blank" rel="noopener" aria-label="Naar www.dgbc.nl" title="Dutch Green Building Council">
+      <img src="data:image/png;base64,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" alt="DGBC">
+    </a>
+    <span class="notranslate" translate="no" style="font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;font-style:italic;color:#fff;background:#1c1a17;padding:4px 12px;border-radius:20px;display:inline-block;">beta</span>
   </div>
   </div>
 </header>
@@ -603,40 +674,10 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
   <div class="rdiv"></div>
   <div class="rail-label">Framework for Climate Adaptive Buildings</div>
   <div class="ni" data-key="process" onclick="nav('process',this)">Introductie</div>
-  <div class="subnav" id="subnav-process">
-    <div class="ni-sub2" onclick="jump('sec-klimaatverandering-gebouwen',this)">1. Klimaatverandering en gebouwen</div>
-    <div class="ni-sub2" onclick="jump('sec-rapportageverplichtingen',this)">2. Rapportageverplichtingen over fysiek klimaatrisico</div>
-    <div class="ni-sub2" onclick="jump('sec-bepalen-klimaatrisicos',this)">3. Bepalen klimaatrisico's</div>
-    <div class="ni-sub2" onclick="jump('sec-klimaatmodellen',this)">4. Klimaatmodellen</div>
-    <div class="ni-sub2" onclick="jump('sec-klimaatscenarios',this)">5. Klimaatscenario's</div>
-    <div class="ni-sub2" onclick="jump('sec-tijdshorizons',this)">6. Tijdshorizons</div>
-    <div class="ni-sub2" onclick="jump('sec-faq',this)">7. Veelgestelde vragen</div>
-  </div>
   <div class="ni" data-key="omgevingsscore" onclick="nav('omgevingsscore',this)">1. Omgevingsscore</div>
-  <div class="subnav" id="subnav-omgevingsscore">
-    <div class="ni-sub2" onclick="jump('sec-og-hittestress',this)">1. Hittestress</div>
-    <div class="ni-sub2" onclick="jump('sec-og-natuurbrand',this)">2. Natuurbrandgevoeligheid</div>
-    <div class="ni-sub2" onclick="jump('sec-og-paalrot',this)">3. Paalrot</div>
-    <div class="ni-sub2" onclick="jump('sec-og-verschilzetting',this)">4. Verschilzetting</div>
-    <div class="ni-sub2" onclick="jump('sec-og-waterdiepte-bui',this)">5. Waterdiepte bij hevige bui</div>
-    <div class="ni-sub2" onclick="jump('sec-og-grondwateroverlast',this)">6. Grondwateroverlast</div>
-    <div class="ni-sub2" onclick="jump('sec-og-maxwaterdiepte',this)">7. Maximale waterdieptekaart</div>
-    <div class="ni-sub2" onclick="jump('sec-og-overstromingskans',this)">8. Plaatsgebonden overstromingskans</div>
-  </div>
   <div class="ni" data-key="gebouwscore" onclick="nav('gebouwscore',this)">2. Gebouwscore</div>
-  <div class="subnav" id="subnav-gebouwscore">
-    <div class="ni-sub2" onclick="jump('sec-gs-hitte',this)">1. Hitte</div>
-    <div class="ni-sub2" onclick="jump('sec-gs-droogte',this)">2. Droogte</div>
-    <div class="ni-sub2" onclick="jump('sec-gs-wateroverlast',this)">3. Wateroverlast</div>
-    <div class="ni-sub2" onclick="jump('sec-gs-overstroming',this)">4. Overstroming</div>
-  </div>
   <div class="ni" data-key="strategie" onclick="nav('strategie',this)">3. Adaptatiestrategie</div>
-  <div class="subnav" id="subnav-strategie">
-    <div class="ni-sub2" onclick="jump('sec-strat-1',this)">1. Klimaatrisico's in een risicomanagementcyclus</div>
-    <div class="ni-sub2" onclick="jump('sec-strat-3',this)">2. Fysieke klimaatrisico's beoordelen</div>
-    <div class="ni-sub2" onclick="jump('sec-strat-4',this)">3. Maatregelen</div>
-    <div class="ni-sub2" onclick="jump('sec-strat-5',this)">4. Bijlagen</div>
-  </div>
+  <div class="ni" data-key="faq" onclick="nav('faq',this)">Veelgestelde vragen</div>
   <div class="rdiv"></div>
   <div class="rail-label">Klimaatthema's</div>
   <div class="ni sub" data-key="hitte" onclick="nav('hitte',this)">Hitte</div>
@@ -708,7 +749,7 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
     <div class="ov-card" onclick="nav('omgevingsscore',null)"><div class="ov-num">1</div><div class="ov-title">Omgevingsscore</div><div class="ov-desc">Klimaateffecten (hazard × blootstelling) in de directe omgeving, op basis van landelijke open data</div></div>
     <div class="ov-card" onclick="nav('gebouwscore',null)"><div class="ov-num">2</div><div class="ov-title">Gebouwscore</div><div class="ov-desc">Kwetsbaarheid van het gebouw zelf, op basis van gebouwspecifieke kenmerken</div></div>
   </div>
-  <p style="margin-top:14px;">Veel klimaatrisico-analyses richten zich uitsluitend op de klimaatdreiging (hazard), terwijl blootstelling en kwetsbaarheid minstens zo belangrijk zijn. Door de omgevingsscore en gebouwscore te combineren ontstaat de klimaatrisicoscore per klimaatthema - uitgewerkt onder <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);font-weight:600;" onclick="nav('gebouwscore',null)">Gebouwscore</span>.</p>
+  <p style="margin-top:14px;">Veel klimaatrisico-analyses richten zich uitsluitend op de klimaatdreiging (hazard), terwijl blootstelling en kwetsbaarheid minstens zo belangrijk zijn. Door de omgevingsscore en gebouwscore te combineren ontstaat de klimaatrisicoscore per klimaatthema - uitgewerkt onder <span class="inline-link" style="font-weight:600;" onclick="nav('gebouwscore',null)">Gebouwscore</span>.</p>
 
   <h2 id="sec-klimaatmodellen"><span class="h2-num">4</span>Klimaatmodellen</h2>
   <p>Klimaatmodellen simuleren hoe energie en materie op elkaar inwerken in atmosfeer, oceanen, landoppervlak, biosfeer en cryosfeer. Klimaatwetenschappers gebruiken mondiale klimaatmodellen (<strong>General Circulation Models, GCM's</strong>) en regionale klimaatmodellen (<strong>Regional Climate Models, RCM's</strong>). Het IPCC gebruikt meer dan 30 GCM's, vergeleken binnen het Coupled Model Intercomparison Project (CMIP).</p>
@@ -728,13 +769,18 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
   <p>Klimaatscenario's hebben doorgaans een tijdshorizon van 50 tot 100 jaar - veel langer dan een weersverwachting (tot 15 dagen). Het IPCC hanteert twintig jaar als minimumperiode om relevante statistieken op te stellen; de KNMI-klimaatscenario's geven reeksen van dertig jaar en tonen veranderingen rond <strong>2050</strong> en <strong>2085</strong> ten opzichte van de periode 1981-2010.</p>
   <p>Voor het inschatten van fysiek klimaatrisico is het zinvol ver vooruit te kijken, zeker gezien de levensduur van gebouwen (voor woningen en utiliteitsgebouwen doorgaans 50 tot 75 jaar). FCAB hanteert daarom het hoge klimaatscenario voor de periode tot <strong>2050</strong> - mede omdat niet alle kaartlagen tijdshorizons voorbij 2050 beschikbaar zijn.</p>
 
-  <h2 id="sec-faq"><span class="h2-num">7</span>Veelgestelde vragen</h2>
-  <h3>Toepassing</h3>
+</div>
+
+<!-- ══ VEELGESTELDE VRAGEN (FAQ) ══ -->
+<div class="page" id="page-faq">
+  <h1>Veelgestelde vragen</h1>
+  <p class="lead">Veelgestelde vragen over de toepassing en interpretatie van het FCAB-framework.</p>
+  <h2 id="sec-faq-toepassing"><span class="h2-num">1</span>Toepassing</h2>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Is FCAB ook geschikt voor nieuwbouw? <span class="faqc">▼</span></div><div class="faqa">Nee. FCAB is uitsluitend ontwikkeld voor <strong>bestaande gebouwen</strong>. Voor nieuwbouw verwijzen we naar de <em>Landelijke Maatlat voor een groene, klimaatadaptieve gebouwde omgeving</em>.</div></div>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Wat is het verschil tussen Omgevingsscore en Gebouwscore? <span class="faqc">▼</span></div><div class="faqa"><strong>Omgevingsscore (FCAB-1)</strong> beschrijft de klimaateffecten in de omgeving op basis van open data. <strong>Gebouwscore (FCAB-2)</strong> beschrijft de kwetsbaarheid van het gebouw zelf. Samen vormen zij de klimaatrisicoscore.</div></div>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Kan ik de vier thema-scores optellen tot één totaalscore? <span class="faqc">▼</span></div><div class="faqa">Dat is <strong>niet aanbevolen</strong>. Een hoge score op wateroverlast laat zich niet uitmiddelen met een lage score op hittestress. Elke thema-score staat op zichzelf en vergt specifieke aandacht.</div></div>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Wanneer wordt Hagel &amp; Storm een volledig thema? <span class="faqc">▼</span></div><div class="faqa">Dit wordt verkend voor v1.1 (voorjaar 2025) op basis van KNMI'23. In de maatregelentabel zijn al maatregelen voor storm en hagel opgenomen.</div></div>
-  <h3>Interpretatie</h3>
+  <h2 id="sec-faq-interpretatie"><span class="h2-num">2</span>Interpretatie</h2>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Wat betekent de score 'Onbekend' bij wateroverlast? <span class="faqc">▼</span></div><div class="faqa">De kaart is gebaseerd op AHN2-data (2007-2012). Gebouwen gebouwd na 2012 vallen buiten de opnameperiode en krijgen de score 'Onbekend'.</div></div>
   <div class="faq"><div class="faqq" onclick="tfaq(this)">Wat kan ik doen als de score 'hoog' of 'zeer hoog' is? <span class="faqc">▼</span></div><div class="faqa">Een 'rode vlag' is het startpunt voor verdere analyse: (1) Deep-dive met nauwkeurigere data of locatiebezoek, (2) impactanalyse, (3) risicohouding bepalen (Terminate / Treat / Transfer / Take), (4) maatregelen selecteren uit de FCAB-3 maatregelentabel.</div></div>
 </div>
@@ -743,10 +789,6 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 <div class="page" id="page-omgevingsscore">
   <h1>Omgevingsscore</h1>
   <p class="lead">De omgevingsscore - door sommige vastgoedpartijen ook wel <strong>'bruto-klimaatrisico'</strong> genoemd - beschrijft de klimaateffecten voor de directe omgeving van een gebouw. Ze is volledig gebaseerd op vrij toegankelijke landelijke open data uit de Klimaateffectatlas, en werkt met het hoge klimaatscenario (KNMI'14 WH, 2050). Acht kaartlagen, verdeeld over vier klimaatthema's, vormen samen de omgevingsscore.</p>
-  <div class="scale">
-    <div class="sb sn">Geen</div><div class="sb svl">Zeer laag</div><div class="sb sl">Laag</div>
-    <div class="sb sm">Middel</div><div class="sb sh">Hoog</div><div class="sb svh">Zeer hoog</div><div class="sb su">Onbekend</div>
-  </div>
   <p style="font-size:13px;color:var(--text3);margin-top:8px;">Scores Hoog en Zeer hoog zijn rode vlaggen en geven aanleiding tot nader onderzoek. Volledige dataset-specificaties en versiebeheer per kaartlaag staan op de themapagina's (tabblad 'Omgevingsscore').</p>
 
   <h2 id="sec-og-hittestress"><span class="h2-num">1</span>Hittestress</h2>
@@ -830,7 +872,7 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
     <tr><td>Zeer kleine kans: &gt; 1/3.000</td><td><span class="sb svl">Zeer laag</span></td></tr>
     <tr><td>NoData</td><td><span class="sb sn">Geen</span></td></tr>
   </table>
-  <div class="ib" style="margin-top:14px;">Samen met de gebouwscore vormen deze acht kaartlagen de klimaatrisicoscore per gebouw - zie <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);font-weight:600;" onclick="nav('gebouwscore',null)">Gebouwscore</span> (FCAB-2).</div>
+  <div class="ib" style="margin-top:14px;">Samen met de gebouwscore vormen deze acht kaartlagen de klimaatrisicoscore per gebouw - zie <span class="inline-link" style="font-weight:600;" onclick="nav('gebouwscore',null)">Gebouwscore</span> (FCAB-2).</div>
 </div>
 
 <!-- ══ GEBOUWSCORE (FCAB-2) ══ -->
@@ -847,82 +889,86 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
   <div class="ib">Een klimaatrisicoscore van <strong>hoog</strong> of <strong>zeer hoog</strong> geldt als een 'rode vlag' - het gebouw krijgt daarmee prioriteit voor nader onderzoek (een deep-dive) en voor het overwegen van maatregelen. Bij onbekende gebouwgegevens wordt conform de methodiek de categorie 'zeer hoge kwetsbaarheid' toegekend.</div>
 
   <h2 id="sec-gs-hitte"><span class="h2-num">1</span>Hitte</h2>
-  <p>De gebouwscore voor hitte telt punten op voor kenmerken die opwarming versterken (glasoppervlak, thermische massa, aanwezigheid van zonwering, zon-toetredingsfactor, dakkleur, gevelkleur, overstek boven ramen) en trekt punten af voor kenmerken die afkoeling bevorderen (koeling, isolatie, spuiventilatie). Bij hitte weegt de gebouwscore <strong>zwaarder</strong> dan de omgevingsscore in de uiteindelijke risicomatrix: goede isolatie, buitenzonwering en spuiventilatie kunnen een hoge omgevingsscore compenseren. Volledige puntentabellen staan op de <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);" onclick="nav('hitte',this);stv('hitte','gebouw')">Hitte-pagina, tabblad Gebouwscore</span>.</p>
+  <p>De gebouwscore voor hitte telt punten op voor kenmerken die opwarming versterken (glasoppervlak, thermische massa, aanwezigheid van zonwering, zon-toetredingsfactor, dakkleur, gevelkleur, overstek boven ramen) en trekt punten af voor kenmerken die afkoeling bevorderen (koeling, isolatie, spuiventilatie). Bij hitte weegt de gebouwscore <strong>zwaarder</strong> dan de omgevingsscore in de uiteindelijke risicomatrix: goede isolatie, buitenzonwering en spuiventilatie kunnen een hoge omgevingsscore compenseren. Volledige puntentabellen staan op de <span class="inline-link" onclick="nav('hitte',this);setTimeout(()=>document.getElementById('hitte-gebouwscore').scrollIntoView(),0)">Hitte-pagina, sectie Gebouwscore</span>.</p>
 
   <h2 id="sec-gs-droogte"><span class="h2-num">2</span>Droogte</h2>
-  <p>Droogte werkt niet met een optelbare puntenscore per kenmerk, maar volgt direct uit <strong>bouwjaar</strong> en <strong>funderingstype</strong>. Panden gebouwd na 1975 zijn niet gevoelig voor paalrot of verschilzetting. Voor oudere panden op een houten paalfundering bepaalt het bouwjaar (leeftijd = cumulatieve blootstelling) de gebouwscore voor paalrot; voor panden op een ondiepe fundering ('op staal') volgt de gebouwscore voor verschilzetting uit een tabel van bouwjaar × onderkeldering (0-100). Is het funderingstype onbekend, dan geldt de categorie 'zeer hoge kwetsbaarheid'. Volledige tabellen staan op de <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);" onclick="nav('droogte',this);stv('droogte','gebouw')">Droogte-pagina, tabblad Gebouwscore</span>.</p>
+  <p>Droogte werkt niet met een optelbare puntenscore per kenmerk, maar volgt direct uit <strong>bouwjaar</strong> en <strong>funderingstype</strong>. Panden gebouwd na 1975 zijn niet gevoelig voor paalrot of verschilzetting. Voor oudere panden op een houten paalfundering bepaalt het bouwjaar (leeftijd = cumulatieve blootstelling) de gebouwscore voor paalrot; voor panden op een ondiepe fundering ('op staal') volgt de gebouwscore voor verschilzetting uit een tabel van bouwjaar × onderkeldering (0-100). Is het funderingstype onbekend, dan geldt de categorie 'zeer hoge kwetsbaarheid'. Volledige tabellen staan op de <span class="inline-link" onclick="nav('droogte',this);setTimeout(()=>document.getElementById('droogte-gebouwscore').scrollIntoView(),0)">Droogte-pagina, sectie Gebouwscore</span>.</p>
 
   <h2 id="sec-gs-wateroverlast"><span class="h2-num">3</span>Wateroverlast</h2>
-  <p>De gebouwscore voor wateroverlast telt punten op voor kenmerken die het gebouw kwetsbaar maken voor kortdurende hevige neerslag: de hoogte van de ingang ten opzichte van het maaiveld (dryproofing), de aanwezigheid van een parkeerkelder of andere ondergrondse ruimte, overige instroompunten (kelderramen), en het al dan niet aanwezig zijn van een ontlastput of terugslagklep tegen rioolwater (wetproofing). Volledige puntentabellen staan op de <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);" onclick="nav('wateroverlast',this);stv('wateroverlast','gebouw')">Wateroverlast-pagina, tabblad Gebouwscore</span>.</p>
+  <p>De gebouwscore voor wateroverlast telt punten op voor kenmerken die het gebouw kwetsbaar maken voor kortdurende hevige neerslag: de hoogte van de ingang ten opzichte van het maaiveld (dryproofing), de aanwezigheid van een parkeerkelder of andere ondergrondse ruimte, overige instroompunten (kelderramen), en het al dan niet aanwezig zijn van een ontlastput of terugslagklep tegen rioolwater (wetproofing). Volledige puntentabellen staan op de <span class="inline-link" onclick="nav('wateroverlast',this);setTimeout(()=>document.getElementById('wateroverlast-gebouwscore').scrollIntoView(),0)">Wateroverlast-pagina, sectie Gebouwscore</span>.</p>
 
   <h2 id="sec-gs-overstroming"><span class="h2-num">4</span>Overstroming</h2>
-  <p>De gebouwscore voor overstroming werkt vergelijkbaar met wateroverlast, maar dan toegespitst op grotere waterdieptes (tot 50 cm en hoger): de hoogte van de ingang, parkeerkelders en andere ondergrondse ruimtes, overige instroompunten (kelderramen, open stootvoegen), en terugslagkleppen tegen rioolwater. Volledige puntentabellen staan op de <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);" onclick="nav('overstroming',this);stv('overstroming','gebouw')">Overstroming-pagina, tabblad Gebouwscore</span>.</p>
+  <p>De gebouwscore voor overstroming werkt vergelijkbaar met wateroverlast, maar dan toegespitst op grotere waterdieptes (tot 50 cm en hoger): de hoogte van de ingang, parkeerkelders en andere ondergrondse ruimtes, overige instroompunten (kelderramen, open stootvoegen), en terugslagkleppen tegen rioolwater. Volledige puntentabellen staan op de <span class="inline-link" onclick="nav('overstroming',this);setTimeout(()=>document.getElementById('overstroming-gebouwscore').scrollIntoView(),0)">Overstroming-pagina, sectie Gebouwscore</span>.</p>
 
   <h2 id="sec-gs-risicomatrix">Klimaatrisicoscore</h2>
   <p style="color:var(--text3);font-size:13px;"><strong>Uitzondering - Hitte:</strong> bij hitte weegt de gebouwscore zwaarder. Goede isolatie, buitenzonwering en spuiventilatie kunnen een hoge omgevingsscore compenseren.</p>
   <div id="mx-generic"></div>
-  <div class="ib" style="margin-top:14px;">Het <strong>handelingsperspectief</strong> na een rode vlag - risicomanagementcyclus, impactanalyse, risicohouding en maatregelen - is uitgewerkt onder <span class="ni-sub2" style="display:inline;cursor:pointer;color:var(--accent);font-weight:600;" onclick="nav('strategie',null)">Adaptatiestrategie</span> (FCAB-3).</div>
+  <div class="ib" style="margin-top:14px;">Het <strong>handelingsperspectief</strong> na een rode vlag - risicomanagementcyclus, impactanalyse, risicohouding en maatregelen - is uitgewerkt onder <span class="inline-link" style="font-weight:600;" onclick="nav('strategie',null)">Adaptatiestrategie</span> (FCAB-3).</div>
 </div>
 
 <div class="page" id="page-hitte">
   <h1>Hitte</h1>
   <p class="lead">Hittestress door warme nachten en het stedelijk hitte-eilandeffect.</p>
-  <div class="switcher">
-    <button class="sbtn on" id="sw-hitte-omgeving" onclick="stv('hitte','omgeving')">Omgevingsscore</button>
-    <button class="sbtn" id="sw-hitte-gebouw" onclick="stv('hitte','gebouw')">Gebouwscore</button>
-  </div>
-  <div class="sp on" id="panel-hitte-omgeving">
-    <div class="pills"><button class="pill on" onclick="si2('hitte','omgeving','nachten')">Hittestress warme nachten 2050 Hoog</button></div>
+
+
+  <h2 id="hitte-introductie"><span class="h2-num">1</span>Introductie</h2>
+  <p>Tijdens een <strong>tropische nacht</strong> blijft de luchttemperatuur boven 20 °C. Door het hitte-eilandeffect (UHI) is het in stedelijk gebied nachtelijk warmer dan in het omringende landelijke gebied, waardoor passieve nachtkoeling bemoeilijkt wordt.</p>
+  <div class="ib"><strong>Toepassing:</strong> Aantal verwachte tropische nachten per jaar in 2050 onder het WH-scenario, inclusief stedelijk hitte-eilandeffect.</div>
+
+  <h2 id="hitte-omgevingsscore"><span class="h2-num">2</span>Omgevingsscore</h2>
+  <div class="pills"><button class="pill on" onclick="si2('hitte','omgeving','nachten')">Hittestress warme nachten 2050 Hoog</button></div>
+  <div id="panel-hitte-omgeving">
     <div class="ip on" id="ind-hitte-omgeving-nachten">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-h-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-h-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-h-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-h-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-h-def"><h3>Definitie</h3><p>Tijdens een <strong>tropische nacht</strong> blijft de luchttemperatuur boven 20 °C. Door het hitte-eilandeffect (UHI) is het in stedelijk gebied nachtelijk warmer dan in het omringende landelijke gebied, waardoor passieve nachtkoeling bemoeilijkt wordt.</p><div class="ib"><strong>Toepassing:</strong> Aantal verwachte tropische nachten per jaar in 2050 onder het WH-scenario, inclusief stedelijk hitte-eilandeffect.</div></div>
-      <div class="dtc" id="dt-h-data"><h3>Dataset specificaties</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>WENR (Wageningen Environmental Research)</td></tr><tr><td>Publicatiejaar</td><td>2016</td></tr><tr><td>Resolutie</td><td><code>100m × 100m</code></td></tr><tr><td>Scenario</td><td><code>KNMI'14 WH (2050)</code></td></tr><tr><td>Methode</td><td>Temperatuurmetingen Rotterdam → omgevingskenmerken → extrapolatie Nederland</td></tr><tr><td>Beperkingen</td><td>Indicatief voor stedelijk gebied; herziening gewenst</td></tr></table><p>De omgevingsscore voor hitte is een signaleringsinstrument. Of daadwerkelijk hittestress optreedt is sterk afhankelijk van de gebouwkenmerken - bij hitte zijn die <em>leidend</em> voor de klimaatrisicoscore.</p><div class="srccard"><div><div class="srn">Hittestress warme nachten - 2050 Hoog</div><div class="srm">WENR · 2016 · 100m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div></div>
-      <div class="dtc" id="dt-h-score"><h3>Classificatie omgevingsscore</h3><table><tr><th>Kaartwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 21</code> tropische nachten</td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>14-21</code> tropische nachten</td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>&lt; 14</code> tropische nachten</td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table></div>
-      <div class="dtc" id="dt-h-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset specificaties</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>WENR (Wageningen Environmental Research)</td></tr><tr><td>Publicatiejaar</td><td>2016</td></tr><tr><td>Resolutie</td><td><code>100m × 100m</code></td></tr><tr><td>Scenario</td><td><code>KNMI'14 WH (2050)</code></td></tr><tr><td>Methode</td><td>Temperatuurmetingen Rotterdam → omgevingskenmerken → extrapolatie Nederland</td></tr><tr><td>Beperkingen</td><td>Indicatief voor stedelijk gebied; herziening gewenst</td></tr></table><p>De omgevingsscore voor hitte is een signaleringsinstrument. Of daadwerkelijk hittestress optreedt is sterk afhankelijk van de gebouwkenmerken - bij hitte zijn die <em>leidend</em> voor de klimaatrisicoscore.</p><div class="srccard"><div><div class="srn">Hittestress warme nachten - 2050 Hoog</div><div class="srm">WENR · 2016 · 100m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div>
+      <h3>Classificatie omgevingsscore</h3><table><tr><th>Kaartwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 21</code> tropische nachten</td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>14-21</code> tropische nachten</td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>&lt; 14</code> tropische nachten</td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table>
     </div>
   </div>
-  <div class="sp" id="panel-hitte-gebouw">
-    <h3>Gebouwkenmerken en antwoordopties</h3>
-    <p class="lead" style="font-size:13px;">Punten volgens Tabel 3 (opwarming) en Tabel 4 (afkoeling), FCAB Deel 2 - De gebouwscore. Klik per vraag op het van toepassing zijnde antwoord; de tabellen tellen de punten automatisch op. Bij onbekende data wordt de categorie 'zeer hoge kwetsbaarheid' toegekend.</p>
 
-    <h4>Opwarming</h4>
-    <div id="qtable-geb-hitte-opwarm"></div>
-    <div class="ib"><strong>Gebouwscore opwarming</strong> = som van de gekozen punten.</div>
+  <h2 id="hitte-gebouwscore"><span class="h2-num">3</span>Gebouwscore</h2>
+  <p class="lead" style="font-size:13px;">Punten volgens Tabel 3 (opwarming) en Tabel 4 (afkoeling), FCAB Deel 2 - De gebouwscore. Klik per vraag op het van toepassing zijnde antwoord; de tabellen tellen de punten automatisch op. Bij onbekende data wordt de categorie 'zeer hoge kwetsbaarheid' toegekend.</p>
 
-    <h4>Afkoeling</h4>
-    <div id="qtable-geb-hitte-afkoel"></div>
-    <div class="qhint" style="font-size:12px;color:var(--text3);margin:-4px 0 14px;">De punten voor "Spuiventilatie" hangen af van de omgevingsscore hieronder: bij lage/zeer lage omgevingsscore telt het eerste getal, bij gemiddelde/hoge omgevingsscore het tweede.</div>
-    <div class="ib"><strong>Gebouwscore totaal</strong> = Gebouwscore opwarming min de punten afkoeling.</div>
+  <h4>Opwarming</h4>
+  <div id="qtable-geb-hitte-opwarm"></div>
+  <div class="ib"><strong>Gebouwscore opwarming</strong> = som van de gekozen punten.</div>
 
-    <h2>Klimaatrisicoscore</h2>
-    <p style="color:var(--text3);font-size:13px;">Bij hitte weegt de gebouwscore zwaarder dan de omgevingsscore: de klimaatrisicoscore volgt rechtstreeks uit de gebouwscore-totaalpunten hierboven. Een gebouw met buitenzonwering, spuiventilatie en goede isolatie kan een lage klimaatrisicoscore halen, ook bij een hoge omgevingsscore.</p>
-    <div id="mx-hitte"></div>
+  <h4>Afkoeling</h4>
+  <div id="qtable-geb-hitte-afkoel"></div>
+  <div class="qhint" style="font-size:12px;color:var(--text3);margin:-4px 0 14px;">De punten voor "Spuiventilatie" hangen af van de omgevingsscore hieronder: bij lage/zeer lage omgevingsscore telt het eerste getal, bij gemiddelde/hoge omgevingsscore het tweede.</div>
+  <div class="ib"><strong>Gebouwscore totaal</strong> = Gebouwscore opwarming min de punten afkoeling.</div>
 
-    <div class="calcbox">
-      <h4>Klimaatrisicoscore Hitte</h4>
-      <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Kies hieronder de omgevingsscore om, samen met de gebouwscore hierboven, de klimaatrisicoscore te zien.</p>
+  <h2 id="hitte-klimaatrisicoscore"><span class="h2-num">4</span>Klimaatrisicoscore</h2>
+  <p style="color:var(--text3);font-size:13px;">Bij hitte weegt de gebouwscore zwaarder dan de omgevingsscore: de klimaatrisicoscore volgt rechtstreeks uit de gebouwscore-totaalpunten hierboven. Een gebouw met buitenzonwering, spuiventilatie en goede isolatie kan een lage klimaatrisicoscore halen, ook bij een hoge omgevingsscore.</p>
+  <div id="mx-hitte"></div>
 
-      <div class="calcrow calcsub" style="border-top:none;padding-top:8px;"><div class="calclabel"><strong>Omgevingsscore</strong> - hittestress door warme nachten</div>
-        <select id="c-hitte-omgeving" onchange="calcHitte()">
-          <option value="">Kies</option>
-          <option value="Hoge">Meer dan 3 weken (hoog)</option>
-          <option value="Gemiddelde">2 tot 3 weken (middel)</option>
-          <option value="Lage">Minder dan 2 weken (laag)</option>
-          <option value="n.v.t.">Niet van toepassing</option>
-        </select></div>
+  <div class="calcbox">
+    <h4>Klimaatrisicoscore Hitte</h4>
+    <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Kies hieronder de omgevingsscore om, samen met de gebouwscore hierboven, de klimaatrisicoscore te zien.</p>
 
-      <div class="calcresult">
-        <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-hitte-gs">-</div></div>
-        <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-hitte-out">Kies</div></div>
-      </div>
-      <div class="calchint" id="c-hitte-msg">Vul de gebouwvragen in de tabellen hierboven in en kies de omgevingsscore om de klimaatrisicoscore te berekenen.</div>
+    <div class="calcrow calcsub" style="border-top:none;padding-top:8px;"><div class="calclabel"><strong>Omgevingsscore</strong> - hittestress door warme nachten</div>
+      <select id="c-hitte-omgeving" onchange="calcHitte()">
+        <option value="">Kies</option>
+        <option value="Hoge">Meer dan 3 weken (hoog)</option>
+        <option value="Gemiddelde">2 tot 3 weken (middel)</option>
+        <option value="Lage">Minder dan 2 weken (laag)</option>
+        <option value="n.v.t.">Niet van toepassing</option>
+      </select></div>
+
+    <div class="calcresult">
+      <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-hitte-gs">-</div></div>
+      <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-hitte-out">Kies</div></div>
     </div>
+    <div class="calchint" id="c-hitte-msg">Vul de gebouwvragen in de tabellen hierboven in en kies de omgevingsscore om de klimaatrisicoscore te berekenen.</div>
   </div>
+
+  <h2 id="hitte-adaptatiestrategie"><span class="h2-num">5</span>Adaptatiestrategie</h2>
+  <p>Bij hitte ligt de nadruk op het temperen van opwarming en het bevorderen van nachtelijke afkoeling: buitenzonwering, reflecterende dak- en gevelkleuren en voldoende spuiventilatie zijn vaak kosteneffectieve eerste stappen. Op gebiedsniveau dragen groen en schaduw bij aan het verminderen van het stedelijk hitte-eilandeffect. Voor kwetsbare gebouwgebruikers (ouderen, mensen in sociaal isolement) is een hitteprotocol met tijdelijke zorg of een koele verblijfplek een belangrijke niet-fysieke aanvulling. Zie <span class="inline-link" onclick="nav('strategie',null)">Adaptatiestrategie (FCAB-3)</span> voor de volledige methodiek.</p>
+  <div class="mlist" id="adapt-measures-hitte"></div>
+
+  <h2 id="hitte-versiebeheer"><span class="h2-num">6</span>Versiebeheer</h2>
+  <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
+  <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
+  <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
+  <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
 
 </div>
 
@@ -930,162 +976,157 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 <div class="page" id="page-droogte">
   <h1>Droogte</h1>
   <p class="lead">Paalrot, verschilzetting en natuurbrandgevoeligheid - drie separate indicatoren voor de omgevingsscore.</p>
-  <div class="switcher">
-    <button class="sbtn on" id="sw-droogte-omgeving" onclick="stv('droogte','omgeving')">Omgevingsscore</button>
-    <button class="sbtn" id="sw-droogte-gebouw" onclick="stv('droogte','gebouw')">Gebouwscore</button>
+
+
+  <h2 id="droogte-introductie"><span class="h2-num">1</span>Introductie</h2>
+  <p>Droogte raakt de gebouwde omgeving via drie afzonderlijke fysieke mechanismen: <strong>natuurbrandgevoeligheid</strong>, <strong>paalrot</strong> bij houten funderingen en <strong>verschilzetting</strong> bij ondiepe fundering op staal.</p>
+  <h3>Natuurbrandgevoeligheid 2050 Hoog</h3>
+  <p>Gevoeligheidskaart op basis van brandbaar materiaal, klimaatspecifieke en locatiespecifieke eigenschappen. Bestrijkt natuur- én landbouwgebieden.</p>
+  <h3>Risico Paalrot 2050 Hoog</h3>
+  <p>750.000-1.000.000 panden gefundeerd op houten palen. Bij droogte daalt het grondwaterpeil → zuurstof bij paalkop → paalrot. Herstelkosten tot €120.000 per pand.</p>
+  <div class="fb">risico_paalrot = % houten_palen × kwetsbaarheid</div>
+  <h3>Risico Verschilzetting 2050 Hoog</h3>
+  <p>Panden op ondiepe fundering ('op staal') op veen/klei zijn gevoelig voor ongelijkmatige bodemdaling bij droogte, wat leidt tot scheurvorming.</p>
+  <div class="fb">risico_verschilzetting = % funderingen_op_staal × kwetsbaarheid</div>
+
+  <h2 id="droogte-omgevingsscore"><span class="h2-num">2</span>Omgevingsscore</h2>
+  <div class="pills">
+    <button class="pill on" onclick="si2('droogte','omgeving','natuur')">Natuurbrandgevoeligheid 2050</button>
+    <button class="pill" onclick="si2('droogte','omgeving','paalrot')">Risico Paalrot 2050</button>
+    <button class="pill" onclick="si2('droogte','omgeving','verschil')">Risico Verschilzetting 2050</button>
   </div>
-  <div class="sp on" id="panel-droogte-omgeving">
-    <div class="pills">
-      <button class="pill on" onclick="si2('droogte','omgeving','natuur')">Natuurbrandgevoeligheid 2050</button>
-      <button class="pill" onclick="si2('droogte','omgeving','paalrot')">Risico Paalrot 2050</button>
-      <button class="pill" onclick="si2('droogte','omgeving','verschil')">Risico Verschilzetting 2050</button>
-    </div>
+  <div id="panel-droogte-omgeving">
     <div class="ip on" id="ind-droogte-omgeving-natuur">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-dn-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-dn-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-dn-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-dn-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-dn-def"><h3>Definitie - Natuurbrandgevoeligheid 2050 Hoog</h3><p>Gevoeligheidskaart op basis van brandbaar materiaal, klimaatspecifieke en locatiespecifieke eigenschappen. Bestrijkt natuur- én landbouwgebieden.</p></div>
-      <div class="dtc" id="dt-dn-data"><h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>WENR &amp; Deltares</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td><code>250m × 250m</code></td></tr><tr><td>Validatie</td><td>75% van branden (2017-2020) correct voorspeld</td></tr></table><p>Signaleringskaart. 25% van de branden viel buiten 'matig/hoog gevoelig' - ook lager geclassificeerde locaties verdienen aandacht.</p><div class="srccard"><div><div class="srn">Natuurbrandgevoeligheid - 2050 Hoog</div><div class="srm">WENR &amp; Deltares · 2021 · 250m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div></div>
-      <div class="dtc" id="dt-dn-score"><h3>Scoring</h3><table><tr><th>Kaartwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>3</code> - Hoog gevoelig</td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>2</code> - Middel gevoelig</td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>1</code> - Laag gevoelig</td><td><span class="sb svl">Geen</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table></div>
-      <div class="dtc" id="dt-dn-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>WENR &amp; Deltares</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td><code>250m × 250m</code></td></tr><tr><td>Validatie</td><td>75% van branden (2017-2020) correct voorspeld</td></tr></table><p>Signaleringskaart. 25% van de branden viel buiten 'matig/hoog gevoelig' - ook lager geclassificeerde locaties verdienen aandacht.</p><div class="srccard"><div><div class="srn">Natuurbrandgevoeligheid - 2050 Hoog</div><div class="srm">WENR &amp; Deltares · 2021 · 250m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div>
+      <h3>Scoring</h3><table><tr><th>Kaartwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>3</code> - Hoog gevoelig</td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>2</code> - Middel gevoelig</td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>1</code> - Laag gevoelig</td><td><span class="sb svl">Geen</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table>
     </div>
     <div class="ip" id="ind-droogte-omgeving-paalrot">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-dp-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-dp-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-dp-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-dp-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-dp-def"><h3>Definitie - Risico Paalrot 2050 Hoog</h3><p>750.000-1.000.000 panden gefundeerd op houten palen. Bij droogte daalt het grondwaterpeil → zuurstof bij paalkop → paalrot. Herstelkosten tot €120.000 per pand.</p><div class="fb">risico_paalrot = % houten_palen × kwetsbaarheid</div></div>
-      <div class="dtc" id="dt-dp-data"><h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Deltares</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td>Buurtniveau - CBS Wijk- en Buurtenkaart 2020</td></tr></table><p>Signaleringskaart op buurtniveau. Bij hoog/zeer hoog risico: lokaal funderingsonderzoek vereist.</p><div class="srccard"><div><div class="srn">Risico Paalrot 2050 Hoog</div><div class="srm">Deltares · 2021 · CBS Buurtkaart</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div></div>
-      <div class="dtc" id="dt-dp-score"><h3>Scoring</h3><table><tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 15</code></td><td><span class="sb svh">Zeer hoog</span></td></tr><tr><td><code>&gt; 6 - 15</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>&gt; 3 - 6</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>&gt; 0,8 - 3</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>&gt; 0 - 0,8</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>bouwjaar &gt; 1975</code></td><td><span class="sb sn">N/A</span></td></tr></table><div class="nb">Alleen relevant voor gebouwen gebouwd <strong>vóór 1975</strong>.</div></div>
-      <div class="dtc" id="dt-dp-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Deltares</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td>Buurtniveau - CBS Wijk- en Buurtenkaart 2020</td></tr></table><p>Signaleringskaart op buurtniveau. Bij hoog/zeer hoog risico: lokaal funderingsonderzoek vereist.</p><div class="srccard"><div><div class="srn">Risico Paalrot 2050 Hoog</div><div class="srm">Deltares · 2021 · CBS Buurtkaart</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div>
+      <h3>Scoring</h3><table><tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 15</code></td><td><span class="sb svh">Zeer hoog</span></td></tr><tr><td><code>&gt; 6 - 15</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>&gt; 3 - 6</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>&gt; 0,8 - 3</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>&gt; 0 - 0,8</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>bouwjaar &gt; 1975</code></td><td><span class="sb sn">N/A</span></td></tr></table><div class="nb">Alleen relevant voor gebouwen gebouwd <strong>vóór 1975</strong>.</div>
     </div>
     <div class="ip" id="ind-droogte-omgeving-verschil">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-dv-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-dv-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-dv-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-dv-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-dv-def"><h3>Definitie - Risico Verschilzetting 2050 Hoog</h3><p>Panden op ondiepe fundering ('op staal') op veen/klei zijn gevoelig voor ongelijkmatige bodemdaling bij droogte, wat leidt tot scheurvorming.</p><div class="fb">risico_verschilzetting = % funderingen_op_staal × kwetsbaarheid</div></div>
-      <div class="dtc" id="dt-dv-data"><h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Deltares</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td>CBS Wijk- en Buurtenkaart 2020</td></tr><tr><td>Beperkingen</td><td>Zuid-Limburg niet meegenomen; hogere onzekerheid rivierengebied</td></tr></table><p>Alleen relevant voor panden vóór 1975. Krimp-zwel gedrag van kleibodems niet meegenomen.</p><div class="srccard"><div><div class="srn">Risico Verschilzetting 2050 Hoog</div><div class="srm">Deltares · 2021 · CBS Buurtkaart</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div></div>
-      <div class="dtc" id="dt-dv-score"><h3>Scoring</h3><table><tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 25</code></td><td><span class="sb svh">Zeer hoog</span></td></tr><tr><td><code>&gt; 10 - 25</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>&gt; 5 - 10</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>&gt; 1 - 5</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>&gt; 0 - 1</code></td><td><span class="sb svl">Zeer laag</span></td></tr></table></div>
-      <div class="dtc" id="dt-dv-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Deltares</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td>CBS Wijk- en Buurtenkaart 2020</td></tr><tr><td>Beperkingen</td><td>Zuid-Limburg niet meegenomen; hogere onzekerheid rivierengebied</td></tr></table><p>Alleen relevant voor panden vóór 1975. Krimp-zwel gedrag van kleibodems niet meegenomen.</p><div class="srccard"><div><div class="srn">Risico Verschilzetting 2050 Hoog</div><div class="srm">Deltares · 2021 · CBS Buurtkaart</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div>
+      <h3>Scoring</h3><table><tr><th>Indexwaarde</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 25</code></td><td><span class="sb svh">Zeer hoog</span></td></tr><tr><td><code>&gt; 10 - 25</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>&gt; 5 - 10</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>&gt; 1 - 5</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>&gt; 0 - 1</code></td><td><span class="sb svl">Zeer laag</span></td></tr></table>
     </div>
   </div>
-  <div class="sp" id="panel-droogte-gebouw">
-    <h3>Gebouwkenmerken &amp; antwoordopties</h3>
-    <p class="lead" style="font-size:13px;">Droogte werkt niet met een optelbare puntenscore per kenmerk zoals de andere thema's - de gebouwscore volgt direct uit bouwjaar en funderingstype (FCAB Deel 2, §4.2.2).</p>
-    <h4>Bouwjaar</h4>
-    <div class="aos">
-      <div class="ao"><span class="aob ag">Na 1975</span> <span class="aot">Pand gebouwd na 1975 - paalrot &amp; verschilzetting niet van toepassing</span> <span class="aosr">n.v.t.</span></div>
-      <div class="ao"><span class="aob ar">Vóór 1975</span> <span class="aot">Pand gebouwd voor 1975 → paalrot &amp; verschilzetting relevant, ga verder met funderingstype</span> <span class="aosr">zie hieronder</span></div>
-    </div>
-    <h4>Funderingstype (alleen bij bouwjaar &lt; 1975)</h4>
-    <div class="aos">
-      <div class="ao"><span class="aob ag">Beton</span> <span class="aot">Betonnen paalfundering</span> <span class="aosr">geen risico</span></div>
-      <div class="ao"><span class="aob ar">Hout</span> <span class="aot">Houten paalfundering - paalrot: gebouwscore = bouwjaar zelf (leeftijd bepaalt cumulatieve blootstelling), gecombineerd met omgevingsscore via de risicomatrix (Tabel 12). Geen optelbare punten.</span> <span class="aosr">bouwjaar-gebaseerd</span></div>
-      <div class="ao"><span class="aob aa">Staal</span> <span class="aot">Ondiepe fundering op staal - verschilzetting: gebouwscore volgt uit Tabel 13 (zie hieronder)</span> <span class="aosr">0-100</span></div>
-      <div class="ao"><span class="aob am">Onbekend</span> <span class="aot">Funderingstype niet bekend - conform methodiek wordt de categorie 'zeer hoge kwetsbaarheid' toegekend</span> <span class="aosr">zeer hoog</span></div>
-    </div>
-    <h4>Staal fundering - Tabel 13: gebouwscore naar bouwjaar × onderkeldering</h4>
-    <table>
-      <tr><th>Bouwjaar</th><th>Volledig souterrain</th><th>Gedeeltelijke kelder</th><th>Geen kelder</th></tr>
-      <tr><td>&lt; 1900</td><td>50</td><td>100</td><td>75</td></tr>
-      <tr><td>1900-1920</td><td>25</td><td>75</td><td>50</td></tr>
-      <tr><td>&gt; 1920</td><td>0</td><td>50</td><td>25</td></tr>
-    </table>
-    <div class="ib">Gebouwscore = 0 (niet kwetsbaar) tot 100 (zeer kwetsbaar), rechtstreeks afgeleid uit de correctiefactor per bouwjaar/kelder-combinatie.</div>
-    <h4>Bodemtype directe omgeving</h4>
-    <p style="color:var(--text3);font-size:13px;">Bepaalt de omgevingsscore (blootstellingsklasse × bodemtype, Tabel 9), niet de gebouwscore.</p>
-    <div class="aos">
-      <div class="ao"><span class="aob ag">Zand</span> <span class="aot">Zandige ondergrond</span> <span class="aosr">laag risico</span></div>
-      <div class="ao"><span class="aob ar">Veen/klei</span> <span class="aot">Venige of kleiige ondergrond</span> <span class="aosr">hoog risico bij droogte</span></div>
-    </div>
 
-    <h2>Klimaatrisicoscore</h2>
-    <p style="color:var(--text3);font-size:13px;">Klimaatrisicoscore droogte is 'niet van toepassing' voor panden na 1975 voor paalrot en verschilzetting. Voor houten paalfunderingen volgt de klimaatrisicoscore direct uit bouwjaar en omgevingsscore (Tabel 12); voor fundering op staal uit de gebouwscore hierboven (Tabel 13) gecombineerd met de omgevingsscore.</p>
-    <h4>Tabel 12 - Houten paalfundering: klimaatrisicoscore naar omgevingsscore × bouwjaar</h4>
-    <div id="mx-droogte-hout"></div>
-    <h4 style="margin-top:22px;">Fundering op staal: klimaatrisicoscore naar omgevingsscore × gebouwscore</h4>
-    <div id="mx-droogte-staal"></div>
+  <h2 id="droogte-gebouwscore"><span class="h2-num">3</span>Gebouwscore</h2>
+  <p class="lead" style="font-size:13px;">Droogte werkt niet met een optelbare puntenscore per kenmerk zoals de andere thema's - de gebouwscore volgt direct uit bouwjaar en funderingstype (FCAB Deel 2, §4.2.2).</p>
+  <h4>Bouwjaar</h4>
+  <div class="aos">
+    <div class="ao"><span class="aob ag">Na 1975</span> <span class="aot">Pand gebouwd na 1975 - paalrot &amp; verschilzetting niet van toepassing</span> <span class="aosr">n.v.t.</span></div>
+    <div class="ao"><span class="aob ar">Vóór 1975</span> <span class="aot">Pand gebouwd voor 1975 → paalrot &amp; verschilzetting relevant, ga verder met funderingstype</span> <span class="aosr">zie hieronder</span></div>
+  </div>
+  <h4>Funderingstype (alleen bij bouwjaar &lt; 1975)</h4>
+  <div class="aos">
+    <div class="ao"><span class="aob ag">Beton</span> <span class="aot">Betonnen paalfundering</span> <span class="aosr">geen risico</span></div>
+    <div class="ao"><span class="aob ar">Hout</span> <span class="aot">Houten paalfundering - paalrot: gebouwscore = bouwjaar zelf (leeftijd bepaalt cumulatieve blootstelling), gecombineerd met omgevingsscore via de risicomatrix (Tabel 12). Geen optelbare punten.</span> <span class="aosr">bouwjaar-gebaseerd</span></div>
+    <div class="ao"><span class="aob aa">Staal</span> <span class="aot">Ondiepe fundering op staal - verschilzetting: gebouwscore volgt uit Tabel 13 (zie hieronder)</span> <span class="aosr">0-100</span></div>
+    <div class="ao"><span class="aob am">Onbekend</span> <span class="aot">Funderingstype niet bekend - conform methodiek wordt de categorie 'zeer hoge kwetsbaarheid' toegekend</span> <span class="aosr">zeer hoog</span></div>
+  </div>
+  <h4>Staal fundering - Tabel 13: gebouwscore naar bouwjaar × onderkeldering</h4>
+  <table>
+    <tr><th>Bouwjaar</th><th>Volledig souterrain</th><th>Gedeeltelijke kelder</th><th>Geen kelder</th></tr>
+    <tr><td>&lt; 1900</td><td>50</td><td>100</td><td>75</td></tr>
+    <tr><td>1900-1920</td><td>25</td><td>75</td><td>50</td></tr>
+    <tr><td>&gt; 1920</td><td>0</td><td>50</td><td>25</td></tr>
+  </table>
+  <div class="ib">Gebouwscore = 0 (niet kwetsbaar) tot 100 (zeer kwetsbaar), rechtstreeks afgeleid uit de correctiefactor per bouwjaar/kelder-combinatie.</div>
+  <h4>Bodemtype directe omgeving</h4>
+  <p style="color:var(--text3);font-size:13px;">Bepaalt de omgevingsscore (blootstellingsklasse × bodemtype, Tabel 9), niet de gebouwscore.</p>
+  <div class="aos">
+    <div class="ao"><span class="aob ag">Zand</span> <span class="aot">Zandige ondergrond</span> <span class="aosr">laag risico</span></div>
+    <div class="ao"><span class="aob ar">Veen/klei</span> <span class="aot">Venige of kleiige ondergrond</span> <span class="aosr">hoog risico bij droogte</span></div>
+  </div>
 
-    <div class="calcbox">
-      <h4>Interactieve check - bereken je klimaatrisicoscore Droogte</h4>
-      <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Het funderingstype bepaalt welke vervolgvragen nodig zijn. Voor houten palen en fundering op staal vul je ook de omgevingsscore van de GIS-kaart funderingschade in.</p>
+  <h2 id="droogte-klimaatrisicoscore"><span class="h2-num">4</span>Klimaatrisicoscore</h2>
+  <p style="color:var(--text3);font-size:13px;">Klimaatrisicoscore droogte is 'niet van toepassing' voor panden na 1975 voor paalrot en verschilzetting. Voor houten paalfunderingen volgt de klimaatrisicoscore direct uit bouwjaar en omgevingsscore (Tabel 12); voor fundering op staal uit de gebouwscore hierboven (Tabel 13) gecombineerd met de omgevingsscore.</p>
+  <h4>Tabel 12 - Houten paalfundering: klimaatrisicoscore naar omgevingsscore × bouwjaar</h4>
+  <div id="mx-droogte-hout"></div>
+  <h4 style="margin-top:22px;">Fundering op staal: klimaatrisicoscore naar omgevingsscore × gebouwscore</h4>
+  <div id="mx-droogte-staal"></div>
 
-      <div class="calcrow" style="border-top:none;"><div class="calclabel">Funderingstype</div>
-        <select id="c-droogte-type" onchange="calcDroogte()">
+  <div class="calcbox">
+    <h4>Interactieve check - bereken je klimaatrisicoscore Droogte</h4>
+    <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Het funderingstype bepaalt welke vervolgvragen nodig zijn. Voor houten palen en fundering op staal vul je ook de omgevingsscore van de GIS-kaart funderingschade in.</p>
+
+    <div class="calcrow" style="border-top:none;"><div class="calclabel">Funderingstype</div>
+      <select id="c-droogte-type" onchange="calcDroogte()">
+        <option value="">Kies</option>
+        <option value="beton">Betonnen palen</option>
+        <option value="staal">Fundering op staal</option>
+        <option value="hout">Houten palen</option>
+        <option value="onbekend">Onbekend</option>
+      </select></div>
+
+    <div class="calccond" id="c-droogte-hout">
+      <div class="calcrow calcsub"><div class="calclabel">Bouwjaar</div>
+        <select id="c-droogte-bj-h" onchange="calcDroogte()">
           <option value="">Kies</option>
-          <option value="beton">Betonnen palen</option>
-          <option value="staal">Fundering op staal</option>
-          <option value="hout">Houten palen</option>
-          <option value="onbekend">Onbekend</option>
+          <option value="0">&lt; 1830</option>
+          <option value="1">1830-1880</option>
+          <option value="2">1880-1900</option>
+          <option value="3">1900-1930</option>
+          <option value="4">1930-1950</option>
+          <option value="5">1950-1975</option>
+          <option value="6">&gt; 1975</option>
         </select></div>
-
-      <div class="calccond" id="c-droogte-hout">
-        <div class="calcrow calcsub"><div class="calclabel">Bouwjaar</div>
-          <select id="c-droogte-bj-h" onchange="calcDroogte()">
-            <option value="">Kies</option>
-            <option value="0">&lt; 1830</option>
-            <option value="1">1830-1880</option>
-            <option value="2">1880-1900</option>
-            <option value="3">1900-1930</option>
-            <option value="4">1930-1950</option>
-            <option value="5">1950-1975</option>
-            <option value="6">&gt; 1975</option>
-          </select></div>
-        <div class="calcrow"><div class="calclabel">Omgevingsscore (GIS-kaart funderingschade)</div>
-          <select id="c-droogte-env-h" onchange="calcDroogte()">
-            <option value="">Kies</option>
-            <option value="0">LC - Laag / klei</option>
-            <option value="1">LP - Laag / veen</option>
-            <option value="2">LS - Laag / zand</option>
-            <option value="3">MC - Middel / klei</option>
-            <option value="4">MP - Middel / veen</option>
-            <option value="5">MS - Middel / zand</option>
-            <option value="6">HC - Hoog / klei</option>
-            <option value="7">HP - Hoog / veen</option>
-            <option value="8">HS - Hoog / zand</option>
-          </select></div>
-        <div class="calchint">Zie <a href="https://data.openearth.nl/funderingschade/?folders=180769602" target="_blank" style="color:var(--accent);">GIS-kaart funderingschade</a>.</div>
-      </div>
-
-      <div class="calccond" id="c-droogte-staal">
-        <div class="calcrow calcsub"><div class="calclabel">Bouwjaar</div>
-          <select id="c-droogte-bj-s" onchange="calcDroogte()">
-            <option value="">Kies</option>
-            <option value="0">&lt; 1900</option>
-            <option value="1">1900-1920</option>
-            <option value="2">&gt; 1920</option>
-          </select></div>
-        <div class="calcrow"><div class="calclabel">Type kelder</div>
-          <select id="c-droogte-kelder-s" onchange="calcDroogte()">
-            <option value="">Kies</option>
-            <option value="souterrain">Volledig souterrain</option>
-            <option value="gedeeltelijk">Onderkeldering (gedeeltelijke kelder)</option>
-            <option value="geen">Geen kelder aanwezig</option>
-          </select></div>
-        <div class="calcrow"><div class="calclabel">Omgevingsscore (GIS-kaart funderingschade, 0-5)</div>
-          <select id="c-droogte-env-s" onchange="calcDroogte()">
-            <option value="">Kies</option>
-            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-          </select></div>
-        <div class="calchint">Zie <a href="https://data.openearth.nl/funderingschade/?folders=180769602" target="_blank" style="color:var(--accent);">GIS-kaart funderingschade</a>.</div>
-      </div>
-
-      <div class="calcresult">
-        <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-droogte-gs">-</div></div>
-        <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-droogte-out">Kies</div></div>
-      </div>
-      <div class="calchint" id="c-droogte-msg">Kies eerst het funderingstype.</div>
+      <div class="calcrow"><div class="calclabel">Omgevingsscore (GIS-kaart funderingschade)</div>
+        <select id="c-droogte-env-h" onchange="calcDroogte()">
+          <option value="">Kies</option>
+          <option value="0">LC - Laag / klei</option>
+          <option value="1">LP - Laag / veen</option>
+          <option value="2">LS - Laag / zand</option>
+          <option value="3">MC - Middel / klei</option>
+          <option value="4">MP - Middel / veen</option>
+          <option value="5">MS - Middel / zand</option>
+          <option value="6">HC - Hoog / klei</option>
+          <option value="7">HP - Hoog / veen</option>
+          <option value="8">HS - Hoog / zand</option>
+        </select></div>
+      <div class="calchint">Zie <a href="https://data.openearth.nl/funderingschade/?folders=180769602" target="_blank" style="color:var(--accent);">GIS-kaart funderingschade</a>.</div>
     </div>
+
+    <div class="calccond" id="c-droogte-staal">
+      <div class="calcrow calcsub"><div class="calclabel">Bouwjaar</div>
+        <select id="c-droogte-bj-s" onchange="calcDroogte()">
+          <option value="">Kies</option>
+          <option value="0">&lt; 1900</option>
+          <option value="1">1900-1920</option>
+          <option value="2">&gt; 1920</option>
+        </select></div>
+      <div class="calcrow"><div class="calclabel">Type kelder</div>
+        <select id="c-droogte-kelder-s" onchange="calcDroogte()">
+          <option value="">Kies</option>
+          <option value="souterrain">Volledig souterrain</option>
+          <option value="gedeeltelijk">Onderkeldering (gedeeltelijke kelder)</option>
+          <option value="geen">Geen kelder aanwezig</option>
+        </select></div>
+      <div class="calcrow"><div class="calclabel">Omgevingsscore (GIS-kaart funderingschade, 0-5)</div>
+        <select id="c-droogte-env-s" onchange="calcDroogte()">
+          <option value="">Kies</option>
+          <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+          <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+        </select></div>
+      <div class="calchint">Zie <a href="https://data.openearth.nl/funderingschade/?folders=180769602" target="_blank" style="color:var(--accent);">GIS-kaart funderingschade</a>.</div>
+    </div>
+
+    <div class="calcresult">
+      <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-droogte-gs">-</div></div>
+      <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-droogte-out">Kies</div></div>
+    </div>
+    <div class="calchint" id="c-droogte-msg">Kies eerst het funderingstype.</div>
   </div>
+
+  <h2 id="droogte-adaptatiestrategie"><span class="h2-num">5</span>Adaptatiestrategie</h2>
+  <p>Bij droogte richt de adaptatiestrategie zich vooral op het monitoren en beperken van funderingsschade: periodieke inspectie van houten paalfunderingen en waterdoorlatende in plaats van verharde bestrating rond het gebouw verminderen uitdroging van de ondergrond. Op gebiedsniveau helpt het vasthouden van water (infiltratie, groen) om grondwaterstanden op peil te houden. Bij een hoog risico op paalrot of verschilzetting is een deep-dive met lokaal funderingsonderzoek aan te raden voordat grootschalige maatregelen worden overwogen. Zie <span class="inline-link" onclick="nav('strategie',null)">Adaptatiestrategie (FCAB-3)</span> voor de volledige methodiek.</p>
+  <div class="mlist" id="adapt-measures-droogte"></div>
+
+  <h2 id="droogte-versiebeheer"><span class="h2-num">6</span>Versiebeheer</h2>
+  <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
+  <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
+  <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
+  <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
 
 </div>
 
@@ -1093,80 +1134,78 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 <div class="page" id="page-wateroverlast">
   <h1>Wateroverlast</h1>
   <p class="lead">Twee indicatoren voor de omgevingsscore: waterdiepte bij hevige buien en grondwateroverlast.</p>
-  <div class="switcher">
-    <button class="sbtn on" id="sw-wateroverlast-omgeving" onclick="stv('wateroverlast','omgeving')">Omgevingsscore</button>
-    <button class="sbtn" id="sw-wateroverlast-gebouw" onclick="stv('wateroverlast','gebouw')">Gebouwscore</button>
+
+
+  <h2 id="wateroverlast-introductie"><span class="h2-num">1</span>Introductie</h2>
+  <h3>Waterdiepte hevige bui 70 mm / 2 uur (1:100 jaar)</h3>
+  <p>Maximale waterdiepte bij een extreme bui van <strong>70 mm in 2 uur</strong>. Huidig klimaat: gemiddeld 1× per 100 jaar. Door klimaatverandering verdubbelt de kans aan het einde van de eeuw.</p>
+  <div class="ib">Er wordt gewerkt aan een nieuwe kaart op basis van <strong>70 mm in 1 uur</strong> - met de nieuwe klimaatscenario's een bui die eens in de 100 jaar valt (mogelijke herhalingstijd bij sterke klimaatverandering) - met een herziene methode en scoring. Zie <span class="inline-link" onclick="document.getElementById('wateroverlast-versiebeheer').scrollIntoView({behavior:'smooth'})">Versiebeheer</span> voor details. Tot deze kaart beschikbaar is, geldt de huidige definitie hierboven.</div>
+  <h3>Grondwateroverlast (index uit 3 kaarten)</h3>
+  <ol style="margin-top:8px;"><li><strong>Ontwikkeling kans grondwateroverlast 2050 Hoog</strong></li><li><strong>Gemiddelde Hoogste Grondwaterstand Huidig</strong></li><li><strong>Bodemdaling door ophoging 2020-2050</strong></li></ol>
+
+  <h2 id="wateroverlast-omgevingsscore"><span class="h2-num">2</span>Omgevingsscore</h2>
+  <div class="pills">
+    <button class="pill on" onclick="si2('wateroverlast','omgeving','bui')">Waterdiepte hevige bui 70 mm/2 uur</button>
+    <button class="pill" onclick="si2('wateroverlast','omgeving','grond')">Grondwateroverlast index</button>
   </div>
-  <div class="sp on" id="panel-wateroverlast-omgeving">
-    <div class="pills">
-      <button class="pill on" onclick="si2('wateroverlast','omgeving','bui')">Waterdiepte hevige bui 70 mm/2 uur</button>
-      <button class="pill" onclick="si2('wateroverlast','omgeving','grond')">Grondwateroverlast index</button>
-    </div>
+  <div id="panel-wateroverlast-omgeving">
     <div class="ip on" id="ind-wateroverlast-omgeving-bui">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-wb-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-wb-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-wb-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-wb-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-wb-def"><h3>Definitie - Waterdiepte hevige bui 70 mm / 2 uur (1:100 jaar)</h3><p>Maximale waterdiepte bij een extreme bui van <strong>70 mm in 2 uur</strong>. Huidig klimaat: gemiddeld 1× per 100 jaar. Door klimaatverandering verdubbelt de kans aan het einde van de eeuw.</p><div class="ib">Er wordt gewerkt aan een nieuwe kaart op basis van <strong>70 mm in 1 uur</strong> - met de nieuwe klimaatscenario's een bui die eens in de 100 jaar valt (mogelijke herhalingstijd bij sterke klimaatverandering) - met een herziene methode en scoring. Zie het tabblad <strong>Versiebeheer</strong> voor details. Tot deze kaart beschikbaar is, geldt de huidige definitie hierboven.</div></div>
-      <div class="dtc" id="dt-wb-data"><h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Europese Richtlijn Overstromingsrisico's (ROR), Deltares / Tygron</td></tr><tr><td>Jaar</td><td>2018</td></tr><tr><td>Modelresolutie</td><td><code>2m × 2m</code></td></tr><tr><td>Hoogtemodel</td><td><code>AHN2 (2007-2012)</code></td></tr><tr><td>Beperkingen</td><td>Gebouwen na 2012 → score 'Onbekend'</td></tr></table><p>BAG-voetafdruk + 2 m buffer. Klimaatverandering niet meegenomen in bui-intensiteit.</p><div class="wb">Gebouwen na 2012 → 'Onbekend'. In stedelijke context: 'onbekend, oude situatie: hoog'.</div><div class="srccard"><div><div class="srn">Waterdiepte hevige bui - 70 mm / 2 uur</div><div class="srm">ROR / Deltares · 2018 · 2m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div></div>
-      <div class="dtc" id="dt-wb-score"><h3>Scoring</h3><table><tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 30 cm</code></td><td><span class="sb svh">Zeer hoog</span></td></tr><tr><td><code>20-30 cm</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>15-20 cm</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>10-15 cm</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>≤ 10 cm</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>bouwjaar ≥ 2013</code></td><td><span class="sb su">Onbekend</span></td></tr></table></div>
-      <div class="dtc" id="dt-wb-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.2</div><div class="cld">In ontwikkeling</div></div><div class="clc"><strong>Nieuwe kaart: Waterdiepte hevige bui 70 mm / 1 uur</strong><p style="margin:5px 0 8px;">Met de nieuwe klimaatscenario's wordt een bui van 70 mm in 1 uur een gebeurtenis die eens in de 100 jaar valt (mogelijke herhalingstijd bij sterke klimaatverandering) - de opvolger van de huidige 70 mm / 2 uur kaart.</p>
-          <span class="ct ctn">nieuw</span> Dataset: bron Klimaateffectatlas, jaar 2026, modelresolutie <code>0,5 × 0,5 m</code>, hoogtemodel <code>AHN 4, 5 en 6</code><br>
-          <span class="ct ctu">update</span> Methode: buffer rond het gebouw verkleind naar <code>0,5 m</code> (was 2 m) - de methode kijkt alleen nog naar de directe omgeving van het gebouw<br>
-          <span class="ct ctu">update</span> Methode: uitgegaan van de waterdiepte die door <code>99%</code> van de rastercellen niet wordt overschreden, in plaats van de maximale waterdiepte - dit geeft een realistischer beeld en is minder gevoelig voor uitschieters<br>
-          <span class="ct ctu">update</span> Methode: waterdiepte van <code>0-2 cm</code> wordt weggegumd (geen directe schade; ten behoeve van het kaartbeeld)<br>
-          <span class="ct ctu">update</span> Scoring herzien op basis van een combinatie van damage curve (WSS), Bbl (art. 4.182) en kritieke uitvalhoogtes (rapport NKWK): <code>&gt; 30 cm</code> zeer hoog · <code>20-30 cm</code> hoog · <code>15-20 cm</code> middel · <code>10-15 cm</code> laag · <code>2-10 cm</code> zeer laag · <code>&lt; 2 cm / 0 cm</code> geen · geen data (bijv. brondata ouder dan gebouw) onbekend<br>
-          <span class="ct ctu">update</span> De beperking 'gebouwen na 2012 → score Onbekend' komt hierdoor te vervallen
-          <div class="wb" style="margin-top:10px;"><strong>Status:</strong> deze kaart is nog niet beschikbaar. Tot die tijd wordt de huidige kaart (70 mm / 2 uur, zie Definitie/Dataset/Scoring) gebruikt.</div>
-        </div></div>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Europese Richtlijn Overstromingsrisico's (ROR), Deltares / Tygron</td></tr><tr><td>Jaar</td><td>2018</td></tr><tr><td>Modelresolutie</td><td><code>2m × 2m</code></td></tr><tr><td>Hoogtemodel</td><td><code>AHN2 (2007-2012)</code></td></tr><tr><td>Beperkingen</td><td>Gebouwen na 2012 → score 'Onbekend'</td></tr></table><p>BAG-voetafdruk + 2 m buffer. Klimaatverandering niet meegenomen in bui-intensiteit.</p><div class="wb">Gebouwen na 2012 → 'Onbekend'. In stedelijke context: 'onbekend, oude situatie: hoog'.</div><div class="srccard"><div><div class="srn">Waterdiepte hevige bui - 70 mm / 2 uur</div><div class="srm">ROR / Deltares · 2018 · 2m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div>
+      <h3>Scoring</h3><table><tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 30 cm</code></td><td><span class="sb svh">Zeer hoog</span></td></tr><tr><td><code>20-30 cm</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>15-20 cm</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>10-15 cm</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>≤ 10 cm</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>bouwjaar ≥ 2013</code></td><td><span class="sb su">Onbekend</span></td></tr></table>
     </div>
     <div class="ip" id="ind-wateroverlast-omgeving-grond">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-wg-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-wg-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-wg-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-wg-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-wg-def"><h3>Definitie - Grondwateroverlast (index uit 3 kaarten)</h3><ol style="margin-top:8px;"><li><strong>Ontwikkeling kans grondwateroverlast 2050 Hoog</strong></li><li><strong>Gemiddelde Hoogste Grondwaterstand Huidig</strong></li><li><strong>Bodemdaling door ophoging 2020-2050</strong></li></ol></div>
-      <div class="dtc" id="dt-wg-data"><h3>Dataset</h3><table><tr><th>Kaartlaag</th><th>Bron</th><th>Jaar</th><th>Res.</th></tr><tr><td>Kans GW-overlast 2050</td><td>Deltares / NWM</td><td>2017</td><td><code>250m</code></td></tr><tr><td>GHG Huidig</td><td>Deltares / NWM</td><td>2017</td><td><code>250m</code></td></tr><tr><td>Bodemdaling ophoging</td><td>Deltares</td><td>2021</td><td><code>100m</code></td></tr></table><p>Geschikt op wijk/polderniveau en hoger. Op straatniveau beperkte betrouwbaarheid. Lokale drainage niet meegenomen.</p><div class="srccard"><div><div class="srn">Grondwateroverlast index 2050 Hoog</div><div class="srm">Deltares / NWM · 2017 · 250m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div></div>
-      <div class="dtc" id="dt-wg-score"><h3>Scoring</h3><table><tr><th>Indexscore (som 3 kaarten)</th><th>Omgevingsscore</th></tr><tr><td><code>3</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>2</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>1</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>0</code></td><td><span class="sb sn">Geen</span></td></tr></table></div>
-      <div class="dtc" id="dt-wg-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Kaartlaag</th><th>Bron</th><th>Jaar</th><th>Res.</th></tr><tr><td>Kans GW-overlast 2050</td><td>Deltares / NWM</td><td>2017</td><td><code>250m</code></td></tr><tr><td>GHG Huidig</td><td>Deltares / NWM</td><td>2017</td><td><code>250m</code></td></tr><tr><td>Bodemdaling ophoging</td><td>Deltares</td><td>2021</td><td><code>100m</code></td></tr></table><p>Geschikt op wijk/polderniveau en hoger. Op straatniveau beperkte betrouwbaarheid. Lokale drainage niet meegenomen.</p><div class="srccard"><div><div class="srn">Grondwateroverlast index 2050 Hoog</div><div class="srm">Deltares / NWM · 2017 · 250m</div></div><a href="https://www.klimaateffectatlas.nl" target="_blank" class="srl">→ Klimaateffectatlas</a></div>
+      <h3>Scoring</h3><table><tr><th>Indexscore (som 3 kaarten)</th><th>Omgevingsscore</th></tr><tr><td><code>3</code></td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>2</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>1</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>0</code></td><td><span class="sb sn">Geen</span></td></tr></table>
     </div>
   </div>
-  <div class="sp" id="panel-wateroverlast-gebouw">
-    <h3>Gebouwkenmerken en antwoordopties</h3>
-    <p class="lead" style="font-size:13px;">Punten volgens Tabel 15, FCAB Deel 2 - De gebouwscore. Klik per vraag op het van toepassing zijnde antwoord; de tabel telt de punten automatisch op tot de gebouwscore. Bij onbekende data wordt de categorie 'zeer hoge kwetsbaarheid' toegekend.</p>
 
-    <div id="qtable-geb-water"></div>
+  <h2 id="wateroverlast-gebouwscore"><span class="h2-num">3</span>Gebouwscore</h2>
+  <p class="lead" style="font-size:13px;">Punten volgens Tabel 15, FCAB Deel 2 - De gebouwscore. Klik per vraag op het van toepassing zijnde antwoord; de tabel telt de punten automatisch op tot de gebouwscore. Bij onbekende data wordt de categorie 'zeer hoge kwetsbaarheid' toegekend.</p>
+  <div id="qtable-geb-water"></div>
 
-    <h2>Klimaatrisicoscore</h2>
-    <p style="color:var(--text3);font-size:13px;">De klimaatrisicoscore voor wateroverlast volgt uit de gebouwscore (0-100 punten) in combinatie met de omgevingsscore (waterdiepte bij hevige bui): bij eenzelfde gebouwscore leidt een hogere omgevingsscore eerder tot een hogere klimaatrisicoscore.</p>
-    <div id="mx-wateroverlast"></div>
+  <h2 id="wateroverlast-klimaatrisicoscore"><span class="h2-num">4</span>Klimaatrisicoscore</h2>
+  <p style="color:var(--text3);font-size:13px;">De klimaatrisicoscore voor wateroverlast volgt uit de gebouwscore (0-100 punten) in combinatie met de omgevingsscore (waterdiepte bij hevige bui): bij eenzelfde gebouwscore leidt een hogere omgevingsscore eerder tot een hogere klimaatrisicoscore.</p>
+  <div id="mx-wateroverlast"></div>
 
-    <div class="calcbox">
-      <h4>Klimaatrisicoscore Wateroverlast</h4>
-      <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Kies hieronder de omgevingsscore om, samen met de gebouwscore hierboven, de klimaatrisicoscore te zien.</p>
+  <div class="calcbox">
+    <h4>Klimaatrisicoscore Wateroverlast</h4>
+    <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Kies hieronder de omgevingsscore om, samen met de gebouwscore hierboven, de klimaatrisicoscore te zien.</p>
 
-      <div class="calcrow calcsub" style="border-top:none;padding-top:8px;"><div class="calclabel"><strong>Omgevingsscore</strong> - waterdiepte bij hevige bui</div>
-        <select id="c-water-omgeving" onchange="calcWater()">
-          <option value="">Kies</option>
-          <option value="Zeer hoge">&gt; 30 cm (zeer hoog)</option>
-          <option value="Hoge">20-30 cm (hoog)</option>
-          <option value="Gemiddelde">15-20 cm (middel)</option>
-          <option value="Lage">10-15 cm (laag)</option>
-          <option value="Zeer lage">&lt; 10 cm (zeer laag)</option>
-        </select></div>
+    <div class="calcrow calcsub" style="border-top:none;padding-top:8px;"><div class="calclabel"><strong>Omgevingsscore</strong> - waterdiepte bij hevige bui</div>
+      <select id="c-water-omgeving" onchange="calcWater()">
+        <option value="">Kies</option>
+        <option value="Zeer hoge">&gt; 30 cm (zeer hoog)</option>
+        <option value="Hoge">20-30 cm (hoog)</option>
+        <option value="Gemiddelde">15-20 cm (middel)</option>
+        <option value="Lage">10-15 cm (laag)</option>
+        <option value="Zeer lage">&lt; 10 cm (zeer laag)</option>
+      </select></div>
 
-      <div class="calcresult">
-        <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-water-gs">-</div></div>
-        <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-water-out">Kies</div></div>
-      </div>
-      <div class="calchint" id="c-water-msg">Vul de gebouwvragen in de tabel hierboven in en kies de omgevingsscore om de klimaatrisicoscore te berekenen.</div>
+    <div class="calcresult">
+      <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-water-gs">-</div></div>
+      <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-water-out">Kies</div></div>
     </div>
+    <div class="calchint" id="c-water-msg">Vul de gebouwvragen in de tabel hierboven in en kies de omgevingsscore om de klimaatrisicoscore te berekenen.</div>
   </div>
+
+  <h2 id="wateroverlast-adaptatiestrategie"><span class="h2-num">5</span>Adaptatiestrategie</h2>
+  <p>Bij wateroverlast is de volgorde niet-fysiek → gebied → gebouw extra relevant: een piekbui is op gebouwniveau vaak niet volledig op te vangen, waardoor gebiedsmaatregelen zoals waterberging, infiltratie en groene daken doorgaans het meeste effect hebben. Op gebouwniveau verminderen drempels, terugslagkleppen en het verhogen van instroompunten (kelderramen, ventilatieopeningen) de kans op waterschade. Een actueel hemelwaterplan en heldere afspraken met de gemeente over de rioolcapaciteit zijn een belangrijke niet-fysieke aanvulling. Zie <span class="inline-link" onclick="nav('strategie',null)">Adaptatiestrategie (FCAB-3)</span> voor de volledige methodiek.</p>
+  <div class="mlist" id="adapt-measures-wateroverlast"></div>
+
+  <h2 id="wateroverlast-versiebeheer"><span class="h2-num">6</span>Versiebeheer</h2>
+  <div class="cli"><div><div class="clv">v1.2</div><div class="cld">In ontwikkeling</div></div><div class="clc"><strong>Nieuwe kaart: Waterdiepte hevige bui 70 mm / 1 uur</strong><p style="margin:5px 0 8px;">Met de nieuwe klimaatscenario's wordt een bui van 70 mm in 1 uur een gebeurtenis die eens in de 100 jaar valt (mogelijke herhalingstijd bij sterke klimaatverandering) - de opvolger van de huidige 70 mm / 2 uur kaart.</p>
+    <span class="ct ctn">nieuw</span> Dataset: bron Klimaateffectatlas, jaar 2026, modelresolutie <code>0,5 × 0,5 m</code>, hoogtemodel <code>AHN 4, 5 en 6</code><br>
+    <span class="ct ctu">update</span> Methode: buffer rond het gebouw verkleind naar <code>0,5 m</code> (was 2 m) - de methode kijkt alleen nog naar de directe omgeving van het gebouw<br>
+    <span class="ct ctu">update</span> Methode: uitgegaan van de waterdiepte die door <code>99%</code> van de rastercellen niet wordt overschreden, in plaats van de maximale waterdiepte - dit geeft een realistischer beeld en is minder gevoelig voor uitschieters<br>
+    <span class="ct ctu">update</span> Methode: waterdiepte van <code>0-2 cm</code> wordt weggegumd (geen directe schade; ten behoeve van het kaartbeeld)<br>
+    <span class="ct ctu">update</span> Scoring herzien op basis van een combinatie van damage curve (WSS), Bbl (art. 4.182) en kritieke uitvalhoogtes (rapport NKWK): <code>&gt; 30 cm</code> zeer hoog · <code>20-30 cm</code> hoog · <code>15-20 cm</code> middel · <code>10-15 cm</code> laag · <code>2-10 cm</code> zeer laag · <code>&lt; 2 cm / 0 cm</code> geen · geen data (bijv. brondata ouder dan gebouw) onbekend<br>
+    <span class="ct ctu">update</span> De beperking 'gebouwen na 2012 → score Onbekend' komt hierdoor te vervallen
+    <div class="wb" style="margin-top:10px;"><strong>Status:</strong> deze kaart is nog niet beschikbaar. Tot die tijd wordt de huidige kaart (70 mm / 2 uur, zie Introductie/Omgevingsscore) gebruikt.</div>
+  </div></div>
+  <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
+  <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
+  <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
+  <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
 
 </div>
 
@@ -1174,81 +1213,79 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 <div class="page" id="page-overstroming">
   <h1>Overstroming</h1>
   <p class="lead">Maximale waterdiepte en plaatsgebonden overstromingskans - conservatieve uitgangspunten als bovengrens.</p>
-  <div class="switcher">
-    <button class="sbtn on" id="sw-overstroming-omgeving" onclick="stv('overstroming','omgeving')">Omgevingsscore</button>
-    <button class="sbtn" id="sw-overstroming-gebouw" onclick="stv('overstroming','gebouw')">Gebouwscore</button>
+
+
+  <h2 id="overstroming-introductie"><span class="h2-num">1</span>Introductie</h2>
+  <h3>Maximale waterdieptekaart (overstroomik.nl, 2021)</h3>
+  <p>Toont waar overstromingen tot ca. 1:100.000 jaar kunnen voorkomen. Gebaseerd op de Landelijke Database Overstromingen (LDO) en het LIWO-systeem.</p>
+  <h3>Plaatsgebonden overstromingskans 2050 (≥ 20 cm)</h3>
+  <p>Kans op overstroming ≥ 20 cm in 2050, gebaseerd op veiligheidseisen van waterkeringen (Waterwet) en provinciale norm voor regionale keringen.</p>
+
+  <h2 id="overstroming-omgevingsscore"><span class="h2-num">2</span>Omgevingsscore</h2>
+  <div class="pills">
+    <button class="pill on" onclick="si2('overstroming','omgeving','max')">Maximale waterdieptekaart 2021</button>
+    <button class="pill" onclick="si2('overstroming','omgeving','kans')">Overstromingskans 2050 ≥ 20 cm</button>
   </div>
-  <div class="sp on" id="panel-overstroming-omgeving">
-    <div class="pills">
-      <button class="pill on" onclick="si2('overstroming','omgeving','max')">Maximale waterdieptekaart 2021</button>
-      <button class="pill" onclick="si2('overstroming','omgeving','kans')">Overstromingskans 2050 ≥ 20 cm</button>
-    </div>
+  <div id="panel-overstroming-omgeving">
     <div class="ip on" id="ind-overstroming-omgeving-max">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-om-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-om-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-om-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-om-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-om-def"><h3>Definitie - Maximale waterdieptekaart (overstroomik.nl, 2021)</h3><p>Toont waar overstromingen tot ca. 1:100.000 jaar kunnen voorkomen. Gebaseerd op de Landelijke Database Overstromingen (LDO) en het LIWO-systeem.</p></div>
-      <div class="dtc" id="dt-om-data"><h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Rijkswaterstaat / LIWO</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td><code>100m × 100m</code></td></tr></table><p>Classificatie gebaseerd op plafondhoogte Bouwbesluit 2012 (2,6 m). Scenario's in de kaart treden in werkelijkheid niet allemaal tegelijkertijd op.</p><div class="srccard"><div><div class="srn">Maximale waterdieptekaart (overstroomik.nl, 2021)</div><div class="srm">Rijkswaterstaat / LIWO · 2021 · 100m</div></div><a href="https://overstroomik.nl" target="_blank" class="srl">→ overstroomik.nl</a></div></div>
-      <div class="dtc" id="dt-om-score"><h3>Scoring</h3><table><tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 2,6 m</code> (plafondhoogte Bouwbesluit 2012)</td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>1 - 2,6 m</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>0,2 - 1 m</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>≤ 0,2 m</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table></div>
-      <div class="dtc" id="dt-om-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>Rijkswaterstaat / LIWO</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td><code>100m × 100m</code></td></tr></table><p>Classificatie gebaseerd op plafondhoogte Bouwbesluit 2012 (2,6 m). Scenario's in de kaart treden in werkelijkheid niet allemaal tegelijkertijd op.</p><div class="srccard"><div><div class="srn">Maximale waterdieptekaart (overstroomik.nl, 2021)</div><div class="srm">Rijkswaterstaat / LIWO · 2021 · 100m</div></div><a href="https://overstroomik.nl" target="_blank" class="srl">→ overstroomik.nl</a></div>
+      <h3>Scoring</h3><table><tr><th>Waterdiepte</th><th>Omgevingsscore</th></tr><tr><td><code>&gt; 2,6 m</code> (plafondhoogte Bouwbesluit 2012)</td><td><span class="sb sh">Hoog</span></td></tr><tr><td><code>1 - 2,6 m</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td><code>0,2 - 1 m</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td><code>≤ 0,2 m</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table>
     </div>
     <div class="ip" id="ind-overstroming-omgeving-kans">
-      <div class="dtabs"><button class="dtb on" onclick="odt(this,'dt-ok-def')">Definitie</button><button class="dtb" onclick="odt(this,'dt-ok-data')">Dataset</button><button class="dtb" onclick="odt(this,'dt-ok-score')">Scoring</button><button class="dtb" onclick="odt(this,'dt-ok-cl')">Versiebeheer</button></div>
-      <div class="dtc on" id="dt-ok-def"><h3>Definitie - Plaatsgebonden overstromingskans 2050 (≥ 20 cm)</h3><p>Kans op overstroming ≥ 20 cm in 2050, gebaseerd op veiligheidseisen van waterkeringen (Waterwet) en provinciale norm voor regionale keringen.</p></div>
-      <div class="dtc" id="dt-ok-data"><h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>LIWO</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td>Binnendijks <code>100m</code>; buitendijks <code>10m</code></td></tr></table><p>Conservatieve schattingen. Geschikt voor eerste signalering, minder voor investeringsbeslissingen.</p><div class="srccard"><div><div class="srn">Plaatsgebonden overstromingskans 2050 (20 cm)</div><div class="srm">LIWO · 2021 · 100m/10m</div></div><a href="https://www.helpdeskwater.nl" target="_blank" class="srl">→ Helpdesk Water</a></div></div>
-      <div class="dtc" id="dt-ok-score"><h3>Scoring</h3><table><tr><th>Kans</th><th>Omgevingsscore</th></tr><tr><td>Grote kans: <code>&gt; 1/30</code> per jaar</td><td><span class="sb sh">Hoog</span></td></tr><tr><td>Middelgrote kans: <code>1/30 - 1/300</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td>Kleine kans: <code>1/300 - 1/3.000</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td>Zeer kleine kans: <code>&gt; 1/3.000</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table></div>
-      <div class="dtc" id="dt-ok-cl"><h3>Versiebeheer</h3>
-        <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
-        <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
-        <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
-        <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
-      </div>
+      <h3>Dataset</h3><table><tr><th>Eigenschap</th><th>Waarde</th></tr><tr><td>Bron</td><td>LIWO</td></tr><tr><td>Jaar</td><td>2021</td></tr><tr><td>Resolutie</td><td>Binnendijks <code>100m</code>; buitendijks <code>10m</code></td></tr></table><p>Conservatieve schattingen. Geschikt voor eerste signalering, minder voor investeringsbeslissingen.</p><div class="srccard"><div><div class="srn">Plaatsgebonden overstromingskans 2050 (20 cm)</div><div class="srm">LIWO · 2021 · 100m/10m</div></div><a href="https://www.helpdeskwater.nl" target="_blank" class="srl">→ Helpdesk Water</a></div>
+      <h3>Scoring</h3><table><tr><th>Kans</th><th>Omgevingsscore</th></tr><tr><td>Grote kans: <code>&gt; 1/30</code> per jaar</td><td><span class="sb sh">Hoog</span></td></tr><tr><td>Middelgrote kans: <code>1/30 - 1/300</code></td><td><span class="sb sm">Middel</span></td></tr><tr><td>Kleine kans: <code>1/300 - 1/3.000</code></td><td><span class="sb sl">Laag</span></td></tr><tr><td>Zeer kleine kans: <code>&gt; 1/3.000</code></td><td><span class="sb svl">Zeer laag</span></td></tr><tr><td><code>NoData</code></td><td><span class="sb sn">Geen</span></td></tr></table>
     </div>
   </div>
-  <div class="sp" id="panel-overstroming-gebouw">
-    <h3>Gebouwkenmerken en antwoordopties</h3>
-    <p class="lead" style="font-size:13px;">Punten volgens Tabel 20, FCAB Deel 2 - De gebouwscore. Klik per vraag op het van toepassing zijnde antwoord; de tabel telt de punten automatisch op tot de gebouwscore. Bij onbekende data wordt de categorie 'zeer hoge kwetsbaarheid' toegekend. Deze vragen zijn alleen relevant wanneer de plaatsgebonden overstromingskans bij de omgevingsscore op "Gemiddelde kwetsbaarheid" uitkomt.</p>
 
-    <h2>Klimaatrisicoscore</h2>
-    <p style="color:var(--text3);font-size:13px;">Bij overstroming bepaalt eerst de omgevingsscore of de gebouwscore überhaupt meetelt: bij een kleine kans altijd een lage klimaatrisicoscore, bij een grote kans op &gt; 50 cm altijd een hoge klimaatrisicoscore. Alleen in het middengebied bepaalt de gebouwscore het resultaat.</p>
-    <div id="mx-overstroming"></div>
+  <h2 id="overstroming-gebouwscore"><span class="h2-num">3</span>Gebouwscore</h2>
+  <p class="lead" style="font-size:13px;">Punten volgens Tabel 20, FCAB Deel 2 - De gebouwscore. Klik per vraag op het van toepassing zijnde antwoord; de tabel telt de punten automatisch op tot de gebouwscore. Bij onbekende data wordt de categorie 'zeer hoge kwetsbaarheid' toegekend. Deze vragen zijn alleen relevant wanneer de plaatsgebonden overstromingskans bij de omgevingsscore op "Gemiddelde kwetsbaarheid" uitkomt - ze verschijnen daarom hieronder bij de Klimaatrisicoscore, samen met de rest van de interactieve berekening.</p>
 
-    <div class="calcbox">
-      <h4>Klimaatrisicoscore Overstroming</h4>
-      <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Vul eerst de omgevingsscore in; de gebouwvragen verschijnen zodra ze relevant zijn.</p>
+  <h2 id="overstroming-klimaatrisicoscore"><span class="h2-num">4</span>Klimaatrisicoscore</h2>
+  <p style="color:var(--text3);font-size:13px;">Bij overstroming bepaalt eerst de omgevingsscore of de gebouwscore überhaupt meetelt: bij een kleine kans altijd een lage klimaatrisicoscore, bij een grote kans op &gt; 50 cm altijd een hoge klimaatrisicoscore. Alleen in het middengebied bepaalt de gebouwscore het resultaat.</p>
+  <div id="mx-overstroming"></div>
 
-      <div class="calcrow" style="border-top:none;"><div class="calclabel"><strong>Omgevingsscore</strong> - overstromingskans &gt; 20 cm</div>
-        <select id="c-overstr-k20" onchange="calcOverstr()">
+  <div class="calcbox">
+    <h4>Klimaatrisicoscore Overstroming</h4>
+    <p class="lead" style="font-size:12.5px;margin-bottom:6px;">Vul eerst de omgevingsscore in; de gebouwvragen verschijnen zodra ze relevant zijn.</p>
+
+    <div class="calcrow" style="border-top:none;"><div class="calclabel"><strong>Omgevingsscore</strong> - overstromingskans &gt; 20 cm</div>
+      <select id="c-overstr-k20" onchange="calcOverstr()">
+        <option value="">Kies</option>
+        <option value="hoog">Grote kans (&gt; 1/30 per jaar)</option>
+        <option value="gemiddeld">Middelgrote kans (1/30 - 1/300 per jaar)</option>
+        <option value="laag">Kleine kans (1/300 - 1/3.000 per jaar)</option>
+        <option value="zeerlaag">Zeer tot extreem kleine kans (&lt; 1/3.000 per jaar)</option>
+      </select></div>
+
+    <div class="calccond" id="c-overstr-blk50">
+      <div class="calcrow"><div class="calclabel"><strong>Omgevingsscore</strong> - overstromingskans &gt; 50 cm</div>
+        <select id="c-overstr-k50" onchange="calcOverstr()">
           <option value="">Kies</option>
-          <option value="hoog">Grote kans (&gt; 1/30 per jaar)</option>
-          <option value="gemiddeld">Middelgrote kans (1/30 - 1/300 per jaar)</option>
-          <option value="laag">Kleine kans (1/300 - 1/3.000 per jaar)</option>
-          <option value="zeerlaag">Zeer tot extreem kleine kans (&lt; 1/3.000 per jaar)</option>
+          <option value="gemiddeld">Lager dan de kans bij &gt; 20 cm</option>
+          <option value="hoog">Gelijk aan de kans bij &gt; 20 cm</option>
         </select></div>
-
-      <div class="calccond" id="c-overstr-blk50">
-        <div class="calcrow"><div class="calclabel"><strong>Omgevingsscore</strong> - overstromingskans &gt; 50 cm</div>
-          <select id="c-overstr-k50" onchange="calcOverstr()">
-            <option value="">Kies</option>
-            <option value="gemiddeld">Lager dan de kans bij &gt; 20 cm</option>
-            <option value="hoog">Gelijk aan de kans bij &gt; 20 cm</option>
-          </select></div>
-      </div>
-
-      <div class="calccond" id="c-overstr-blkgeb">
-        <div id="qtable-geb-overstr"></div>
-      </div>
-
-      <div class="calcresult">
-        <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-overstr-gs">-</div></div>
-        <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-overstr-out">Kies</div></div>
-      </div>
-      <div class="calchint" id="c-overstr-msg">Kies eerst de plaatsgebonden overstromingskans (&gt; 20 cm).</div>
     </div>
+
+    <div class="calccond" id="c-overstr-blkgeb">
+      <div id="qtable-geb-overstr"></div>
+    </div>
+
+    <div class="calcresult">
+      <div class="calcresitem"><div class="crl">Gebouwscore</div><div class="calcgs" id="c-overstr-gs">-</div></div>
+      <div class="calcresitem"><div class="crl">Klimaatrisicoscore</div><div id="c-overstr-out">Kies</div></div>
+    </div>
+    <div class="calchint" id="c-overstr-msg">Kies eerst de plaatsgebonden overstromingskans (&gt; 20 cm).</div>
   </div>
+
+  <h2 id="overstroming-adaptatiestrategie"><span class="h2-num">5</span>Adaptatiestrategie</h2>
+  <p>Bij overstroming bepaalt de kanscategorie welke maatregelen zinvol zijn: bij een kleine kans is alertheid (early warning, een noodplan) vaak voldoende, terwijl bij een grotere kans fysieke maatregelen zoals waterkerende voorzieningen bij de gevel, het verhoogd plaatsen van vitale installaties en het beperken van instroompunten in de kelder de klimaatrisicoscore het meest verlagen. Gebiedsbrede oplossingen (waterkeringen, compartimentering) liggen doorgaans buiten de invloedssfeer van een individuele gebouweigenaar, maar zijn wel relevant om in de gaten te houden via de risicodialoog met de gemeente en het waterschap. Zie <span class="inline-link" onclick="nav('strategie',null)">Adaptatiestrategie (FCAB-3)</span> voor de volledige methodiek.</p>
+  <div class="mlist" id="adapt-measures-overstroming"></div>
+
+  <h2 id="overstroming-versiebeheer"><span class="h2-num">6</span>Versiebeheer</h2>
+  <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> FCAB-3 Maatregelentabel (115 maatregelen)<br><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel<br><span class="ct ctu">update</span> Afstemming EU Taxonomie §7.7</div></div>
+  <div class="cli"><div><div class="clv">v0.9</div><div class="cld">Juli 2023</div></div><div class="clc"><strong>FCAB-2: De gebouwscore</strong><br><span class="ct ctn">nieuw</span> Gebouwscore methodiek<br><span class="ct ctn">nieuw</span> Klimaatrisicoscore (omgeving × gebouw)<br><span class="ct ctn">nieuw</span> Red-flagging procedure</div></div>
+  <div class="cli"><div><div class="clv">v0.5</div><div class="cld">November 2022</div></div><div class="clc"><strong>FCAB-1: De omgevingsscore</strong><br><span class="ct ctn">nieuw</span> Omgevingsscore methodiek (4 klimaatthema's)<br><span class="ct ctn">nieuw</span> 8 kaartlagen met classificatietabellen<br><span class="ct ctn">nieuw</span> Aansluiting EU Taxonomie &amp; TCFD</div></div>
+  <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Integratie KNMI'23-klimaatscenario's · Actualisatie wateroverlastkaart (AHN4) · Verbeterde nachtelijke hittekaart · Verkenning Hagel &amp; Storm als volwaardig thema</div>
 
 </div>
 
@@ -1256,8 +1293,29 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 <div class="page" id="page-hagelstorm">
   <h1>Hagel &amp; Storm</h1>
   <p class="lead">Nieuw klimaatthema dat wordt verkend voor opname in een toekomstige versie van FCAB op basis van de KNMI'23-klimaatscenario's.</p>
+
+
+  <h2 id="hagelstorm-introductie"><span class="h2-num">1</span>Introductie</h2>
   <div class="phb"><div class="pht">In ontwikkeling</div><div class="phd">Indicatoren en gebouwscore worden verkend. In de FCAB-3 Maatregelentabel zijn al maatregelen voor storm en hagel opgenomen.</div></div>
   <div class="ib"><strong>Waarom nieuw?</strong> De KNMI'23-scenario's geven aanleiding dit te heroverwegen:<ul style="margin-top:10px;"><li><strong>Hagel:</strong> Hagelstenen worden naar verwachting groter.</li><li><strong>Wind:</strong> Hevigere zomerbuien gaan gepaard met zwaardere windstoten.</li></ul></div>
+
+  <h2 id="hagelstorm-omgevingsscore"><span class="h2-num">2</span>Omgevingsscore</h2>
+  <p style="color:var(--text3);font-size:13px;">Nog niet beschikbaar - wordt verkend op basis van de KNMI'23-klimaatscenario's.</p>
+
+  <h2 id="hagelstorm-gebouwscore"><span class="h2-num">3</span>Gebouwscore</h2>
+  <p style="color:var(--text3);font-size:13px;">Nog niet beschikbaar - wordt verkend op basis van de KNMI'23-klimaatscenario's.</p>
+
+  <h2 id="hagelstorm-klimaatrisicoscore"><span class="h2-num">4</span>Klimaatrisicoscore</h2>
+  <p style="color:var(--text3);font-size:13px;">Nog niet beschikbaar - volgt zodra omgevings- en gebouwscore zijn uitgewerkt.</p>
+
+  <h2 id="hagelstorm-adaptatiestrategie"><span class="h2-num">5</span>Adaptatiestrategie</h2>
+  <p>Hagel &amp; Storm wordt nog niet als volwaardig klimaatthema met een eigen omgevings- en gebouwscore gevoerd, maar in de FCAB-3 Maatregelentabel zijn al maatregelen opgenomen die hagel- en stormschade beperken: onder meer hagelbestendige dakbedekking en beglazing, het vastzetten of verwijderen van losse buitenelementen (zonwering, dakpannen) en periodieke inspectie na extreme weersomstandigheden. Zie <span class="inline-link" onclick="nav('strategie',null)">Adaptatiestrategie (FCAB-3)</span> voor de volledige methodiek.</p>
+  <div class="mlist" id="adapt-measures-hagelstorm"></div>
+
+  <h2 id="hagelstorm-versiebeheer"><span class="h2-num">6</span>Versiebeheer</h2>
+  <div class="cli"><div><div class="clv">v1.0</div><div class="cld">Juni 2024</div></div><div class="clc"><strong>FCAB-3: Strategie en maatregelen</strong><p style="margin:5px 0 8px;">Publicatie van het derde deel met risicomanagementcyclus, maatregelentabel (115+ maatregelen) en kennisagenda.</p><span class="ct ctn">nieuw</span> Storm en hagel in maatregelentabel</div></div>
+  <div class="ib"><strong>v1.1 - Voorjaar 2025 (gepland)</strong><br>Verkenning Hagel &amp; Storm als volwaardig thema, inclusief eigen omgevings- en gebouwscore.</div>
+
 </div>
 
 <!-- ══ STRATEGIE & MAATREGELEN (FCAB-3) ══ -->
@@ -2065,6 +2123,12 @@ table.qtable tbody tr:last-child td{border-bottom:none;}
 
 </main>
 
+<!-- RIGHT RAIL: ON THIS PAGE -->
+<aside class="toc-rail" id="toc-rail">
+  <div class="toc-title">Op deze pagina</div>
+  <div class="toc-list" id="toc-list"></div>
+</aside>
+
 </div>
 
 <!-- /#app -->
@@ -2098,87 +2162,65 @@ if(localStorage.getItem('fcab_gate_ok')==='1'){
   document.getElementById('app').style.display='';
 }
 
-const PG={home:'page-home',process:'page-process',omgevingsscore:'page-omgevingsscore',gebouwscore:'page-gebouwscore',hitte:'page-hitte',droogte:'page-droogte',wateroverlast:'page-wateroverlast',overstroming:'page-overstroming',hagelstorm:'page-hagelstorm',strategie:'page-strategie',maatregelen:'page-strategie'};
+const PG={home:'page-home',process:'page-process',omgevingsscore:'page-omgevingsscore',gebouwscore:'page-gebouwscore',hitte:'page-hitte',droogte:'page-droogte',wateroverlast:'page-wateroverlast',overstroming:'page-overstroming',hagelstorm:'page-hagelstorm',strategie:'page-strategie',maatregelen:'page-strategie',faq:'page-faq'};
 let cur='home';
-const TV={hitte:'omgeving',droogte:'omgeving',wateroverlast:'omgeving',overstroming:'omgeving'};
-
 function nav(k,el){
   if(!PG[k])return;
-  const subMap={process:'process',omgevingsscore:'omgevingsscore',gebouwscore:'gebouwscore',strategie:'strategie',maatregelen:'strategie'};
-  let collapse=false;
-  if(cur===k && subMap[k]){
-    const curSp=document.getElementById('subnav-'+subMap[k]);
-    if(curSp && curSp.classList.contains('open'))collapse=true;
-  }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById(PG[k]).classList.add('on');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
-  document.querySelectorAll('.ni-sub2').forEach(n=>n.classList.remove('on'));
   if(el)el.classList.add('on');
   document.querySelectorAll(`[data-key="${k}"]`).forEach(n=>n.classList.add('on'));
   cur=k;window.scrollTo(0,0);
-  ubc(k);
-  ['process','omgevingsscore','gebouwscore','strategie'].forEach(key=>{
-    const sp=document.getElementById('subnav-'+key);
-    if(!sp)return;
-    const shouldOpen=!collapse&&subMap[k]===key;
-    sp.classList.toggle('open',shouldOpen);
-    if(!shouldOpen)sp.querySelectorAll('.ni-sub2').forEach(n=>n.classList.remove('on'));
-  });
-  document.querySelectorAll('.ip').forEach(ip=>{
-    const btns=ip.querySelectorAll('.dtabs .dtb');
-    const panels=ip.querySelectorAll('.dtc');
-    btns.forEach((b,i)=>b.classList.toggle('on',i===0));
-    panels.forEach((c,i)=>c.classList.toggle('on',i===0));
-  });
+  buildToc();
 }
 
-function jump(id,el){
-  const target=document.getElementById(id);
-  if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-  document.querySelectorAll('.ni-sub2').forEach(n=>n.classList.remove('on'));
-  if(el)el.classList.add('on');
+/* ── ON THIS PAGE: rechter inhoudsopgave met scrollspy ── */
+let tocObserver=null;
+function slugify(s){
+  return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'sec';
 }
-
-function stv(t,v){
-  TV[t]=v;
-  ['omgeving','gebouw'].forEach(x=>{
-    const s=document.getElementById(`sw-${t}-${x}`);
-    const p=document.getElementById(`panel-${t}-${x}`);
-    if(s)s.classList.toggle('on',x===v);
-    if(p)p.classList.toggle('on',x===v);
+function buildToc(){
+  const list=document.getElementById('toc-list');
+  const rail=document.getElementById('toc-rail');
+  if(!list||!rail)return;
+  if(tocObserver){ tocObserver.disconnect(); tocObserver=null; }
+  const activePage=document.querySelector('.page.on');
+  list.innerHTML='';
+  if(!activePage){ rail.style.visibility='hidden'; return; }
+  let headings=Array.from(activePage.querySelectorAll('h2'));
+  headings=headings.filter(h=>!h.closest('.ip:not(.on), .tc2:not(.on)'));
+  if(headings.length<2){ rail.style.visibility='hidden'; return; }
+  rail.style.visibility='';
+  headings.forEach((h,i)=>{
+    if(!h.id) h.id='toc-'+slugify(h.textContent)+'-'+i;
+    const a=document.createElement('a');
+    a.className='toc-link';
+    a.href='#'+h.id;
+    const numEl=h.querySelector('.h2-num');
+    a.textContent = numEl ? h.textContent.slice(numEl.textContent.length).trim() : h.textContent.trim();
+    a.addEventListener('click',(e)=>{ e.preventDefault(); h.scrollIntoView({behavior:'smooth',block:'start'}); });
+    list.appendChild(a);
   });
-  if(cur!==t)nav(t,null);
-  ubc(t,v);
-}
-
-function ubc(k,v){
-  const bm={hitte:'bc-hitte',droogte:'bc-droogte',wateroverlast:'bc-wateroverlast',overstroming:'bc-overstroming'};
-  const nm={hitte:'Hitte',droogte:'Droogte',wateroverlast:'Wateroverlast',overstroming:'Overstroming'};
-  const el=document.getElementById(bm[k]);if(!el)return;
-  const vv=v||TV[k]||'omgeving';
-  const dl=vv==='omgeving'?'Omgevingsscore':'Gebouwscore';
-  const dn=vv==='omgeving'?'omgeving':'gebouw';
-  el.innerHTML=`<span onclick="nav('home',null)">FCAB Docs</span><span class="sep"> / </span><span onclick="nav('${dn}',null)">${dl}</span><span class="sep"> / </span><span>${nm[k]||''}</span>`;
+  tocObserver=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id=entry.target.id;
+        document.querySelectorAll('.toc-link').forEach(l=>l.classList.toggle('on', l.getAttribute('href')==='#'+id));
+      }
+    });
+  }, {rootMargin:'-15% 0px -70% 0px', threshold:0});
+  headings.forEach(h=>tocObserver.observe(h));
 }
 
 function si2(t,v,ind){
   const pf=`ind-${t}-${v}-`;
   document.querySelectorAll(`[id^="${pf}"]`).forEach(e=>e.classList.remove('on'));
   const el=document.getElementById(`${pf}${ind}`);if(el)el.classList.add('on');
-  const pan=document.getElementById(`panel-${t}-${v}`);
-  if(pan)pan.querySelectorAll('.pill').forEach(p=>{
-    p.classList.toggle('on',p.getAttribute('onclick')&&p.getAttribute('onclick').includes(`'${ind}'`));
+  document.querySelectorAll(`.pill[onclick*="si2('${t}','${v}',"]`).forEach(p=>{
+    p.classList.toggle('on',p.getAttribute('onclick').includes(`'${ind}'`));
   });
-}
-
-function odt(btn,id){
-  const tabs=btn.closest('.dtabs');
-  if(tabs)tabs.querySelectorAll('.dtb').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  const panel=btn.closest('.ip')||btn.closest('.tc2')||document;
-  panel.querySelectorAll('.dtc').forEach(c=>c.classList.remove('on'));
-  const el=document.getElementById(id);if(el)el.classList.add('on');
 }
 
 function ot(btn,id){
@@ -2701,8 +2743,34 @@ function buildLookupMx(id,rowLabels,colLabels,dataCats,opts){
   c.innerHTML=h;
 }
 
+/* ── Adaptatiestrategie per klimaatthema: filtert de FCAB-3 Maatregelentabel (Bijlage 1) ── */
+const THEME_MEASURE_TAGS={
+  hitte:['Hitte'],
+  droogte:['Droogte','Bodemdaling'],
+  wateroverlast:['Wateroverlast'],
+  overstroming:['Overstroming'],
+  hagelstorm:['Storm'],
+};
+function renderThemeAdaptMeasures(){
+  const allRows=Array.from(document.querySelectorAll('#page-strategie .mrow'));
+  for(const [theme,tags] of Object.entries(THEME_MEASURE_TAGS)){
+    const target=document.getElementById(`adapt-measures-${theme}`);
+    if(!target) continue;
+    const matches=allRows.filter(row=>{
+      const themeEl=row.querySelector('.mrow-theme');
+      if(!themeEl) return false;
+      const t=themeEl.textContent.trim();
+      return tags.includes(t) || t==="Alle klimaatthema's" || t==="Meerdere thema's";
+    });
+    target.innerHTML='';
+    matches.forEach(row=>target.appendChild(row.cloneNode(true)));
+    if(!matches.length) target.innerHTML='<p style="color:var(--text3);font-size:13px;">Nog geen maatregelen gekoppeld aan dit thema.</p>';
+  }
+}
+
 window.addEventListener('DOMContentLoaded',()=>{
   renderGebQTables();
+  renderThemeAdaptMeasures();
   buildMx('mx-generic',MXG,LBG,OM5,GB4);
   buildHitteMx('mx-hitte');
   buildLookupMx('mx-droogte-hout',
@@ -2720,6 +2788,36 @@ window.addEventListener('DOMContentLoaded',()=>{
   buildWaterMx('mx-wateroverlast');
   buildOverstrMx('mx-overstroming');
   buildSearchIndex();
+
+  /* Plain content tables krijgen een afgeronde, omkaderde wrapper (zoals qtable-wrap) */
+  document.querySelectorAll('.canvas table').forEach(t=>{
+    if(t.closest('.qtable-wrap'))return;
+    const wrap=document.createElement('div');
+    wrap.className='table-wrap';
+    t.parentNode.insertBefore(wrap,t);
+    wrap.appendChild(t);
+  });
+
+  /* Cmd/Ctrl+K focust de zoekbalk, net als in de Claude-docs */
+  document.addEventListener('keydown',(e)=>{
+    if((e.metaKey||e.ctrlKey) && (e.key==='k'||e.key==='K')){
+      e.preventDefault();
+      const input=document.getElementById('site-search');
+      if(input)input.focus();
+    }
+  });
+
+  buildToc();
+
+  /* Na een taalwissel terug naar het Nederlands (zie revertToOriginalLanguage) wordt de
+     pagina herladen; hier komen we weer uit op de sectie waar de gebruiker was. */
+  try{
+    var restorePage = sessionStorage.getItem('fcab-restore-page');
+    if(restorePage){
+      sessionStorage.removeItem('fcab-restore-page');
+      if(PG[restorePage]) nav(restorePage, document.querySelector('[data-key="'+restorePage+'"]'));
+    }
+  }catch(e){}
 });
 
 /* ── VOLLEDIGE-TEKST ZOEKINDEX ── */
@@ -2832,21 +2930,10 @@ function onSearchKeydown(e){
 }
 
 function revealForSearch(el){
-  const sp = el.closest('.sp');
-  if(sp){
-    const m = sp.id.match(/^panel-([a-z]+)-(omgeving|gebouw)$/);
-    if(m) stv(m[1], m[2]);
-  }
   const ip = el.closest('.ip');
   if(ip){
     const m = ip.id.match(/^ind-([a-z]+)-(omgeving|gebouw)-(.+)$/);
     if(m) si2(m[1], m[2], m[3]);
-  }
-  const dtc = el.closest('.dtc');
-  if(dtc){
-    const container = dtc.closest('.ip') || dtc.closest('.tc2') || document;
-    const btn = container.querySelector(`.dtb[onclick*="'${dtc.id}'"]`);
-    if(btn) odt(btn, dtc.id);
   }
   const tc2 = el.closest('.tc2');
   if(tc2){
@@ -2883,7 +2970,7 @@ document.addEventListener('click', (e)=>{
 /* ── SEARCH (curated titel/trefwoord-index, gebruikt als fallback) ── */
 const IDX=[
   {t:'Start',p:'home',c:'FCAB Docs',kw:['fcab','dgbc','start','introductie','beta']},
-  {t:'Introductie',p:'process',c:'Framework for Climate Adaptive Buildings',kw:['introductie','klimaatverandering','gebouwen','rapportageverplichtingen','tcfd','eu taxonomie','bepalen klimaatrisico','klimaatmodellen','klimaatscenario','tijdshorizons','faq']},
+  {t:'Introductie',p:'process',c:'Framework for Climate Adaptive Buildings',kw:['introductie','klimaatverandering','gebouwen','rapportageverplichtingen','tcfd','eu taxonomie','bepalen klimaatrisico','klimaatmodellen','klimaatscenario','tijdshorizons']},
   {t:'Klimaatverandering en gebouwen',p:'process',c:'Introductie',kw:['klimaatverandering','gebouwen','transitierisico','paalrot','schade']},
   {t:'Rapportageverplichtingen over fysiek klimaatrisico',p:'process',c:'Introductie',kw:['rapportageverplichtingen','tcfd','csrd','sfdr','eu taxonomie','dnsh']},
   {t:"Bepalen klimaatrisico's",p:'process',c:'Introductie',kw:['bepalen','klimaatrisico','hazard','blootstelling','kwetsbaarheid','ipcc']},
@@ -2914,6 +3001,7 @@ const IDX=[
   {t:"Fysieke klimaatrisico's beoordelen",p:'strategie',c:'Adaptatiestrategie',kw:['deep-dive','impactanalyse','risicohouding']},
   {t:'Maatregelen',p:'strategie',c:'Adaptatiestrategie',kw:['maatregel','zonwering','wadi','isolatie','maatregelentabel','kosten','complexiteit']},
   {t:'Bijlagen',p:'strategie',c:'Adaptatiestrategie',kw:['bijlage','updates','kennisagenda','literatuur','stakeholders','kwantitatieve effecten']},
+  {t:'Veelgestelde vragen',p:'faq',c:'Framework for Climate Adaptive Buildings',kw:['faq','veelgestelde vragen','toepassing','interpretatie','nieuwbouw','onbekend']},
 ];
 
 /* ── VERTALING (Google Translate) ── */
@@ -2933,9 +3021,49 @@ function googleTranslateElementInit(){
       if(gtPending){ var l = gtPending; gtPending = null; setGoogleLang(l); }
     }
   }, 100);
+  hideGoogleTranslateChrome();
+}
+
+/* Google's vertaalbalk duikt soms weer op (eigen iframe + inline top-offset op
+   <body>/<html>). We forceren 'm continu weg, i.p.v. te vertrouwen op CSS alleen. */
+function hideGoogleTranslateChrome(){
+  document.querySelectorAll('iframe.goog-te-banner-frame, .goog-te-banner-frame, body > .skiptranslate').forEach(function(el){
+    el.style.display='none';
+    el.style.visibility='hidden';
+    el.style.height='0';
+  });
+  if(document.body && document.body.style.top) document.body.style.top='0px';
+  if(document.documentElement && document.documentElement.style.top) document.documentElement.style.top='0px';
+}
+setInterval(hideGoogleTranslateChrome, 500);
+
+/* Terug naar het Nederlands via de .goog-te-combo blijkt in de praktijk onbetrouwbaar:
+   Google's widget zet na een vertaling een 'googtrans'-cookie en herschrijft de tekst-
+   nodes op een manier die met alleen de select terugzetten niet altijd goed terugdraait.
+   De robuuste, breed gedocumenteerde manier is de cookie te wissen en de pagina opnieuw
+   te laden. We onthouden welke pagina/sectie open stond zodat de gebruiker daar na de
+   herlaad weer uitkomt i.p.v. terug bij Start. */
+function clearGoogTransCookie(){
+  var host = location.hostname;
+  var domains = [''];
+  if(host){
+    domains.push(host, '.' + host);
+    var parts = host.split('.');
+    for(var i=1;i<parts.length-1;i++){ domains.push('.' + parts.slice(i).join('.')); }
+  }
+  domains.forEach(function(d){
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;' + (d ? ' domain=' + d + ';' : '');
+  });
+}
+
+function revertToOriginalLanguage(){
+  try{ sessionStorage.setItem('fcab-restore-page', cur); }catch(e){}
+  clearGoogTransCookie();
+  location.replace(location.href.split('#')[0]);
 }
 
 function setGoogleLang(lang){
+  if(lang === 'nl'){ revertToOriginalLanguage(); return; }
   var combo = document.querySelector('.goog-te-combo');
   if(!combo){ gtPending = lang; return; }
   combo.value = lang;
@@ -2943,17 +3071,17 @@ function setGoogleLang(lang){
 }
 
 function toggleLanguage(){
-  var btn = document.getElementById('lang-toggle');
-  var label = btn ? btn.querySelector('.lt-label') : null;
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.lang-toggle'));
   var next = currentLang === 'nl' ? 'en' : 'nl';
-  if(btn) btn.classList.add('busy');
+  btns.forEach(function(btn){ btn.classList.add('busy'); });
   setGoogleLang(next);
   currentLang = next;
-  if(label) label.textContent = next === 'nl' ? 'EN' : 'NL';
-  if(btn){
+  btns.forEach(function(btn){
+    var label = btn.querySelector('.lt-label');
+    if(label) label.textContent = next === 'nl' ? 'EN' : 'NL';
     btn.setAttribute('aria-label', next === 'nl' ? 'Vertaal pagina naar Engels' : 'Translate page back to Dutch');
     setTimeout(function(){ btn.classList.remove('busy'); }, 400);
-  }
+  });
 }
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
