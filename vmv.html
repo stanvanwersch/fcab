@@ -256,6 +256,35 @@ html[data-theme="dark"] .theme-toggle .ti-sun{display:block;}
   transition:border-color .15s;
 }
 .sort-sel:hover{border-color:var(--border2);}
+
+/* MULTISELECT (Gebouwfunctie) */
+.msel{position:relative;}
+.msel-btn{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-family:var(--sans);font-size:11.5px;color:var(--text2);text-align:left;
+  border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:6px 8px;background:var(--cream);cursor:pointer;outline:none;
+  transition:border-color .15s;
+}
+.msel-btn:hover{border-color:var(--border2);}
+.msel.open .msel-btn{border-color:var(--accent);background:var(--white);}
+.msel-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.msel-caret{flex-shrink:0;color:var(--text3);transition:transform .15s;}
+.msel.open .msel-caret{transform:rotate(180deg);}
+.msel-panel{
+  display:none;position:absolute;left:0;right:0;bottom:calc(100% + 4px);z-index:520;
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r-sm);
+  box-shadow:0 10px 28px var(--shadow-card);padding:4px 0;max-height:220px;overflow-y:auto;
+}
+.msel.open .msel-panel{display:block;}
+.msel-item{
+  display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;color:var(--text2);
+  cursor:pointer;transition:background .12s;
+}
+.msel-item:hover{background:var(--cream);}
+.msel-item input{accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+.msel-item-all{font-weight:600;color:var(--text);}
+.msel-sep{height:1px;background:var(--border);margin:4px 0;}
 .filter-btns{display:flex;gap:6px;flex-wrap:wrap;}
 .filter-btn{
   padding:4px 11px;border:1px solid var(--border);border-radius:20px;
@@ -447,19 +476,26 @@ html[data-theme="dark"] .de-onbekend{color:#9ca3af;}
           <option value="overstromingskans">Overstroming: kans 2050 20cm</option>
         </select>
         <div class="filter-section-title" style="margin-top:8px;">Gebouwfunctie</div>
-        <select class="sort-sel" id="functie-filter">
-          <option value="all">Alle functies</option>
-          <option value="Wonen">Wonen</option>
-          <option value="Onderwijs">Onderwijs</option>
-          <option value="Sport">Sport</option>
-          <option value="Zorg & Welzijn">Zorg &amp; Welzijn</option>
-          <option value="Kunst & Cultuur">Kunst &amp; Cultuur</option>
-          <option value="Maatschappelijk">Maatschappelijk</option>
-          <option value="Kantoor & Ambtelijk">Kantoor &amp; Ambtelijk</option>
-          <option value="Bedrijf & Commercieel">Bedrijf &amp; Commercieel</option>
-          <option value="Recreatie & Natuur">Recreatie &amp; Natuur</option>
-          <option value="Overig">Overig</option>
-        </select>
+        <div class="msel" id="functie-msel">
+          <button type="button" class="msel-btn" id="functie-msel-btn">
+            <span id="functie-msel-label">Alle functies</span>
+            <svg class="msel-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="msel-panel" id="functie-msel-panel">
+            <label class="msel-item msel-item-all"><input type="checkbox" id="functie-opt-all" value="all" checked><span>Alle functies</span></label>
+            <div class="msel-sep"></div>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Wonen"><span>Wonen</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Onderwijs"><span>Onderwijs</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Sport"><span>Sport</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Zorg & Welzijn"><span>Zorg &amp; Welzijn</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Kunst & Cultuur"><span>Kunst &amp; Cultuur</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Maatschappelijk"><span>Maatschappelijk</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Kantoor & Ambtelijk"><span>Kantoor &amp; Ambtelijk</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Bedrijf & Commercieel"><span>Bedrijf &amp; Commercieel</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Recreatie & Natuur"><span>Recreatie &amp; Natuur</span></label>
+            <label class="msel-item"><input type="checkbox" class="functie-opt" value="Overig"><span>Overig</span></label>
+          </div>
+        </div>
               </div>
       </div>
     
@@ -524,7 +560,7 @@ var SCORE_PILLbg = {"Geen":"#f0f0f0","Zeer laag":"#dbeafe","Laag":"#d1fae5","Mid
 var SCORE_PILLfg = {"Geen":"#888","Zeer laag":"#1e40af","Laag":"#065f46","Middel":"#854d0e","Hoog":"#c2410c","Zeer hoog":"#991b1b"};
 
 var currentGemeente=null, currentData=[], filteredData=[];
-var activeFilter="all", activeLayer="hitte", activeFunctie="all";
+var activeFilter="all", activeLayer="hitte", activeFunctieSet=new Set();
 var map=null, markers=[], selectedIdx=null;
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -540,10 +576,7 @@ document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("logout-btn").addEventListener("click", logout);
   document.getElementById("download-btn").addEventListener("click", downloadData);
   document.getElementById("search-input").addEventListener("input", searchAddress);
-  document.getElementById("functie-filter").addEventListener("change", function(){
-    activeFunctie = this.value;
-    filterObjects();
-  });
+  initFunctieMultiselect();
   document.getElementById("layer-sort").addEventListener("change", function(){
     activeLayer = this.value; syncLayerRadio(); filterObjects(); renderMarkers();
   });
@@ -721,6 +754,58 @@ function syncLayerRadio(){
   if (r) r.checked = true;
 }
 
+function initFunctieMultiselect(){
+  var wrap = document.getElementById("functie-msel");
+  var btn = document.getElementById("functie-msel-btn");
+  var panel = document.getElementById("functie-msel-panel");
+  var allBox = document.getElementById("functie-opt-all");
+  var optBoxes = Array.prototype.slice.call(document.querySelectorAll(".functie-opt"));
+
+  function updateLabel(){
+    var label = document.getElementById("functie-msel-label");
+    if (activeFunctieSet.size === 0){
+      label.textContent = "Alle functies";
+    } else if (activeFunctieSet.size === 1){
+      label.textContent = Array.from(activeFunctieSet)[0];
+    } else {
+      label.textContent = activeFunctieSet.size + " functies";
+    }
+  }
+
+  btn.addEventListener("click", function(e){
+    e.stopPropagation();
+    wrap.classList.toggle("open");
+  });
+  document.addEventListener("click", function(e){
+    if (!wrap.contains(e.target)) wrap.classList.remove("open");
+  });
+
+  allBox.addEventListener("change", function(){
+    if (allBox.checked){
+      optBoxes.forEach(function(b){ b.checked = false; });
+      activeFunctieSet.clear();
+      updateLabel();
+      filterObjects();
+    } else {
+      allBox.checked = true;
+    }
+  });
+
+  optBoxes.forEach(function(box){
+    box.addEventListener("change", function(){
+      if (box.checked){
+        activeFunctieSet.add(box.value);
+        allBox.checked = false;
+      } else {
+        activeFunctieSet.delete(box.value);
+      }
+      if (activeFunctieSet.size === 0) allBox.checked = true;
+      updateLabel();
+      filterObjects();
+    });
+  });
+}
+
 function worstScore(row){
   var max=-1;
   EFFECTS.forEach(function(e){ var s=SCORE_ORDER[row[e.key]]; if(s!==undefined&&s>max) max=s; });
@@ -729,7 +814,7 @@ function worstScore(row){
 
 function filterObjects(){
   var result = currentData.filter(function(row){
-    if (activeFunctie !== "all" && row.functiecat !== activeFunctie) return false;
+    if (activeFunctieSet.size > 0 && !activeFunctieSet.has(row.functiecat)) return false;
     if (activeFilter==="hoog" && worstScore(row)<4) return false;
     if (activeFilter==="zeerhoog" && worstScore(row)<5) return false;
     return true;
@@ -826,8 +911,8 @@ function renderStats(){
 }
 
 function renderSummary(){
-  var data = filteredData.length ? filteredData : currentData;
-  var n = currentData.length;
+  var data = filteredData;
+  var n = filteredData.length;
   document.getElementById("sum-total").textContent = n;
 
   var SCORE_LABELS = ["Geen","Zeer laag","Laag","Middel","Hoog","Zeer hoog"];
