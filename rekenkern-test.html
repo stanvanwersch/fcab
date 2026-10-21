@@ -1,0 +1,875 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>FCAB Rekenkern</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Developer- en klantportaal van de FCAB-rekenkern, in de stijl van de FCAB-website:
+   crème canvas, zwevende witte topbalk, linkerrail als navigatie, rustige inhoud; code in donker blok. */
+:root{
+  color-scheme:light;
+  --cream:#faf9f7; --bg2:#f8fafd; --accent-d:#b4561a; --white:#ffffff; --border:#e8e4de; --border2:#d4cfc8;
+  --text:#1c1a17; --text2:#5a5650; --text3:#9c9690;
+  --accent:#e07a2f; --accent-s:rgba(224,122,47,.09); --accent-b:rgba(224,122,47,.22);
+  --green:#1a6e3c; --green-s:rgba(26,110,60,.08);
+  --amber:#b45309; --amber-s:rgba(180,83,9,.08);
+  --code-bg:#1c1a17; --code-text:#e8e0d4;
+  --k0:#e1ecdc; --k1:#d7e7cd; --k2:#ecebbf; --k3:#f3d8a4; --k4:#e9b1a1; --k5:#c66d5c; --kna:#ecebe7;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; --word:'Poppins',system-ui,sans-serif;
+  --mono:ui-monospace,'SF Mono','Cascadia Code','Roboto Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+*{scrollbar-width:thin;scrollbar-color:#dcd8d2 transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#dcd8d2;border-radius:6px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:#c9c4bd;background-clip:padding-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--sans);font-size:14px;line-height:1.6;color:var(--text);background:var(--bg2)}
+button,input,select,textarea{font-family:var(--sans);font-size:13.5px;color:var(--text)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+
+.app{height:100%;display:grid;grid-template-columns:256px minmax(0,1fr);grid-template-rows:64px minmax(0,1fr);background:var(--bg2)}
+.top{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:8px 16px 8px 12px}
+.logo{width:240px;flex:none;display:flex;align-items:center;gap:12px;padding-left:8px;min-width:0}
+.mark{display:grid;grid-template-columns:1fr 1fr;gap:2px;flex:none}
+.mark i{width:17px;height:17px;border-radius:3px;display:grid;place-items:center;font:700 10px var(--word);color:#fff;font-style:normal}
+.prod{font-family:var(--word);font-size:19px;font-weight:400;color:var(--text);white-space:nowrap}
+.search{flex:1;max-width:720px;display:flex;align-items:center;gap:12px;height:46px;border-radius:23px;background:#e9eef6;padding:0 8px 0 16px;color:var(--text2);position:relative}
+.search:focus-within{background:var(--white);box-shadow:0 1px 3px rgba(60,64,67,.3)}
+.search input{flex:1;border:0;background:none;font-size:15px;outline:0;min-width:0}
+.search .sug{top:calc(100% + 4px)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:6px}
+.ib{width:40px;height:40px;border-radius:50%;border:0;background:none;display:grid;place-items:center;color:var(--text2);cursor:pointer}
+.ib:hover{background:rgba(60,64,67,.08)}
+.envsw{display:inline-flex;border-radius:20px;padding:3px;background:#e9eef6;margin-right:6px}
+.envsw button{border:0;background:none;border-radius:16px;padding:5px 14px;font-size:13px;color:var(--text2);cursor:pointer}
+.envsw button.on{background:var(--white);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.12);font-weight:500}
+.av{width:34px;height:34px;border-radius:50%;background:#4BAE8A;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600;margin-left:4px;border:0;cursor:pointer}
+.side{position:relative;overflow-y:auto;padding:22px 0 20px;display:flex;flex-direction:column}
+.new{display:inline-flex;align-items:center;gap:12px;margin:4px 0 14px 8px;align-self:flex-start;height:56px;padding:0 22px 0 16px;border-radius:16px;border:0;background:var(--white);box-shadow:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15);font-size:14px;font-weight:500;cursor:pointer;position:relative}
+.new:hover{box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15);background:#f6f8fc}
+.newm{position:absolute;left:12px;top:66px;z-index:30;background:var(--white);border-radius:6px;box-shadow:0 2px 6px 2px rgba(60,64,67,.15),0 1px 2px rgba(60,64,67,.3);padding:6px 0;min-width:220px}
+.newm button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:8px 16px;font-size:14px;text-align:left;cursor:pointer}
+.newm button:hover{background:#f1f3f4}
+.ni{display:flex;align-items:center;gap:14px;height:32px;width:calc(100% - 16px);padding:0 12px 0 16px;border-radius:16px;cursor:pointer;color:var(--text);font-size:14px;border:0;background:none;text-align:left;margin:0 0 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ni svg{flex:none;color:var(--text2)}
+.ni:hover{background:rgba(60,64,67,.08)}
+.ni.on{background:#ffe3cc;font-weight:600}
+.ni.on svg{color:var(--text)}
+.ni .mt{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text3)}
+.gap{height:14px}
+.quota{padding:10px 24px 0}
+.quota .bar{height:4px;border-radius:2px;background:#dadce0;overflow:hidden;margin:6px 0 6px}
+.quota .bar b{display:block;height:100%;background:var(--accent)}
+.quota p{margin:0;font-size:13px;color:var(--text2);line-height:1.4}
+.qbtn{margin:12px 0 0;border:1px solid #747775;background:none;border-radius:20px;padding:8px 22px;font-size:14px;font-weight:500;color:var(--accent-d);cursor:pointer}
+.qbtn:hover{background:rgba(224,122,47,.06)}
+.main{background:var(--white);border-radius:16px;margin:0 16px 16px 0;display:flex;flex-direction:column;min-width:0;min-height:0}
+.mh{display:flex;align-items:center;gap:8px;padding:16px 24px 6px;flex-wrap:wrap}
+.crumb{display:flex;align-items:center;gap:4px;font-size:22px;color:var(--text)}
+.crumb button{border:0;background:none;font-size:22px;color:var(--text2);padding:2px 10px;border-radius:18px;cursor:pointer}
+.crumb button:hover{background:rgba(60,64,67,.08)}
+.crumb b{font-weight:400;padding:2px 10px}
+.mh .vbadge{margin-left:auto}
+.canvas{flex:1;min-width:0;min-height:0;overflow-y:auto;padding:22px 24px 60px}
+.page{max-width:1120px}
+.eyebrow{display:none}
+.page>h1{font-size:30px;font-weight:700;line-height:1.2;letter-spacing:-.6px}
+.lead{font-size:15.5px;font-weight:300;color:var(--text2);line-height:1.7;margin:10px 0 26px;max-width:720px}
+.page h2{font-size:18px;font-weight:600;margin:34px 0 14px;padding-bottom:10px;border-bottom:1.5px solid var(--border)}
+
+/* proefomgeving */
+.pg{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:24px;align-items:start}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:10px;min-width:0}
+.ph{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.ph h3{font-size:13.5px;font-weight:600}
+.ph .mth{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--green);border-radius:4px;padding:1px 7px}
+.ph code{font-family:var(--mono);font-size:12.5px;color:var(--text2)}
+.pb{padding:16px}
+.seg{display:inline-flex;border-bottom:1.5px solid var(--border);gap:2px;margin-bottom:14px;width:100%}
+.seg button{border:0;background:none;padding:7px 12px;font-size:13px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px}
+.seg button.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.fl{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;position:relative}
+.fl label{font-size:12px;font-weight:500;color:var(--text2)}
+.fl input,.fl select{border:1px solid var(--border2);border-radius:6px;background:var(--white);padding:8px 10px;width:100%}
+.fl input:focus,.fl select:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-s)}
+.hint{font-size:11.5px;color:var(--text3)}
+.sug{position:absolute;top:100%;left:0;right:0;z-index:20;background:var(--white);border:1px solid var(--border);border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.1);margin-top:4px;max-height:240px;overflow:auto}
+.sug button{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 12px;cursor:pointer;font-size:13px}
+.sug button small{color:var(--text3);margin-left:6px;font-family:var(--mono);font-size:11px}
+.sug button:hover{background:var(--cream)}
+.tg{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;color:var(--text2);margin:4px 0 10px}
+.tg input{accent-color:var(--accent);margin:0}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--cream);margin-bottom:12px}
+.kgrid .fl{margin:0}
+.kgrid .fl label{font-size:11.5px;font-weight:400;color:var(--text3)}
+.kgrid .fl select,.kgrid .fl input{padding:5px 7px;font-size:12.5px}
+.kgrid .fl select.set,.kgrid .fl input.set{border-color:var(--text2)}
+.kq{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text3);margin-bottom:12px}
+.kq button{border:0;background:none;color:var(--text2);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:12px;padding:0}
+.send{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border2);background:var(--white);border-radius:6px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{filter:brightness(1.06);color:#fff}
+.btn[disabled]{opacity:.6;cursor:wait}
+.meta{font-size:12px;color:var(--text3);font-family:var(--mono)}
+
+pre.code{margin:0;background:var(--code-bg);color:var(--code-text);font-family:var(--mono);font-size:12px;line-height:1.6;padding:14px 16px;border-radius:0 0 10px 10px;overflow:auto;max-height:620px;white-space:pre}
+pre.code.sm{border-radius:8px;max-height:none}
+.j-k{color:#f0b77a}.j-s{color:#a8d4a2}.j-n{color:#8fc1f0}.j-b{color:#e6a3c9}.j-c{color:#7d776d}
+.status{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--green)}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.rt{display:flex;flex-direction:column;gap:14px;padding:16px}
+.flag{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.5}
+.flag.ok{background:var(--green-s);color:var(--green)}
+.flag.exp{background:var(--amber-s);color:var(--amber)}
+.flag b{display:block;font-weight:600}
+.flag svg{flex:none;margin-top:2px}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+.t th{background:var(--accent-s);color:var(--text2);font-weight:600;font-size:11px;letter-spacing:.2px;padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--accent-b);white-space:nowrap}
+.t td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.t td small{display:block;font-size:11.5px;color:var(--text3)}
+.t tr:last-child td{border-bottom:0}
+.t .r{text-align:right}
+.tw{border:1px solid var(--border);border-radius:10px;overflow:auto;background:var(--white)}
+.rc{display:inline;font-size:13px;white-space:nowrap}
+.rc.kna{color:var(--text3)}
+.ql{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:4px;font-weight:700;font-size:12px;border:1.5px solid currentColor}
+.qA{color:var(--green)}.qB{color:var(--amber)}.qC{color:#b91c1c}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chips span{font-size:11.5px;border:1px solid var(--border);border-radius:20px;padding:1px 9px;color:var(--text2);background:var(--white)}
+.chips.d span{border-style:dashed}
+.chips.s span{background:var(--cream);color:var(--text3)}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;font-size:13px}
+.kv dt{color:var(--text3)}
+.kv dd{margin:0}
+.empty{padding:40px 20px;text-align:center;color:var(--text3);font-size:13px}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 6px;border:1px solid var(--border);border-radius:10px;background:var(--white);overflow:hidden}
+.flow>div{padding:14px 18px;border-right:1px solid var(--border);position:relative}
+.flow>div:last-child{border-right:0}
+.flow b{display:block;font-size:13px;margin-bottom:2px}
+.flow p{margin:0;font-size:12.5px;color:var(--text2);line-height:1.5}
+.flow .st{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600}
+
+/* batch */
+.bup{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px;border:1.5px dashed var(--border2);border-radius:10px;background:var(--white)}
+.bup p{margin:0;font-size:13px;color:var(--text2);flex:1;min-width:240px}
+.prog{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin:16px 0 6px}
+.prog b{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.bsum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.kpi .l{font-size:12px;color:var(--text3)}
+.kpi .v{font-size:22px;font-weight:600;line-height:1.3;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:12px;font-weight:400;color:var(--text3)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+
+/* gebruik */
+.usebar{height:10px;border-radius:5px;background:var(--border);overflow:hidden;margin:8px 0 4px}
+.usebar b{display:block;height:100%;background:var(--accent)}
+.chart{display:flex;align-items:flex-end;gap:10px;height:150px;padding:10px 4px 0;border-bottom:1px solid var(--border)}
+.chart div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.chart i{display:block;width:100%;max-width:38px;border-radius:3px 3px 0 0;background:var(--accent)}
+.chart i.t{background:var(--border2)}
+.chart span{font-size:10.5px;color:var(--text3)}
+.lbl{display:flex;justify-content:space-around;font-size:11px;color:var(--text3);padding-top:4px}
+.key{font-family:var(--mono);font-size:12px;background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:1px 7px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.note{font-size:12px;color:var(--text3);margin-top:12px}
+
+.ep{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--border)}
+.ep .m{font-family:var(--mono);font-size:11px;font-weight:700;border-radius:4px;padding:1px 7px;color:#fff;flex:none;min-width:44px;text-align:center}
+.m.post{background:var(--green)}.m.get{background:#1d5fa8}
+.ep code{font-family:var(--mono);font-size:13px;font-weight:600}
+.ep p{margin:0;font-size:13px;color:var(--text2)}
+.cl{border-left:2px solid var(--border);padding:0 0 18px 18px;position:relative}
+.cl::before{content:"";position:absolute;left:-6px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--white);border:2px solid var(--accent)}
+.cl h3{font-size:14px;font-weight:600}
+.cl h3 span{font-weight:400;color:var(--text3);font-size:12.5px;margin-left:8px}
+.cl ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--text2)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--text);color:#fff;font-size:12.5px;padding:8px 14px;border-radius:6px;opacity:0;pointer-events:none;transition:all .2s;z-index:100;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+
+/* toegangsscherm */
+#gate{position:fixed;inset:0;z-index:9999;overflow-y:auto;background:var(--cream);display:flex;flex-direction:column}
+#gate::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(180,174,166,.75) 1px,transparent 1px);background-size:17px 17px;-webkit-mask-image:radial-gradient(ellipse 520px 380px at 50% 38vh,transparent 0,#000 100%);mask-image:radial-gradient(ellipse 520px 380px at 50% 38vh,transparent 0,#000 100%)}
+.g-top{position:relative;z-index:1;margin:16px;height:80px;border-radius:18px;background:var(--white);box-shadow:0 4px 24px rgba(28,26,23,.08);display:flex;align-items:center;gap:12px;padding:0 24px}
+.g-top .mk{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.g-top .mk i,.g-brand i{display:grid;place-items:center;font:700 12px var(--word);color:#fff;font-style:normal;width:22px;height:22px;border-radius:3px}
+.g-top .wm{font-family:var(--word);font-size:13.6px;color:var(--text2);line-height:1.35}
+.g-body{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;padding:14vh 24px 60px}
+.g-brand{display:flex;gap:5px;margin-bottom:14px}
+.g-brand i{width:40px;height:40px;border-radius:7px;font-size:17px}
+.g-name{font-family:var(--word);font-size:20px;font-weight:500;margin-bottom:28px;color:var(--text)}
+.g-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:30px 30px 24px;max-width:400px;width:100%;box-shadow:0 16px 44px rgba(0,0,0,.08);text-align:center}
+.g-card input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14.5px;text-align:center;letter-spacing:.5px;margin-bottom:12px;background:var(--white)}
+.g-card input:focus{outline:none;border-color:var(--accent)}
+.g-card button{width:100%;padding:12px 0;background:var(--accent);color:#fff;border:0;border-radius:12px;font-size:14.5px;font-weight:600;cursor:pointer}
+.g-card button:hover{opacity:.9}
+.g-err{color:#c0392b;font-size:12.5px;margin-top:10px;font-weight:500}
+.g-legal{font-size:12.5px;color:var(--text2);font-weight:300;line-height:1.55;margin:18px 0 0}
+.g-foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text3);font-weight:300}
+@media (max-width:1100px){.pg{grid-template-columns:1fr}.bsum{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){
+  html,body{height:auto}
+  .app{display:block;height:auto;padding:0 16px 16px}
+  .top{flex-wrap:wrap;padding:10px 0}
+  .logo{width:auto}
+  .search{order:3;flex-basis:100%;max-width:none}
+  .side{flex-direction:row;overflow-x:auto;gap:4px;padding:0 0 10px}
+  .new{margin:0;height:40px;flex:none}
+  .ni{width:auto;flex:none;white-space:nowrap}
+  .ni .mt,.gap,.quota{display:none}
+  .main{margin:0}
+  .canvas{overflow:visible;padding:6px 14px 40px}
+  .flow,.g2{grid-template-columns:1fr}
+  .flow>div{border-right:0;border-bottom:1px solid var(--border)}
+  .kgrid{grid-template-columns:1fr}
+  .envsw{display:none}
+  .crumb,.crumb button{font-size:16px}
+  .mh .vbadge{display:none}
+  .newm{top:46px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="gate">
+  <div class="g-body">
+    <div class="g-brand" aria-hidden="true"><i style="background:#4BAE8A">F</i><i style="background:#E8B84B">C</i><i style="background:#E8710A">A</i><i style="background:#C0392B">B</i></div>
+    <div class="g-name">Rekenkern</div>
+    <form class="g-card" id="g-form" autocomplete="off">
+      <input type="password" id="g-in" placeholder="Toegangscode" aria-label="Toegangscode" autofocus>
+      <button type="submit">Ontgrendelen</button>
+      <div class="g-err" id="g-err" hidden>Onjuiste code. Probeer het opnieuw.</div>
+      <p class="g-legal">Deze omgeving is momenteel afgeschermd. Voer de toegangscode in om verder te gaan.</p>
+    </form>
+  </div>
+</div>
+<div class="app" id="app" hidden>
+  <header class="top">
+    <div class="logo"><div class="mark" aria-hidden="true"><i style="background:#4BAE8A">F</i><i style="background:#E8B84B">C</i><i style="background:#E8710A">A</i><i style="background:#C0392B">B</i></div><span class="prod">Rekenkern</span></div>
+    <div class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Zoek een adres of BAG pand-ID" autocomplete="off" aria-label="Zoek een adres of BAG pand-ID"><div class="sug" id="qsug" hidden></div></div>
+    <div class="tr">
+      
+      <button class="ib" type="button" data-v="docs" title="Documentatie" aria-label="Documentatie"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5V14M12 17v.01"/></svg></button>
+      <button class="ib" type="button" data-v="keys" title="Instellingen" aria-label="Instellingen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+      <button class="av" type="button" data-v="gebruik" title="Woningstichting Voorbeeld · Abonnement Professional" aria-label="Account">WV</button>
+    </div>
+  </header>
+  <nav class="side" aria-label="Onderdelen">
+    
+    
+    <button class="ni on" type="button" data-v="pand"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7M5 9.5V21h14V9.5M10 21v-6h4v6"/></svg>Pand</button><button class="ni" type="button" data-v="batch"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l5-3v16M9 21V3l11 4v14M3 21h18M13 10h3M13 14h3"/></svg>Portefeuille</button><div class="gap"></div><button class="ni" type="button" data-v="gebruik"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Gebruik</button><button class="ni" type="button" data-v="keys"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>Abonnement</button><div class="gap"></div><button class="ni" type="button" data-v="docs"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Endpoints en uitvoer</button><button class="ni" type="button" data-v="bronnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Methodiek en bronnen</button><button class="ni" type="button" data-v="changelog"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Changelog</button>
+    <div class="gap"></div>
+    <div class="quota"><div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Verbruik</div><div class="bar"><b id="qbar"></b></div><p id="qtxt"></p></div>
+  </nav>
+  <section class="main">
+        <main class="canvas" id="canvas"></main>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="file" accept=".xlsx,.xls,.csv" hidden>
+<button id="b-tpl" hidden></button><button id="b-export" hidden></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>(Math.round(n*10)/10).toString().replace('.',',');
+const CLS=['Geen','Zeer laag','Laag','Gemiddeld','Hoog','Zeer hoog'];
+const MEAS=[];
+const MBY={};MEAS.forEach(m=>MBY[m.nr]=m);
+
+/* ---------------- iconen ---------------- */
+const IC={
+ hitte:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+ dr:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M6 20l3-6 3 3 2-5 4 8"/></svg>',
+ wo:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 16a4 4 0 0 1 .9-7.9A5.5 5.5 0 0 1 18 9a3.5 3.5 0 0 1 0 7"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg>',
+ ov:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12c2 0 2-1.5 4-1.5S8 12 10 12s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M2 17c2 0 2-1.5 4-1.5S8 17 10 17s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M8 8l4-4 4 4"/></svg>',
+ storm:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h7"/></svg>',
+ bd:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16M7 9v6M17 9v6M12 13v7M9 17l3 3 3-3"/></svg>',
+ plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+ check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+ add:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+ doc:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+ caret:'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+ ok:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.7 2.7L16 10"/></svg>',
+ warn:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg>',
+ chev:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'
+};
+const RT=[{id:'hitte',n:'Hitte',cls:'t-hitte'},{id:'dr',n:'Droogte',cls:'t-dr'},{id:'wo',n:'Wateroverlast',cls:'t-wo'},{id:'ov',n:'Overstroming',cls:'t-ov'}];
+const TB={};RT.forEach(t=>TB[t.id]=t);
+const TH6=[{id:'hitte',n:'Hitte',cls:'t-hitte'},{id:'storm',n:'Storm en hagel',cls:'t-storm'},{id:'wo',n:'Wateroverlast',cls:'t-wo'},{id:'ov',n:'Overstroming',cls:'t-ov'},{id:'bd',n:'Bodemdaling',cls:'t-bd'},{id:'dr',n:'Droogte',cls:'t-dr'}];
+const T6={};TH6.forEach((t,i)=>{T6[t.id]=t;t.i=i;});
+
+/* ---------------- FCAB-2 kenmerken (zoals FCAB Gebouwscore) ---------------- */
+const SCHOT=[['geen','Geen'],['lo','Tot 50 cm hoog'],['hi','Hoger dan 50 cm']];
+const ROWS=[
+ {id:'glas',nr:4,t:'Glasoppervlak t.o.v. geveloppervlak',s:'Ratio glas op west, zuid en oost t.o.v. bruto muuroppervlak',th:['hitte'],
+  in:[{k:'glas',o:[['<35','Minder dan 35%'],['35-50','35 – 50%'],['50-75','50 – 75%'],['>75','Meer dan 75%'],['?','Onbekend']]}]},
+ {id:'massa',nr:7,t:'Thermische massa constructie',s:'Bouwwijze, uit energielabeldata',th:['hitte'],
+  in:[{k:'massa',o:[['l','Licht: hsb of staalframe'],['ml','250 – 500 kg/m²'],['mz','Beton skelet of metselwerk'],['z','Zwaar: massieve betonvloeren'],['?','Onbekend']]}]},
+ {id:'zon',nr:5,t:'Zonwering',s:'Buitenzonwering of rolluiken op meer dan 50% van de ramen (O, Z, W)',th:['hitte'],
+  in:[{k:'zon',o:[['nee','Afwezig'],['ja','Aanwezig'],['?','Onbekend']]}]},
+ {id:'zta',nr:11,t:'Zontoetredingsfactor',s:'g-waarde of type beglazing',th:['hitte'],
+  in:[{k:'zta',o:[['enkel','g ≥ 0,75 of enkel glas'],['dubbel','g 0,60 – 0,75 of dubbel glas'],['hr','g 0,40 – 0,60 of HR++'],['folie','g ≤ 0,40 of zonwerende folie'],['?','Onbekend']]}]},
+ {id:'kleur',nr:8,t:'Kleur dak en façade',s:'Lichte kleuren en groen nemen minder warmte op',th:['hitte'],
+  in:[{k:'dak',l:'Dak',o:[['donker','Donker'],['licht','Licht'],['pv','Zonnepanelen'],['groen','Groen of wit dak'],['?','Onbekend']]},
+      {k:'gevel',l:'Façade',o:[['donker','Donker'],['licht','Licht'],['groen','Groene gevel'],['?','Onbekend']]}]},
+ {id:'overstek',nr:6,t:'Bouwkundige overstek',s:'Boven meer dan 50% van de ramen',th:['hitte'],
+  in:[{k:'overstek',o:[['geen','Afwezig of < 0,6 m'],['m6','0,6 – 1,2 m'],['m12','1,2 m of meer'],['?','Onbekend']]}]},
+ {id:'koel',nr:10,t:'Actieve koeling',s:'In het hoofdvertrek én de slaapkamer',th:['hitte'],
+  in:[{k:'koel',o:[['geen','Geen koeling'],['nc','Niet-condenserend (warmtepomp)'],['ac','Condenserend (airco)'],['?','Onbekend']]}]},
+ {id:'iso',nr:9,t:'Isolatiewaarde dak en gevel',s:'Goed geïsoleerd koelt ’s nachts langzamer af',th:['hitte'],
+  in:[{k:'iso',o:[['jaar','Afleiden uit bouwjaar'],['r1','Rc < 1,3'],['r2','Rc 1,3 – 2,5'],['r3','Rc 2,5 – 3,5'],['r4','Rc > 3,5'],['?','Onbekend']]}]},
+ {id:'spui',nr:12,t:'Spuiventilatie',s:'Kunnen ramen open, en op hoeveel gevels?',th:['hitte'],
+  in:[{k:'spui',o:[['2','Ramen op 2 of meer gevels'],['1','Ramen op 1 gevel'],['0','Ramen kunnen niet open'],['?','Onbekend']]}]},
+ {id:'ingang',nr:1,t:'Hoogte ingang t.o.v. maaiveld',s:'Laagste ingang, t.o.v. het maaiveld op 2 meter van het gebouw',th:['wo','ov'],
+  in:[{k:'ingang',r:[-10,100,5,'cm']},{k:'schotIn',l:'Waterkering (schot) bij de ingang',o:SCHOT}]},
+ {id:'kelder',nr:16,t:'Ondergrondse ruimte',s:'Kelder, souterrain of parkeerkelder',th:['wo','ov','dr'],
+  in:[{k:'kelder',o:[['geen','Geen'],['deel','Gedeeltelijke onderkeldering'],['vol','Volledige kelder of souterrain'],['park','Parkeerkelder'],['?','Onbekend']]},
+      {k:'drempel',l:'Drempelhoogte ingang of inrit kelder',r:[-10,80,5,'cm'],th:['wo','ov'],when:s=>s.kelder!='geen'},
+      {k:'rooster',l:'Waterrooster bij de inrit',o:[[0,'Nee'],[1,'Ja']],th:['wo'],when:s=>s.kelder!='geen'},
+      {k:'schotK',l:'Afsluitmiddel (schot) bij kelder',o:SCHOT,th:['wo','ov'],when:s=>s.kelder!='geen'}]},
+ {id:'instroom',nr:3,t:'Overige instroompunten',s:'Kelderraam, open stootvoegen voor spouw- of kruipruimteventilatie',th:['wo','ov'],
+  in:[{k:'instroom',o:[['nee','Geen, of hoger dan 50 cm'],['50','Tussen 15 en 50 cm'],['15','Binnen 15 cm boven maaiveld'],['?','Onbekend']]},
+      {k:'instroomSchot',l:'Afgeschermd met schot',o:[[0,'Nee'],[1,'Ja']],when:s=>s.instroom!='nee'}]},
+ {id:'riool',nr:13,t:'Terugslagklep of ontlastput',s:'Tegen terugstromend rioolwater via toilet, douche of wasbak',th:['wo','ov'],
+  in:[{k:'riool',l:'Rioolstelsel',o:[['gemengd','Gemengd'],['gescheiden','Gescheiden'],['?','Onbekend']]},
+      {k:'klep',l:'Terugslagklep of ontlastput aanwezig',o:[[0,'Nee'],[1,'Ja']]}]},
+ {id:'inst',nr:14,t:'Vaste apparatuur en installaties',s:'Ketel, boiler, pomp, ventilatie, lift',th:['wo','ov'],
+  in:[{k:'inst',o:[['kelder','Onder straatniveau'],['bg','Op de begane grond'],['hoog','Verhoogd of op een verdieping'],['?','Onbekend']]}]},
+ {id:'fund',nr:15,t:'Soort fundering',s:'Bepaalt of paalrot of verschilzetting speelt',th:['dr'],
+  in:[{k:'fund',o:[['hout','Houten palen'],['staal','Op staal (ondiep)'],['beton','Betonpalen'],['?','Onbekend']]}]}
+];
+const RBY={};ROWS.forEach(r=>RBY[r.id]=r);
+const OPTS={};ROWS.forEach(r=>r.in.forEach(i=>{if(i.o)OPTS[i.k]=i.o;}));
+const MARKS=[[1,'ingang','Hoogte ingang'],[2,'kelder','Waterrooster'],[3,'instroom','Instroompunt'],[4,'glas','Glasoppervlak'],[5,'zon','Zonwering'],[6,'overstek','Bouwkundige overstek'],[7,'massa','Thermische massa'],[8,'kleur','Kleur dak en façade'],[9,'iso','Isolatiewaarde'],[10,'koel','Actieve koeling'],[11,'zta','Zontoetredingsfactor'],[12,'spui','Spuiventilatie'],[13,'riool','Terugslagklep'],[14,'inst','Installaties'],[15,'fund','Soort fundering'],[16,'kelder','Ondergrondse ruimte']];
+const MTH={1:['wo','ov'],2:['wo'],3:['wo','ov'],4:['hitte'],5:['hitte'],6:['hitte'],7:['hitte'],8:['hitte'],9:['hitte'],10:['hitte'],11:['hitte'],12:['hitte'],13:['wo','ov'],14:['wo','ov'],15:['dr'],16:['wo','ov','dr']};
+
+/* Excel-kolommen */
+const XC=[
+ ['id','ID',['id','objectid','nummer','nr','code']],['naam','Naam',['naam','gebouw','object','omschrijving','complex']],['adres','Adres',['adres','straat','straatnaam','straat+huisnummer']],['plaats','Plaats',['plaats','woonplaats','stad','gemeente']],
+ ['type','Type',['type','gebouwtype','functie']],['jaar','Bouwjaar',['bouwjaar','jaar']],
+ ['glas','Glasoppervlak',['glas','glasoppervlak','glaspercentage']],['massa','Thermische massa',['massa','thermischemassa','bouwwijze']],['zon','Zonwering',['zonwering']],['zta','Beglazing',['beglazing','zta','gwaarde','zontoetredingsfactor']],
+ ['dak','Kleur dak',['kleurdak','dak','dakbedekking']],['gevel','Kleur gevel',['kleurgevel','gevel','facade','kleurfacade']],['overstek','Overstek',['overstek','dakoverstek']],['koel','Actieve koeling',['actievekoeling','koeling']],
+ ['iso','Isolatie',['isolatie','rc','isolatiewaarde']],['spui','Spuiventilatie',['spuiventilatie','spui','ramenopen']],
+ ['ingang','Hoogte ingang (cm)',['hoogteingangcm','hoogteingang','ingang','vloerpeil','drempelhoogte']],['schotIn','Schot ingang',['schotingang','waterkeringingang']],
+ ['kelder','Ondergrondse ruimte',['ondergrondseruimte','kelder','souterrain']],['drempel','Drempel kelder (cm)',['drempelkeldercm','drempelkelder']],['rooster','Waterrooster kelder',['waterroosterkelder','waterrooster','rooster']],['schotK','Schot kelder',['schotkelder']],
+ ['instroom','Overige instroompunten',['overigeinstroompunten','instroompunten','instroom']],['instroomSchot','Schot instroompunten',['schotinstroompunten']],
+ ['riool','Rioolstelsel',['rioolstelsel','riool','riolering']],['klep','Terugslagklep',['terugslagklep','ontlastput','terugslagklepofontlastput']],['inst','Installaties',['installaties','installatie','cvketel']],['fund','Fundering',['fundering','funderingstype']]
+];
+const KF=['glas','massa','zon','zta','dak','gevel','overstek','koel','iso','spui','ingang','schotIn','kelder','drempel','rooster','schotK','instroom','instroomSchot','riool','klep','inst','fund'];
+const KEYQ=['glas','massa','zon','zta','dak','gevel','overstek','koel','iso','spui','ingang','kelder','instroom','riool','inst','fund','jaar']; // tellen mee voor volledigheid
+const DEF={type:'woning',jaar:null,glas:'?',massa:'?',zon:'?',zta:'?',dak:'?',gevel:'?',overstek:'?',koel:'?',iso:'?',spui:'?',ingang:null,schotIn:'geen',kelder:'?',drempel:null,rooster:0,schotK:'geen',instroom:'?',instroomSchot:0,riool:'?',klep:0,inst:'?',fund:'?'};
+const isUnk=(k,v)=>v==null||v==='?'||(k==='jaar'&&!v);
+
+/* ---------------- FCAB-2 rekenregels ---------------- */
+const WOM=['00000000000000000000','11111111111111111222','11111111222222222333','11111122233333333444','11111222333344444555','11122233355555555555'];
+const PAALM=['1111111','1111111','1111111','3322221','4433222','5544332','4433222','5543332','5555433'];
+const VZM=['11111','11122','12233','23344','34455','44555'];
+function yIdx(y,b){let i=0;while(i<b.length&&y>=b[i])i++;return i;}
+const PAALY=['vóór 1830','1830 – 1880','1880 – 1900','1900 – 1930','1930 – 1950','1950 – 1975','na 1975'];
+function calc(s0){
+  const s=Object.assign({},s0,{ingang:s0.ingang==null?0:s0.ingang,drempel:s0.drempel==null?0:s0.drempel,jaar:s0.jaar||1900});
+  const util=s.type=='util',R={};
+  const nights=s.o.hitte, cool=nights==='geen'||nights==='laag';
+  const h={
+    glas:{'<35':1.5,'35-50':12,'50-75':21,'>75':30,'?':30}[s.glas],
+    massa:{l:10,ml:7,mz:4,z:1,'?':10}[s.massa],
+    zon:{nee:20,ja:1,'?':20}[s.zon],
+    zta:{enkel:15,dubbel:10.5,hr:6,folie:1.5,'?':15}[s.zta],
+    kleur:{donker:2.5,licht:1,pv:1,groen:.25,'?':2.5}[s.dak]+{donker:2.5,licht:1,groen:1,'?':2.5}[s.gevel],
+    overstek:{geen:20,m6:8,m12:1,'?':20}[s.overstek],
+    koel:{geen:0,nc:util?-20:-15,ac:util?-40:-30,'?':0}[s.koel],
+    iso:s.iso=='jaar'?(s.jaar<1976?-7:s.jaar<=1992?-5:s.jaar<=2013?-3:-1):{r1:-7,r2:-5,r3:-3,r4:-1,'?':-1}[s.iso],
+    spui:{'2':cool?-20:-15,'1':cool?-10:-5,'0':0,'?':0}[s.spui]};
+  let hs=0;for(const k in h)hs+=h[k];hs=Math.max(0,Math.min(100,hs));
+  R.hitte={rows:h,score:hs,risk:hs<=20?1:hs<=40?2:hs<=60?3:hs<=80?4:5};
+  const ing=s.ingang,kel=s.kelder!='geen';
+  const w={
+    ingang:ing>15?4:s.schotIn!='geen'?10:ing>=1?28:40,
+    kelder:!kel?0:s.kelder=='?'?15:(s.drempel>15||s.rooster||s.schotK!='geen')?6:s.drempel>=1?10.5:15,
+    instroom:s.instroom=='?'?20:s.instroom=='15'?(s.instroomSchot?8:20):0,
+    riool:(s.riool=='gescheiden'||s.klep||s.jaar>1980)?0:5,
+    inst:{kelder:20,bg:ing<=0?14:0,hoog:0,'?':20}[s.inst]};
+  let ws=0;for(const k in w)ws+=w[k];
+  const col=Math.max(0,Math.min(19,Math.ceil(ws/5)-1));
+  R.wo={rows:w,score:ws,col,risk:+WOM[+s.o.wo][col]};
+  const v={
+    ingang:(ing>=50||s.schotIn=='hi')?4:40,
+    kelder:!kel?0:s.kelder=='?'?15:(s.drempel>=50||s.schotK=='hi')?6:15,
+    instroom:s.instroom=='?'?20:s.instroom=='nee'?0:(s.instroomSchot?8:20),
+    riool:(s.riool=='gescheiden'||s.klep)?0:5,
+    inst:{kelder:20,bg:ing<50?14:0,hoog:0,'?':20}[s.inst]};
+  let vs=0;for(const k in v)vs+=v[k];
+  const byScore=vs>60?4:vs>30?3:2;let step=3,vr=byScore;
+  if(s.o.ov=='zl'||s.o.ov=='l'){step=1;vr=2;} else if(s.o.ov50=='ja'){step=2;vr=4;}
+  R.ov={rows:v,score:vs,risk:vr,byScore,step};
+  const f=s.fund, d={};
+  d.paal=(f=='hout'||f=='?');d.vz=(f=='staal'||f=='?');
+  const pi=yIdx(s.jaar,[1830,1880,1900,1930,1950,1976]);
+  const prow={L:0,M:3,H:6}[s.o.paalB]+{C:0,P:1,S:2}[s.o.paalS];
+  d.pi=pi;d.prow=prow;d.paalRisk=d.paal?+PAALM[prow][pi]:null;
+  const kt=s.kelder=='geen'?2:(s.kelder=='deel'||s.kelder=='?')?1:0;
+  const yi=yIdx(s.jaar,[1900,1921]);
+  d.vzScore=[[50,25,0],[100,75,50],[75,50,25]][kt][yi];
+  d.vzRisk=d.vz?+VZM[+s.o.vz][d.vzScore/25]:null;
+  d.risk=f!='beton'?Math.max(d.paalRisk||0,d.vzRisk||0):null;
+  d.score=f=='beton'?null:d.vz?d.vzScore:null;
+  R.dr=d;
+  return R;
+}
+function risks(b){const R=calc(b);return {R,hitte:R.hitte.risk,dr:R.dr.risk,wo:R.wo.risk,ov:R.ov.risk};}
+const maxRisk=r=>Math.max(...RT.map(t=>r[t.id]??0));
+function gScore(R,t){if(t=='hitte')return fmt(R.hitte.score);if(t=='wo')return fmt(R.wo.score);if(t=='ov')return fmt(R.ov.score);const d=R.dr;if(d.risk==null)return 'n.v.t.';return d.vz?String(d.vzScore):PAALY[d.pi];}
+function completeness(b){let n=0;KEYQ.forEach(k=>{if(!isUnk(k,b[k]))n++;});return n/KEYQ.length;}
+function unknownCount(b){return KEYQ.filter(k=>isUnk(k,b[k])).length;}
+
+/* omgevingsscore-labels */
+const OMG={
+ hitte:{geen:'geen warme nachten',laag:'< 2 weken',middel:'2 – 3 weken',hoog:'> 3 weken'},
+ wo:['geen water','≤ 10 cm','10 – 15 cm','15 – 20 cm','20 – 30 cm','> 30 cm'],
+ ov:{zl:'kans < 1/3000',l:'1/300 – 1/3000',m:'1/30 – 1/300',h:'kans > 1/30'}
+};
+const omgClass={hitte:o=>({geen:0,laag:2,middel:3,hoog:4})[o.hitte],wo:o=>+o.wo,ov:o=>o.ov=='m'&&o.ov50=='ja'?4:({zl:1,l:2,m:3,h:5})[o.ov],dr:o=>Math.max({L:1,M:3,H:4}[o.paalB],+o.vz)};
+function omgTxt(b,t){const o=b.o;if(t=='hitte')return OMG.hitte[o.hitte];if(t=='wo')return OMG.wo[+o.wo];if(t=='ov')return OMG.ov[o.ov]+(o.ov50=='ja'?', ook > 50 cm':'');
+  const pr={L:'laag',M:'middel',H:'hoog'}[o.paalB];return (b.fund=='staal'?'verschilzetting '+o.vz:'paalrot '+pr);}
+
+/* ---------------- demo-database ---------------- */
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const wpick=(r,arr,w)=>{let x=r()*w.reduce((a,b)=>a+b,0);for(let i=0;i<arr.length;i++){x-=w[i];if(x<0)return arr[i];}return arr[arr.length-1];};
+let SALT=0;
+function fetchOmg(b){const r=rng(hash((b.adres||'')+'|'+(b.plaats||'')+'|'+(b.id||'')+'|'+SALT));
+  b.o={hitte:wpick(r,['geen','laag','middel','hoog'],[1,4,4,2]),wo:String(wpick(r,[0,1,2,3,4,5],[2,4,3,3,2,1])),ov:wpick(r,['zl','l','m','h'],[4,3,2,.6]),ov50:r()<.4?'ja':'nee',
+    paalB:wpick(r,['L','M','H'],[4,3,2]),paalS:wpick(r,['C','P','S'],[4,3,3]),vz:String(wpick(r,[0,1,2,3,4,5],[3,3,2,2,1,1]))};}
+
+/* ---------------- voorbeeldportefeuille (fictief) ---------------- */
+const DEMO=[
+ {id:'W-001',naam:'Rijwoning Esdoornstraat',adres:'Esdoornstraat 14',plaats:'Utrecht',type:'woning',jaar:1934,glas:'35-50',massa:'mz',zon:'nee',zta:'dubbel',dak:'donker',gevel:'donker',overstek:'geen',koel:'geen',iso:'jaar',spui:'1',ingang:5,kelder:'deel',drempel:0,instroom:'15',riool:'gemengd',inst:'bg',fund:'hout'},
+ {id:'W-002',naam:'Portiekflat Vondelhof',adres:'Vondelhof 2–48',plaats:'Rotterdam',type:'woning',jaar:1958,glas:'50-75',massa:'z',zon:'nee',zta:'dubbel',dak:'donker',gevel:'licht',overstek:'geen',koel:'geen',iso:'r2',spui:'1',ingang:0,kelder:'vol',drempel:5,instroom:'?',riool:'gemengd',inst:'kelder',fund:'hout'},
+ {id:'K-003',naam:'Kantoor De Werf',adres:'Werfkade 7',plaats:'Amsterdam',type:'util',jaar:2004,glas:'>75',massa:'mz',zon:'nee',zta:'hr',dak:'licht',gevel:'licht',overstek:'geen',koel:'ac',iso:'r3',spui:'0',ingang:15,kelder:'park',drempel:20,rooster:1,instroom:'nee',riool:'gescheiden',klep:1,inst:'kelder',fund:'beton'},
+ {id:'W-004',naam:'Twee-onder-een-kap Lindelaan',adres:'Lindelaan 33',plaats:'Zwolle',type:'woning',jaar:1972,glas:'35-50',massa:'mz',zon:'ja',zta:'dubbel',dak:'donker',gevel:'licht',overstek:'m6',koel:'geen',iso:'jaar',spui:'2',ingang:20,kelder:'geen',instroom:'50',riool:'gemengd',inst:'bg',fund:'staal'},
+ {id:'Z-005',naam:'Zorgcentrum Het Baken',adres:'Bakenweg 120',plaats:'Leeuwarden',type:'util',jaar:1981,glas:'50-75',massa:'z',zon:'nee',zta:'dubbel',dak:'donker',gevel:'donker',overstek:'geen',koel:'?',iso:'?',spui:'1',ingang:0,kelder:'?',instroom:'?',riool:'?',inst:'?',fund:'?'},
+ {id:'W-006',naam:'Nieuwbouw Waterrijk',adres:'Kreekrand 9',plaats:'Almere',type:'woning',jaar:2019,glas:'<35',massa:'l',zon:'ja',zta:'folie',dak:'pv',gevel:'licht',overstek:'m6',koel:'nc',iso:'r4',spui:'2',ingang:25,kelder:'geen',instroom:'nee',riool:'gescheiden',inst:'hoog',fund:'beton'},
+ {id:'S-007',naam:'Basisschool De Linde',adres:'Schoolstraat 4',plaats:'Den Bosch',type:'util',jaar:1965,glas:'50-75',massa:'mz',zon:'?',zta:'enkel',dak:'donker',gevel:'donker',overstek:'?',koel:'geen',iso:'jaar',spui:'2',ingang:10,kelder:'deel',drempel:0,instroom:'15',instroomSchot:0,riool:'gemengd',inst:'kelder',fund:'?'},
+ {id:'W-008',naam:'Grachtenpand Oudegracht',adres:'Oudegracht 211',plaats:'Utrecht',type:'woning',jaar:1890,glas:'35-50',massa:'z',zon:'nee',zta:'enkel',dak:'donker',gevel:'donker',overstek:'geen',koel:'geen',iso:'r1',spui:'1',ingang:0,kelder:'vol',drempel:-5,instroom:'15',riool:'gemengd',inst:'kelder',fund:'hout'},
+ {id:'K-009',naam:'Bedrijfshal Kanaalzone',adres:'Kanaalweg 58',plaats:'Groningen',type:'util',jaar:1996,glas:'<35',massa:'l',zon:'nee',zta:'dubbel',dak:'licht',gevel:'licht',overstek:'geen',koel:'geen',iso:'r3',spui:'0',ingang:5,kelder:'geen',instroom:'nee',riool:'gescheiden',inst:'bg',fund:'beton'},
+ {id:'W-010',naam:'Appartementen Parkzicht',adres:'Parklaan 1–60',plaats:'Eindhoven',type:'woning',jaar:2008,glas:'50-75',massa:'z',zon:'nee',zta:'hr',dak:'donker',gevel:'licht',overstek:'geen',koel:'geen',iso:'r3',spui:'1',ingang:30,kelder:'park',drempel:10,instroom:'nee',riool:'gescheiden',klep:1,inst:'kelder',fund:'beton'},
+ {id:'W-011',naam:'Dijkwoning Lekdijk',adres:'Lekdijk 77',plaats:'Nieuwegein',type:'woning',jaar:1925,glas:'<35',massa:'mz',zon:'nee',zta:'dubbel',dak:'donker',gevel:'donker',overstek:'m6',koel:'geen',iso:'jaar',spui:'2',ingang:-5,kelder:'geen',instroom:'15',riool:'gemengd',inst:'bg',fund:'staal'},
+ {id:'K-012',naam:'Stadskantoor Centrum',adres:'Markt 1',plaats:'Arnhem',type:'util',jaar:1975,glas:'?',massa:'?',zon:'?',zta:'?',dak:'?',gevel:'?',overstek:'?',koel:'ac',iso:'?',spui:'?',ingang:null,kelder:'vol',drempel:null,instroom:'?',riool:'?',inst:'?',fund:'?'}
+];
+function mkBuilding(src){const b=Object.assign({},DEF,src);b.pkg=b.pkg||[];if(!b.o)fetchOmg(b);return b;}
+
+/* ---------------- state ---------------- */
+let B=[];let CUR=0;let FILE='';let COLS=null;let WARN=[];
+const UI={tab:1,sort:{k:'max',dir:-1},gth:new Set(['hitte','dr','wo','ov']),mview:'huis',mth:new Set(),lvl:new Set(['nf','geb','gbw']),kos:new Set(['L','M','H']),cpx:new Set(['E','G','C']),f2:false,rel:false,hs:null,pin:null,open:null};
+const cur=()=>B[CUR];
+
+/* ---------------- toast ---------------- */
+let toT=0;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(toT);toT=setTimeout(()=>e.classList.remove('on'),2400);}
+
+
+/* ---------------- Excel ---------------- */
+const norm=s=>String(s??'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9<>?%.,+-]/g,'');
+const hnorm=s=>String(s??'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z0-9]/g,'');
+function parseVal(k,v){
+  if(['jaar','ingang','drempel'].includes(k)){if(v===''||v==null)return null;const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:Math.round(n);}
+  if(k=='type'){const s=norm(v);return /util|kantoor|school|zorg|bedrijf|winkel/.test(s)?'util':'woning';}
+  const o=OPTS[k];const s=norm(v);
+  const bin=o&&typeof o[0][0]==='number';
+  if(s===''){return bin?0:(o.some(x=>x[0]==='?')?'?':o[0][0]);}
+  if(['onbekend','?','nb','n.b.','unknown'].includes(s))return bin?0:'?';
+  if(bin){if(/^(ja|j|1|true|yes|aanwezig|x)$/.test(s))return 1;return 0;}
+  for(const [c,l] of o){if(norm(c)===s||norm(l)===s)return c;}
+  const num=parseFloat(s.replace('%','').replace(',','.'));
+  if(!isNaN(num)){
+    if(k=='glas'){const p=num<=1?num*100:num;return p<35?'<35':p<=50?'35-50':p<=75?'50-75':'>75';}
+    if(k=='zta'){return num>=.75?'enkel':num>=.6?'dubbel':num>.4?'hr':'folie';}
+    if(k=='iso'){return num<1.3?'r1':num<=2.5?'r2':num<=3.5?'r3':'r4';}
+    if(k=='spui'){return num>=2?'2':num>=1?'1':'0';}
+    if(k=='instroom'){return num<=15?'15':num<=50?'50':'nee';}
+  }
+  for(const [c,l] of o){const nl=norm(l);if(nl.startsWith(s)||s.startsWith(norm(c))&&norm(c).length>1)return c;}
+  const syn={kelder:{souterrain:'vol',ja:'vol',volledig:'vol',gedeeltelijk:'deel',parkeergarage:'park',nee:'geen'},fund:{houtenpalen:'hout',hout:'hout',staal:'staal',ondiep:'staal',beton:'beton',betonpalen:'beton'},
+    koel:{airco:'ac',warmtepomp:'nc',nee:'geen'},zon:{ja:'ja',nee:'nee'},inst:{begane:'bg',verdieping:'hoog',kelder:'kelder',zolder:'hoog'},zta:{hr:'hr','hr++':'hr',triple:'hr',enkel:'enkel',dubbel:'dubbel',folie:'folie'},
+    instroom:{nee:'nee',geen:'nee'},dak:{zonnepanelen:'pv',groen:'groen',wit:'groen'},riool:{gemengd:'gemengd',gescheiden:'gescheiden'}};
+  const sy=syn[k];if(sy)for(const w in sy){if(s.includes(norm(w)))return sy[w];}
+  WARN.push(`“${v}” bij ${XC.find(c=>c[0]==k)[1]} niet herkend`);
+  return bin?0:'?';
+}
+function importRows(rows,fname){
+  if(!rows.length){toast('Geen gebouwen gevonden in '+fname);return;}
+  const hdr=Object.keys(rows[0]);const map={};
+  hdr.forEach(h=>{const n=hnorm(h);const c=XC.find(c=>hnorm(c[1])===n||c[2].includes(n)||c[0].toLowerCase()===n);if(c&&!Object.values(map).includes(c[0]))map[h]=c[0];});
+  WARN=[];COLS=Object.values(map);
+  const out=[];rows.forEach((r,i)=>{const src={};let any=false;
+    for(const h in map){const k=map[h];const v=r[h];if(v!==''&&v!=null)any=true;
+      src[k]=['id','naam','adres','plaats'].includes(k)?String(v??'').trim():parseVal(k,v);}
+    if(!any)return;
+    if(!src.naam)src.naam=src.adres||src.id||('Gebouw '+(i+1));
+    if(!src.id)src.id='G-'+String(i+1).padStart(3,'0');
+    out.push(mkBuilding(src));});
+  if(!out.length){toast('Geen bruikbare rijen in '+fname);return;}
+  B=out;CUR=0;FILE=fname;UI.hs=null;UI.pin=null;
+  renderAll();toast(B.length+' panden ingelezen'+(WARN.length?' · '+WARN.length+' waarden niet herkend':''));
+}
+function readFile(f){
+  if(!f)return;
+  if(!window.XLSX){toast('Excel-bibliotheek niet geladen');return;}
+  const rd=new FileReader();
+  rd.onload=e=>{try{const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const sn=wb.SheetNames.find(n=>/gebouw/i.test(n))||wb.SheetNames[0];
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});importRows(rows,f.name);}
+    catch(err){console.error(err);toast('Dit bestand kon niet worden gelezen. Gebruik het sjabloon.');}};
+  rd.readAsArrayBuffer(f);
+}
+function loadDemo(){SALT=0;WARN=[];COLS=null;B=DEMO.map(d=>mkBuilding(JSON.parse(JSON.stringify(d))));CUR=0;FILE='voorbeeldportefeuille (fictief)';renderAll();}
+
+const lab=(k,v)=>{if(v==null||v==='')return '';const o=OPTS[k];if(!o)return v;const f=o.find(x=>String(x[0])===String(v));return f?f[1]:v;};
+function rowOut(b){const r={};XC.forEach(([k,h])=>{let v=b[k];if(k=='type')v=v=='util'?'Utiliteit':'Woning';else if(OPTS[k])v=(v==='?'?'':lab(k,v));else if(v==null)v='';r[h]=v;});return r;}
+function sheetKeuze(){const rows=[];XC.forEach(([k,h])=>{if(OPTS[k])rows.push({Kolom:h,Waarden:OPTS[k].filter(o=>o[0]!=='?').map(o=>o[1]).join(' | '),Toelichting:'Leeg = onbekend (zeer kwetsbaar)'});
+  else if(k=='type')rows.push({Kolom:h,Waarden:'Woning | Utiliteit',Toelichting:''});
+  else if(['ingang','drempel'].includes(k))rows.push({Kolom:h,Waarden:'getal in cm t.o.v. maaiveld',Toelichting:'Leeg = onbekend'});
+  else if(k=='jaar')rows.push({Kolom:h,Waarden:'jaartal',Toelichting:''});});return XLSX.utils.json_to_sheet(rows);}
+async function saveFile(name,wb){
+  const buf=XLSX.write(wb,{type:'array',bookType:'xlsx'});
+  let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){dl=null;}
+  if(dl){try{await dl.save({filename:name,data:new Blob([buf])});toast(name+' opgeslagen');}catch(e){if(e&&e.code!=='declined')toast('Opslaan lukte niet in deze weergave');}return;}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));a.download=name;document.body.appendChild(a);a.click();a.remove();}catch(e){toast('Downloaden is hier niet beschikbaar');}
+}
+$('b-tpl').addEventListener('click',()=>{if(!window.XLSX)return;const wb=XLSX.utils.book_new();
+  const ex=DEMO.slice(0,3).map(d=>rowOut(mkBuilding(JSON.parse(JSON.stringify(d)))));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(ex,{header:XC.map(c=>c[1])}),'Gebouwen');
+  XLSX.utils.book_append_sheet(wb,sheetKeuze(),'Keuzelijsten');saveFile('FCAB-sjabloon-gebouwen.xlsx',wb);});
+$('b-export').addEventListener('click',()=>{if(!window.XLSX)return;const wb=XLSX.utils.book_new();
+  const res=B.map(b=>{const r=risks(b);const o={ID:b.id,Naam:b.naam,Adres:b.adres,Plaats:b.plaats,Bouwjaar:b.jaar||'','Volledigheid (%)':Math.round(completeness(b)*100)};
+    RT.forEach(t=>{o[t.n+' gebouwscore']=gScore(r.R,t.id);o[t.n+' omgeving']=omgTxt(b,t.id);o[t.n+' klimaatrisico']=r[t.id]==null?'n.v.t.':CLS[r[t.id]];});
+    o['Hoogste risico']=CLS[maxRisk(r)];
+    const a=afterB(b),ra=risks(a);o['Maatregelpakket']=b.pkg.map(n=>n+' '+MBY[n].n).join('; ');RT.forEach(t=>{o[t.n+' na pakket']=b.pkg.length?(ra[t.id]==null?'n.v.t.':CLS[ra[t.id]]):'';});return o;});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(res),'Klimaatrisico');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(B.map(rowOut),{header:XC.map(c=>c[1])}),'Gebouwen');
+  XLSX.utils.book_append_sheet(wb,sheetKeuze(),'Keuzelijsten');
+  saveFile('FCAB-klimaatrisico-portefeuille.xlsx',wb);});
+
+
+
+/* ================= rekenkern (gesimuleerd) ================= */
+const FCAB_V='2.0.0',KERN_V='1.0.0';
+const KL=['Geen','Zeer laag','Laag','Middel','Hoog','Zeer hoog'];
+const BRONNEN=[
+ ['hitte.warme_nachten','Hittestress door warme nachten 2050 hoog','WENR / Klimaateffectatlas','2024.1','100 m'],
+ ['droogte.natuurbrand','Natuurbrandgevoeligheid','Klimaateffectatlas','2023.2','25 m'],
+ ['droogte.paalrot','Risico paalrot 2050 hoog','Deltares / FIKI','2021.1','buurt'],
+ ['droogte.verschilzetting','Risico verschilzetting 2050 hoog','Deltares / FIKI','2021.1','buurt'],
+ ['wateroverlast.waterdiepte_70mm_2u','Waterdiepte bij hevige bui 70 mm/2 uur','Deltares / Klimaateffectatlas','2024.1','2 m'],
+ ['wateroverlast.grondwateroverlast','Kans grondwateroverlast 2050 hoog','Deltares','2023.1','250 m'],
+ ['overstroming.max_waterdiepte','Maximale waterdiepte','LIWO / Rijkswaterstaat','2025.1','100 m'],
+ ['overstroming.kans_20cm_2050','Plaatsgebonden overstromingskans 20 cm 2050','LIWO / Rijkswaterstaat','2025.1','100 m'],
+ ['pand','Pandgeometrie en bouwjaar','Kadaster BAG','dagelijks','pand']];
+const GEB_KEYS=['glas','massa','zon','zta','dak','gevel','overstek','koel','iso','spui','ingang','schotIn','kelder','drempel','rooster','schotK','instroom','instroomSchot','riool','klep','inst','fund'];
+const KLAB={glas:'Glasoppervlak',massa:'Thermische massa',zon:'Zonwering',zta:'Beglazing',dak:'Kleur dak',gevel:'Kleur gevel',overstek:'Overstek',koel:'Actieve koeling',iso:'Isolatie',spui:'Spuiventilatie',ingang:'Hoogte ingang (cm)',schotIn:'Schot ingang',kelder:'Ondergrondse ruimte',drempel:'Drempel kelder (cm)',rooster:'Waterrooster',schotK:'Schot kelder',instroom:'Overige instroompunten',instroomSchot:'Schot instroompunten',riool:'Rioolstelsel',klep:'Terugslagklep',inst:'Installaties',fund:'Fundering'};
+const bagId=s=>{const h=hash(s);return '0'+String(344+(h%600)).padStart(3,'0')+'1000'+String(h).padStart(10,'0').slice(-8);};
+const reqId=()=>'req_'+Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,6);
+const BAGJAAR=b=>b.jaar||1900+(hash(b.adres)%120);
+function omgeving(b){const o=b.o,r=rng(hash(b.adres+'|'+b.plaats+'|x'));
+  const wn={geen:0,laag:2,middel:3,hoog:4}[o.hitte];
+  const nb=Math.floor(r()*3);const gw=wpick(r,[0,1,2,3,4],[3,4,3,2,1]);
+  const wd=[0,6,12,17,25,38][+o.wo]+Math.round(r()*3);
+  const ovk={zl:1,l:2,m:3,h:5}[o.ov];const md=ovk<=1?0:Math.round((ovk*35+r()*60));
+  const pr={L:2,M:3,H:4}[o.paalB];
+  return {
+   hitte:{warme_nachten:{waarde:{geen:'0 nachten',laag:'< 2 weken',middel:'2 – 3 weken',hoog:'> 3 weken'}[o.hitte],klasse:KL[wn],score:wn}},
+   droogte:{natuurbrand:{waarde:['laag','middel','hoog'][nb],klasse:KL[nb+1],score:nb+1},
+     paalrot:{waarde:'buurtklasse '+{L:'laag',M:'middel',H:'hoog'}[o.paalB]+', bodem '+{C:'klei',P:'veen',S:'zand'}[o.paalS],klasse:KL[pr],score:pr},
+     verschilzetting:{waarde:'buurtscore '+o.vz,klasse:KL[+o.vz],score:+o.vz}},
+   wateroverlast:{waterdiepte_70mm_2u:{waarde:wd+' cm',klasse:KL[+o.wo],score:+o.wo},grondwateroverlast:{waarde:['geen toename','beperkte toename','toename','sterke toename','zeer sterke toename'][gw],klasse:KL[gw],score:gw}},
+   overstroming:{max_waterdiepte:{waarde:md?(md/100).toFixed(1).replace('.',',')+' m':'0 m',klasse:KL[ovk<=1?0:Math.min(5,ovk)],score:ovk<=1?0:Math.min(5,ovk)},
+     kans_20cm_2050:{waarde:{zl:'< 1/3000 per jaar',l:'1/300 – 1/3000',m:'1/30 – 1/300',h:'> 1/30 per jaar'}[o.ov],klasse:KL[ovk],score:ovk}}};}
+function bereken(b,env){
+  const prov=GEB_KEYS.filter(k=>b.prov&&b.prov.has(k));
+  const S=Object.assign({},b);if(!S.jaar)S.jaar=BAGJAAR(b);
+  const afgeleid=['bouwjaar (BAG)'];
+  if(!prov.includes('iso')){S.iso='jaar';afgeleid.push('isolatie uit bouwjaar');}
+  if(!prov.includes('riool')&&S.jaar>1980){afgeleid.push('ontlastput (bouwjaar na 1980)');}
+  const std=GEB_KEYS.filter(k=>!prov.includes(k)&&!(k=='iso')&&!['schotIn','schotK','rooster','instroomSchot','klep','drempel'].includes(k)).map(k=>KLAB[k]);
+  const heeftGebouw=prov.length>0;
+  const res={request_id:reqId(),api_versie:'v1',omgeving:env,status:'ok',
+    pand:{bag_pand_id:b.bag||bagId(b.adres+b.plaats),adres:[b.adres,b.plaats].filter(Boolean).join(', '),bouwjaar:S.jaar,bron_bouwjaar:b.jaar&&b.prov&&b.prov.has('jaar')?'aangeleverd':'BAG',gebruiksdoel:b.type=='util'?'kantoorfunctie':'woonfunctie'},
+    resultaattype:heeftGebouw?'klimaatrisicoscore':'blootstelling',
+    interpretatie:heeftGebouw?'Gebouwscore en klimaatrisicoscore berekend. Niet aangeleverde kenmerken zijn met standaardwaarden (zeer kwetsbaar) ingevuld; zie kwaliteit.':'Alleen blootstelling (FCAB-1). Lever gebouwkenmerken aan om een gebouwscore en klimaatrisicoscore te ontvangen.',
+    omgevingsscore:omgeving(b),gebouwscore:null,klimaatrisicoscore:null,kwaliteit:null,
+    metadata:{fcab_versie:FCAB_V,rekenkern_versie:KERN_V,berekend_op:new Date().toISOString().replace(/\.\d+Z$/,'Z'),databronnen:BRONNEN.map(x=>({indicator:x[0],naam:x[1],bron:x[2],versie:x[3],resolutie:x[4]}))}};
+  if(heeftGebouw){
+    S.ingang=prov.includes('ingang')?S.ingang:null;S.drempel=prov.includes('drempel')?S.drempel:null;
+    const R=calc(S);
+    res.gebouwscore={hitte:{oververhitting:R.hitte.score},droogte:{paalrot:R.dr.paal?{bouwjaarklasse:PAALY[R.dr.pi]}:null,verschilzetting:R.dr.vz?R.dr.vzScore:null},
+      wateroverlast:{bui_70mm_2u:R.wo.score},overstroming:{kans_20cm:R.ov.score,kans_50cm:R.ov.score}};
+    const c=v=>v==null?{klasse:'Niet van toepassing',score:null}:{klasse:CLS[v],score:v};
+    res.klimaatrisicoscore={hitte:c(R.hitte.risk),droogte:c(R.dr.risk),wateroverlast:c(R.wo.risk),overstroming:c(R.ov.risk)};
+    const vol=prov.length/16;const label=vol>=.75?'A':vol>=.4?'B':'C';
+    res.kwaliteit={label,toelichting:{A:'Merendeel kenmerken aangeleverd',B:'Deels aangeleverd, deels standaardwaarden',C:'Vooral standaardwaarden: indicatief'}[label],
+      aangeleverd:prov.map(k=>KLAB[k]),afgeleid:afgeleid,standaardwaarde:std};
+  }
+  return res;}
+
+/* ================= UI ================= */
+const V={view:'pand',env:'productie',mode:'adres',resTab:'weergave',last:null,busy:false,kopen:false,batch:null,batchFile:'',
+  usage:{prod:6842,test:1204,calls:9310,limit:10000}};
+const P={adres:'Oudegracht 211',plaats:'Utrecht',bag:'',k:{}};
+const ADR=DEMO.map(d=>({a:d.adres,p:d.plaats,id:bagId(d.adres+d.plaats),d}));
+const chip=(k,lab)=>`<span class="rc ${k==null?'kna':'k'+k}">${esc(lab||(k==null?'n.v.t.':CLS[k]))}</span>`;
+const fmtN=n=>n.toLocaleString('nl-NL');
+function hl(json){return esc(json).replace(/(&quot;[^&]*?&quot;)(\s*:)?|\b(true|false|null)\b|-?\b\d+(\.\d+)?\b/g,(m,s,colon,b)=>{
+  if(s)return colon?`<span class="j-k">${s}</span>${colon}`:`<span class="j-s">${s}</span>`;if(b)return `<span class="j-b">${m}</span>`;return `<span class="j-n">${m}</span>`;});}
+
+const CRUMB={pand:'Pand berekenen',batch:'Portefeuille (batch)',gebruik:'Gebruik',keys:'Abonnement',docs:'Endpoints en uitvoer',bronnen:'Methodiek en databronnen',changelog:'Changelog'};
+function quota(){const u=V.usage;$('qbar').style.width=Math.min(100,u.prod/u.limit*100)+'%';$('qtxt').textContent=fmtN(u.prod)+' van '+fmtN(u.limit)+' pandberekeningen gebruikt';}
+function nav(v){V.view=v;document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('on',n.dataset.v==v));render();$('canvas').scrollTop=0;}
+function render(){const c=$('canvas');quota();
+  if(V.view=='pand')c.innerHTML=viewPand();
+  else if(V.view=='batch')c.innerHTML=viewBatch();
+  else if(V.view=='gebruik')c.innerHTML=viewGebruik();
+  else if(V.view=='keys')c.innerHTML=viewKeys();
+  else if(V.view=='docs')c.innerHTML=viewDocs();
+  else if(V.view=='bronnen')c.innerHTML=viewBronnen();
+  else c.innerHTML=viewChangelog();}
+
+/* ---- pand ---- */
+function kField(k){const o=OPTS[k],v=P.k[k];
+  if(['ingang','drempel'].includes(k))return `<div class="fl"><label for="k-${k}">${KLAB[k]}</label><input id="k-${k}" data-kk="${k}" type="number" step="5" value="${v??''}" placeholder="niet aangeleverd" class="${v!=null?'set':''}"></div>`;
+  return `<div class="fl"><label for="k-${k}">${KLAB[k]}</label><select id="k-${k}" data-kk="${k}" class="${v!=null?'set':''}"><option value="">niet aangeleverd</option>${o.filter(x=>x[0]!=='?').map(([c,l])=>`<option value="${c}"${v!=null&&String(v)===String(c)?' selected':''}>${esc(l)}</option>`).join('')}</select></div>`;}
+function reqBody(){const body=V.mode=='adres'?{adres:P.adres,plaats:P.plaats}:{bag_pand_id:P.bag||bagId(P.adres+P.plaats)};
+  const ks=Object.keys(P.k).filter(k=>P.k[k]!=null);
+  if(ks.length){body.gebouwkenmerken={};ks.forEach(k=>body.gebouwkenmerken[k]=P.k[k]);}
+  return body;}
+function curl(){return `curl -X POST https://api.fcab.nl/v1/panden/berekening \\
+  -H "Authorization: Bearer ${V.env=='test'?'fcab_test_':'fcab_live_'}••••••••3f9a" \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify(reqBody(),null,2).replace(/\n/g,'\n  ')}'`;}
+function viewPand(){const nk=Object.keys(P.k).filter(k=>P.k[k]!=null).length;
+  return `<div class="page"><div class="eyebrow">Rekenen · één pand</div><h1>Bereken het klimaatrisico van een pand</h1>
+  <p class="lead">Lever een adres of BAG-identificatie aan. De rekenkern koppelt het pand, haalt de omgevingsdata op en voert de actuele FCAB-methodiek uit. Met gebouwkenmerken erbij volgt ook de gebouwscore en klimaatrisicoscore.</p>
+  <h2 style="margin-top:8px">Berekening</h2>
+  <div class="pg">
+   <section class="panel"><div class="ph"><span class="mth">POST</span><code>/v1/panden/berekening</code></div><div class="pb">
+    <div class="seg" role="tablist"><button type="button" data-mode="adres" class="${V.mode=='adres'?'on':''}">Adres</button><button type="button" data-mode="bag" class="${V.mode=='bag'?'on':''}">BAG-identificatie</button></div>
+    ${V.mode=='adres'?`<div class="fl"><label for="i-adres">Adres</label><input id="i-adres" value="${esc(P.adres)}" autocomplete="off"><div class="sug" id="sug" hidden></div></div><div class="fl"><label for="i-plaats">Plaats</label><input id="i-plaats" value="${esc(P.plaats)}"></div>`
+     :`<div class="fl"><label for="i-bag">BAG pand-ID</label><input id="i-bag" value="${esc(P.bag||bagId(P.adres+P.plaats))}" inputmode="numeric"><span class="hint">16 cijfers, bijvoorbeeld uit de Basisregistratie Adressen en Gebouwen</span></div>`}
+    <label class="tg"><input type="checkbox" id="i-kopen"${V.kopen?' checked':''}>Gebouwkenmerken meesturen${nk?` (${nk} ingevuld)`:''}</label>
+    ${V.kopen?`<div class="kq"><span>Vul in wat bekend is; de rest krijgt standaardwaarden.</span><button type="button" data-fill>Voorbeeld invullen</button><button type="button" data-clr>Wissen</button></div><div class="kgrid">${GEB_KEYS.filter(k=>!['schotIn','schotK','rooster','instroomSchot','drempel'].includes(k)).map(kField).join('')}</div>`:''}
+    <div class="send"><button class="btn pri" type="button" id="go"${V.busy?' disabled':''}>${V.busy?'<span class="spin"></span>Berekenen…':'Verstuur verzoek'}</button></div>
+    <h3 style="font-size:12px;font-weight:600;color:var(--text3);margin:18px 0 6px">Verzoek</h3>
+    <pre class="code sm">${esc(curl())}</pre>
+   </div></section>
+   <section class="panel" id="resp">${respHTML()}</section>
+  </div></div>`;}
+function respHTML(){const r=V.last;
+  const head=`<div class="ph"><h3>Respons</h3>${r?`<span class="status" style="margin-left:auto"><i></i>200 OK · ${r._ms} ms</span>`:''}</div>`;
+  if(!r)return head+`<div class="empty">Verstuur een verzoek om de uitkomst van de rekenkern te zien.</div>`;
+  const tabs=`<div class="pb" style="padding-bottom:0"><div class="seg" style="margin:0"><button type="button" data-rt="weergave" class="${V.resTab=='weergave'?'on':''}">Weergave</button><button type="button" data-rt="json" class="${V.resTab=='json'?'on':''}">JSON</button></div></div>`;
+  if(V.resTab=='json'){const o=Object.assign({},r);delete o._ms;return head+tabs+`<pre class="code" style="margin-top:12px">${hl(JSON.stringify(o,null,2))}</pre>`;}
+  const om=r.omgevingsscore;const rows=[];
+  [['Hitte','hitte',[['warme_nachten','Warme nachten']]],['Droogte','droogte',[['natuurbrand','Natuurbrand'],['paalrot','Paalrot'],['verschilzetting','Verschilzetting']]],['Wateroverlast','wateroverlast',[['waterdiepte_70mm_2u','Waterdiepte 70 mm/2 u'],['grondwateroverlast','Grondwateroverlast']]],['Overstroming','overstroming',[['max_waterdiepte','Maximale waterdiepte'],['kans_20cm_2050','Kans op 20 cm (2050)']]]]
+   .forEach(([tn,tk,inds])=>inds.forEach(([ik,il],i)=>{const x=om[tk][ik];rows.push(`<tr><td>${i==0?tn:''}</td><td>${il}<small>${esc(x.waarde)}</small></td><td class="r">${chip(x.score,x.klasse)}</td></tr>`);}));
+  let h=head+tabs+`<div class="rt">`;
+  h+=r.resultaattype=='klimaatrisicoscore'?`<div class="flag ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.7 2.7L16 10"/></svg><div><b>Resultaattype: klimaatrisicoscore</b>${esc(r.interpretatie)}</div></div>`
+    :`<div class="flag exp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><div><b>Resultaattype: alleen blootstelling</b>${esc(r.interpretatie)}</div></div>`;
+  h+=`<dl class="kv"><dt>Pand</dt><dd>${esc(r.pand.adres)}</dd><dt>BAG pand-ID</dt><dd class="num">${r.pand.bag_pand_id}</dd><dt>Bouwjaar</dt><dd>${r.pand.bouwjaar} <span style="color:var(--text3)">(${r.pand.bron_bouwjaar})</span></dd></dl>`;
+  if(r.klimaatrisicoscore){const k=r.klimaatrisicoscore,g=r.gebouwscore;
+    h+=`<div class="tw"><table class="t"><thead><tr><th>Klimaatrisicoscore</th><th class="r">Gebouwscore</th><th class="r">Klimaatrisico</th></tr></thead><tbody>
+     <tr><td>Hitte</td><td class="r num">${fmt(g.hitte.oververhitting)}</td><td class="r">${chip(k.hitte.score)}</td></tr>
+     <tr><td>Droogte</td><td class="r num">${g.droogte.verschilzetting!=null?g.droogte.verschilzetting:g.droogte.paalrot?g.droogte.paalrot.bouwjaarklasse:'n.v.t.'}</td><td class="r">${chip(k.droogte.score)}</td></tr>
+     <tr><td>Wateroverlast</td><td class="r num">${fmt(g.wateroverlast.bui_70mm_2u)}</td><td class="r">${chip(k.wateroverlast.score)}</td></tr>
+     <tr><td>Overstroming</td><td class="r num">${fmt(g.overstroming.kans_20cm)}</td><td class="r">${chip(k.overstroming.score)}</td></tr></tbody></table></div>`;
+    const q=r.kwaliteit;
+    h+=`<div><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span class="ql q${q.label}">${q.label}</span><b style="font-size:13px;font-weight:600">Kwaliteitslabel</b><span style="font-size:12.5px;color:var(--text3)">${q.toelichting}</span></div>
+      <div style="font-size:12px;color:var(--text3);margin:6px 0 4px">Aangeleverd</div><div class="chips">${q.aangeleverd.map(x=>`<span>${esc(x)}</span>`).join('')||'<span>geen</span>'}</div>
+      <div style="font-size:12px;color:var(--text3);margin:8px 0 4px">Afgeleid</div><div class="chips d">${q.afgeleid.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+      <div style="font-size:12px;color:var(--text3);margin:8px 0 4px">Standaardwaarde (zeer kwetsbaar)</div><div class="chips s">${q.standaardwaarde.map(x=>`<span>${esc(x)}</span>`).join('')||'<span>geen</span>'}</div></div>`;}
+  h+=`<div class="tw"><table class="t"><thead><tr><th>Thema</th><th>Omgevingsscore (FCAB-1)</th><th class="r">Klasse</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  h+=`<dl class="kv" style="font-size:12px"><dt>Request-ID</dt><dd class="num">${r.request_id}</dd><dt>FCAB-versie</dt><dd>${r.metadata.fcab_versie} · rekenkern ${r.metadata.rekenkern_versie}</dd><dt>Databronnen</dt><dd>${r.metadata.databronnen.length} kaartlagen en registraties, met versie <button type="button" class="kq" data-rt="json" style="display:inline;border:0;background:none;padding:0;text-decoration:underline;color:var(--text2);cursor:pointer;font-size:12px">bekijk in JSON</button></dd><dt>Berekend op</dt><dd>${r.metadata.berekend_op}</dd></dl>`;
+  return h+`</div>`;}
+function send(){if(V.busy)return;
+  if(V.mode=='adres'){P.adres=($('i-adres')||{}).value||P.adres;P.plaats=($('i-plaats')||{}).value||P.plaats;}else{P.bag=($('i-bag')||{}).value.replace(/\D/g,'');if(P.bag.length!=16){toast('Een BAG pand-ID bestaat uit 16 cijfers');return;}}
+  if(!P.adres.trim()){toast('Vul een adres in');return;}
+  V.busy=true;render();const t0=performance.now();
+  setTimeout(()=>{const known=ADR.find(x=>x.a.toLowerCase()==P.adres.trim().toLowerCase()||(V.mode=='bag'&&x.id==P.bag));
+    const b=mkBuilding({adres:P.adres.trim(),plaats:P.plaats.trim(),type:known?known.d.type:'woning',jaar:known?known.d.jaar:null});
+    b.bag=V.mode=='bag'?P.bag:(known?known.id:null);
+    b.prov=new Set();Object.keys(P.k).forEach(k=>{if(P.k[k]!=null){b[k]=P.k[k];b.prov.add(k);}});
+    const r=bereken(b,V.env);r._ms=Math.round(180+Math.random()*240);V.last=r;V.busy=false;
+    if(V.env=='productie')V.usage.prod++;else V.usage.test++;V.usage.calls++;render();},650);}
+function fillExample(){const known=ADR.find(x=>x.a==P.adres)||ADR[7];const d=known.d;
+  ['glas','massa','zon','zta','dak','gevel','overstek','koel','spui','ingang','kelder','instroom','riool','inst','fund'].forEach(k=>{if(d[k]!=null&&d[k]!=='?')P.k[k]=d[k];});}
+
+/* ---- batch ---- */
+function viewBatch(){const B2=V.batch;
+  let h=`<div class="page"><div class="eyebrow">Rekenen · portefeuille</div><h1>Bereken een hele portefeuille</h1>
+  <p class="lead">Lever een bestand met adressen of BAG-identificaties aan, eventueel met gebouwkenmerken. De rekenkern verwerkt de batch en geeft per pand dezelfde uitvoer als bij een losse berekening.</p>
+  <div class="bup"><p><b>POST /v1/batches</b><br>Excel of CSV met kolommen Adres, Plaats en optioneel de FCAB-2 kenmerken. Gebruik het sjabloon of het voorbeeld.</p>
+   <button class="btn" type="button" id="bb-tpl">Sjabloon</button><button class="btn" type="button" id="bb-demo">Voorbeeld (12 panden)</button><button class="btn pri" type="button" id="bb-up">Bestand uploaden</button></div>`;
+  if(!B2)return h+`<div class="empty">Nog geen batch verwerkt.</div></div>`;
+  const done=B2.res.length,n=B2.items.length;
+  h+=`<div class="prog"><b style="width:${Math.round(done/n*100)}%"></b></div><div class="meta">${esc(B2.id)} · ${esc(V.batchFile)} · ${done} van ${n} panden ${done<n?'verwerken…':'verwerkt'}</div>`;
+  const rs=B2.res;const ris=rs.filter(r=>r.resultaattype=='klimaatrisicoscore').length;
+  const hoog=rs.filter(r=>r.klimaatrisicoscore&&Object.values(r.klimaatrisicoscore).some(x=>(x.score||0)>=4)).length;
+  const q={A:0,B:0,C:0};rs.forEach(r=>{if(r.kwaliteit)q[r.kwaliteit.label]++;});
+  h+=`<div class="tw"><table class="t" style="min-width:820px"><thead><tr><th>Pand</th><th>BAG pand-ID</th><th>Resultaat</th><th>Kwaliteit</th><th>Hitte</th><th>Droogte</th><th>Wateroverlast</th><th>Overstroming</th></tr></thead><tbody>${
+    rs.map(r=>{const k=r.klimaatrisicoscore,om=r.omgevingsscore;const cell=(kk,omv)=>k?chip(k[kk].score):`<span title="Blootstelling">${chip(omv.score,omv.klasse)}</span>`;
+      return `<tr><td>${esc(r.pand.adres)}<small>bouwjaar ${r.pand.bouwjaar}</small></td><td class="num" style="font-size:12px">${r.pand.bag_pand_id}</td><td>${k?'Klimaatrisico':'<span style="color:var(--amber)">Blootstelling</span>'}</td><td>${r.kwaliteit?`<span class="ql q${r.kwaliteit.label}">${r.kwaliteit.label}</span>`:'<span style="color:var(--text3)">–</span>'}</td><td>${cell('hitte',om.hitte.warme_nachten)}</td><td>${cell('droogte',om.droogte.paalrot)}</td><td>${cell('wateroverlast',om.wateroverlast.waterdiepte_70mm_2u)}</td><td>${cell('overstroming',om.overstroming.kans_20cm_2050)}</td></tr>`;}).join('')}</tbody></table></div>`;
+  if(done==n)h+=`<div class="send" style="margin-top:14px"><button class="btn" type="button" id="bb-xlsx">Download resultaten (.xlsx)</button><button class="btn" type="button" id="bb-json">Download JSON</button><span class="meta">${n} pandberekeningen afgeschreven van ${V.env=='productie'?'het abonnement':'de testomgeving'}</span></div>`;
+  h+=`<p class="note">Bij alleen blootstelling toont de tabel de omgevingsklasse; zodra gebouwkenmerken zijn aangeleverd het klimaatrisico.</p>`;
+  return h+`</div>`;}
+function runBatch(list,fname){V.batchFile=fname;V.batch={id:'batch_'+Math.random().toString(36).slice(2,10),items:list,res:[]};nav('batch');
+  let i=0;const step=()=>{if(V.view!='batch'){}if(i>=list.length){render();toast(list.length+' panden berekend');return;}
+    const b=list[i++];b.prov=new Set(GEB_KEYS.filter(k=>b[k]!=null&&b[k]!=='?'&&!(DEF[k]===b[k]&&['schotIn','schotK','rooster','instroomSchot','klep'].includes(k))));
+    const r=bereken(b,V.env);V.batch.res.push(r);if(V.env=='productie')V.usage.prod++;else V.usage.test++;
+    if(V.view=='batch')render();setTimeout(step,140);};
+  V.usage.calls++;setTimeout(step,300);}
+function renderAll(){runBatch(B,FILE);}
+function demoBatch(){const list=DEMO.map((d,i)=>{const b=mkBuilding(JSON.parse(JSON.stringify(d)));if(i%4==3){GEB_KEYS.forEach(k=>b[k]=DEF[k]);}return b;});runBatch(list,'voorbeeldportefeuille.xlsx');}
+function exportBatch(kind){const rs=V.batch.res;
+  if(kind=='json'){const blob=JSON.stringify({batch_id:V.batch.id,aantal:rs.length,resultaten:rs.map(r=>{const o=Object.assign({},r);return o;})},null,2);saveText('fcab-batch-resultaten.json',blob);return;}
+  const wb=XLSX.utils.book_new();
+  const rows=rs.map(r=>{const o={'BAG pand-ID':r.pand.bag_pand_id,Adres:r.pand.adres,Bouwjaar:r.pand.bouwjaar,Resultaattype:r.resultaattype,Kwaliteit:r.kwaliteit?r.kwaliteit.label:''};
+    const om=r.omgevingsscore;o['Omg. hitte']=om.hitte.warme_nachten.klasse;o['Omg. paalrot']=om.droogte.paalrot.klasse;o['Omg. verschilzetting']=om.droogte.verschilzetting.klasse;o['Omg. natuurbrand']=om.droogte.natuurbrand.klasse;o['Omg. waterdiepte']=om.wateroverlast.waterdiepte_70mm_2u.klasse;o['Omg. grondwater']=om.wateroverlast.grondwateroverlast.klasse;o['Omg. overstroming kans']=om.overstroming.kans_20cm_2050.klasse;o['Omg. max. waterdiepte']=om.overstroming.max_waterdiepte.klasse;
+    if(r.klimaatrisicoscore)['hitte','droogte','wateroverlast','overstroming'].forEach(t=>o['Risico '+t]=r.klimaatrisicoscore[t].klasse);
+    o['FCAB-versie']=r.metadata.fcab_versie;o['Request-ID']=r.request_id;return o;});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Resultaten');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(BRONNEN.map(x=>({Indicator:x[0],Databron:x[1],Leverancier:x[2],Versie:x[3],Resolutie:x[4]}))),'Databronnen');
+  saveFile('fcab-batch-resultaten.xlsx',wb);}
+async function saveText(name,text){let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
+  if(dl){try{await dl.save({filename:name,data:text});toast(name+' opgeslagen');}catch(e){if(e&&e.code!=='declined')toast('Opslaan lukte niet in deze weergave');}return;}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();}catch(e){}}
+
+/* ---- gebruik ---- */
+function viewGebruik(){const u=V.usage,pct=Math.min(100,u.prod/u.limit*100);
+  const months=[['jan',420,90],['feb',510,120],['mrt',880,160],['apr',640,110],['mei',720,140],['jun',1210,180],['jul',530,60],['aug',460,70],['sep',1180,150],['okt',290+u.prod-6842,124+u.test-1204]];
+  const mx=Math.max(...months.map(m=>m[1]));
+  return `<div class="page"><div class="eyebrow">Account · ${esc('Woningstichting Voorbeeld')}</div><h1>Gebruik</h1>
+  <p class="lead">Het gebruik wordt per organisatie geregistreerd en gekoppeld aan het CRM. Zo is te zien hoeveel panden zijn berekend, hoeveel aanvragen er zijn gedaan en of het om test- of productiegebruik gaat.</p>
+  <div class="g2"><div class="panel"><div class="pb"><div style="font-size:12px;color:var(--text3)">Abonnement Professional · contractjaar 2026</div>
+    <div style="font-size:26px;font-weight:600" class="num">${fmtN(u.prod)} <span style="font-size:14px;font-weight:400;color:var(--text3)">van ${fmtN(u.limit)} pandberekeningen</span></div>
+    <div class="usebar"><b style="width:${pct}%"></b></div><div style="font-size:12px;color:var(--text3)">${fmtN(u.limit-u.prod)} resterend · daarboven geldt het variabele tarief per pand</div></div></div>
+   <div class="panel"><div class="pb"><dl class="kv"><dt>Productieberekeningen</dt><dd class="num">${fmtN(u.prod)}</dd><dt>Testberekeningen</dt><dd class="num">${fmtN(u.test)} <span style="color:var(--text3)">(niet gefactureerd)</span></dd><dt>API-aanvragen</dt><dd class="num">${fmtN(u.calls)}</dd><dt>Methodiekversie</dt><dd>FCAB ${FCAB_V}</dd></dl></div></div></div>
+  <h2>Pandberekeningen per maand</h2>
+  <div class="panel"><div class="pb"><div class="chart">${months.map(m=>`<div><span>${m[1]}</span><i style="height:${m[1]/mx*100}%"></i></div>`).join('')}</div><div class="lbl">${months.map(m=>`<span>${m[0]}</span>`).join('')}</div>
+   <p class="note" style="margin-top:8px">Productiegebruik. Pieken door portefeuilleanalyses in maart, juni en september.</p></div></div>
+</div>`;}
+function viewKeys(){return `<div class="page"><h1>Abonnement</h1>
+  <p class="lead">Woningstichting Voorbeeld heeft een abonnement Professional met 10.000 pandberekeningen per contractjaar. Daarboven geldt een variabel tarief per pand.</p>
+  <div class="g2"><div class="panel"><div class="pb"><dl class="kv"><dt>Abonnement</dt><dd>Professional</dd><dt>Contractjaar</dt><dd>1 jan – 31 dec 2026</dd><dt>Inbegrepen</dt><dd>10.000 pandberekeningen</dd><dt>Daarboven</dt><dd>variabel tarief per pand</dd></dl></div></div>
+   <div class="panel"><div class="pb"><dl class="kv"><dt>Organisatie</dt><dd>Woningstichting Voorbeeld</dd><dt>Contactpersoon</dt><dd>Beheerder vastgoeddata</dd><dt>Methodiekversie</dt><dd>FCAB ${FCAB_V}</dd><dt>Ondersteuning</dt><dd>helpdesk via DGBC</dd></dl></div></div></div>
+  <h2>Abonnementsvormen</h2>
+  <div class="tw"><table class="t"><thead><tr><th>Abonnement</th><th>Inbegrepen pandberekeningen per jaar</th><th>Daarboven</th><th>Voor</th></tr></thead><tbody>
+   <tr><td>Basis</td><td>1.000</td><td>variabel tarief per pand</td><td>adviesbureaus, kleinere eigenaren</td></tr>
+   <tr><td><b>Professional</b></td><td>10.000</td><td>variabel tarief per pand</td><td>corporaties, beleggers, banken</td></tr>
+   <tr><td>Maatwerk</td><td>op afspraak</td><td>op afspraak</td><td>softwareleveranciers, brancheorganisaties, grootverbruikers</td></tr></tbody></table></div>
+  <p class="note">Illustratie van het bestaansmodel uit het projectvoorstel. Bedragen en bundels worden vóór marktintroductie getoetst bij gebruikers.</p>
+  <h2>API-sleutels</h2>
+  <p style="font-size:13.5px;color:var(--text2);margin:0 0 12px">Iedere aanvraag is herleidbaar tot een gebruiker, organisatie en methodiekversie. Testsleutels rekenen met dezelfde methodiek maar tellen niet mee voor facturatie.</p>
+  <div class="tw"><table class="t"><thead><tr><th>Naam</th><th>Sleutel</th><th>Omgeving</th><th>Aangemaakt</th><th>Laatst gebruikt</th></tr></thead><tbody>
+   <tr><td>Vastgoedsysteem koppeling</td><td><span class="key">fcab_live_••••••••3f9a</span></td><td>Productie</td><td>3 mrt 2026</td><td>vandaag</td></tr>
+   <tr><td>Portefeuilleanalyse team</td><td><span class="key">fcab_live_••••••••a71c</span></td><td>Productie</td><td>12 jun 2026</td><td>gisteren</td></tr>
+   <tr><td>Ontwikkelomgeving</td><td><span class="key">fcab_test_••••••••3f9a</span></td><td>Test</td><td>3 mrt 2026</td><td>vandaag</td></tr></tbody></table></div>
+  <div class="send" style="margin-top:14px"><button class="btn" type="button" id="newkey">Nieuwe sleutel aanmaken</button><span class="meta">sleutels worden eenmalig getoond</span></div></div>`;}
+function viewDocs(){const ex=V.last||bereken((()=>{const b=mkBuilding(JSON.parse(JSON.stringify(DEMO[7])));b.prov=new Set(['fund','kelder','ingang','riool','inst','glas','zon']);return b;})(),'test');
+  const o=Object.assign({},ex);delete o._ms;
+  return `<div class="page"><div class="eyebrow">Documentatie</div><h1>Endpoints en uitvoer</h1>
+  <p class="lead">REST API met versiebeheer op API-niveau. Grotere wijzigingen komen in een nieuwe versie, zodat bestaande koppelingen blijven werken.</p>
+  <h2>Endpoints</h2>
+  ${[['post','/v1/panden/berekening','Bereken één pand op adres of BAG pand-ID, optioneel met gebouwkenmerken.'],['post','/v1/batches','Start een batch voor een portefeuille (Excel, CSV of JSON).'],['get','/v1/batches/{batch_id}','Status en resultaten van een batch.'],['get','/v1/methodiek/versies','Beschikbare FCAB-versies met changelog.'],['get','/v1/databronnen','Kaartlagen en registraties met versie en resolutie.'],['get','/v1/gebruik','Verbruik van de organisatie, per omgeving.']]
+    .map(([m,p,d])=>`<div class="ep"><span class="m ${m}">${m.toUpperCase()}</span><div><code>${p}</code><p>${d}</p></div></div>`).join('')}
+  <h2>Velden in de uitvoer</h2>
+  <div class="tw"><table class="t"><thead><tr><th>Veld</th><th>Betekenis</th></tr></thead><tbody>
+   <tr><td><code>resultaattype</code></td><td><b>blootstelling</b> als alleen FCAB-1 berekend kon worden, <b>klimaatrisicoscore</b> als ook gebouwkenmerken zijn meegenomen.</td></tr>
+   <tr><td><code>omgevingsscore</code></td><td>Altijd aanwezig: acht indicatoren over hitte, droogte, wateroverlast en overstroming, met waarde en klasse.</td></tr>
+   <tr><td><code>gebouwscore</code></td><td>Kwetsbaarheid volgens FCAB-2, alleen bij aangeleverde kenmerken.</td></tr>
+   <tr><td><code>klimaatrisicoscore</code></td><td>Combinatie van omgevings- en gebouwscore per thema.</td></tr>
+   <tr><td><code>kwaliteit</code></td><td>Label A, B of C en welke invoer aangeleverd, afgeleid of met een standaardwaarde ingevuld is.</td></tr>
+   <tr><td><code>metadata</code></td><td>FCAB-versie, rekenkernversie, tijdstip en alle databronnen met versie.</td></tr></tbody></table></div>
+  <h2>Voorbeeldrespons</h2><pre class="code sm" style="max-height:520px">${hl(JSON.stringify(o,null,2))}</pre></div>`;}
+function viewBronnen(){return `<div class="page"><div class="eyebrow">Documentatie</div><h1>Methodiek en databronnen</h1>
+  <p class="lead">De methodiek blijft open: definities, indicatoren, classificaties en rekenlogica staan in de openbare documentatie. Dezelfde invoer geeft binnen dezelfde methodiek- en dataversie altijd dezelfde uitkomst.</p>
+  <h2>FCAB-onderdelen in de rekenkern</h2>
+  <div class="flow"><div><span class="st">FCAB-1</span><b>Omgevingsscore</b><p>Blootstelling op gebiedsniveau, acht indicatoren.</p></div><div><span class="st">FCAB-2</span><b>Gebouwscore</b><p>Kwetsbaarheid op basis van gebouwkenmerken, zes onderdelen.</p></div><div><span class="st">FCAB-3</span><b>Adaptatiestrategie</b><p>Gebieds- en gebouwmaatregelen (buiten scope MVP).</p></div></div>
+  <h2>Databronnen</h2>
+  <div class="tw"><table class="t"><thead><tr><th>Indicator</th><th>Databron</th><th>Leverancier</th><th>Versie</th><th>Resolutie</th></tr></thead><tbody>${BRONNEN.map(x=>`<tr><td><code style="font-size:12px">${x[0]}</code></td><td>${x[1]}</td><td>${x[2]}</td><td>${x[3]}</td><td>${x[4]}</td></tr>`).join('')}</tbody></table></div>
+  <p class="note">Versies zijn voorbeeldwaarden voor dit prototype.</p>
+  <h2>Omgaan met ontbrekende gegevens</h2>
+  <div class="tw"><table class="t"><tbody><tr><td style="width:180px"><b>Aangeleverd</b></td><td>Kenmerk komt uit de aanvraag en telt volledig mee.</td></tr><tr><td><b>Afgeleid</b></td><td>Bijvoorbeeld isolatie uit het bouwjaar en een ontlastput bij bouwjaar na 1980.</td></tr><tr><td><b>Standaardwaarde</b></td><td>Onbekend kenmerk krijgt volgens FCAB-2 de punten van zeer hoge kwetsbaarheid.</td></tr></tbody></table></div></div>`;}
+function viewChangelog(){return `<div class="page"><div class="eyebrow">Documentatie</div><h1>Changelog</h1>
+  <p class="lead">Per release een overzicht van wijzigingen in methodiek, data en API, zodat gebruikers kunnen zien waarom een score ten opzichte van een eerdere berekening is veranderd.</p>
+  <div class="cl"><h3>Rekenkern 1.0.0 · FCAB 2.0.0<span>lancering</span></h3><ul><li>Gebouwscore en klimaatrisicoscore voor alle vier thema’s</li><li>Kwaliteitslabels A, B en C met overzicht van aangeleverde, afgeleide en standaardwaarden</li><li>Batchverwerking voor portefeuilles</li></ul></div>
+  <div class="cl"><h3>Rekenkern 0.9.0 · FCAB 2.0.0<span>pilot met gebruikersgroep</span></h3><ul><li>Gebouwkenmerken als optionele invoer</li><li>Standaardwaarden en proxies bij ontbrekende gegevens</li></ul></div>
+  <div class="cl"><h3>Rekenkern 0.5.0 · FCAB 1.x<span>MVP</span></h3><ul><li>Adres- en pandkoppeling via BAG</li><li>Omgevingsscores (FCAB-1) met versiebeheer en metadata</li></ul></div>
+  <p class="note">Releasenummers en volgorde volgen de fasering uit het projectvoorstel; data zijn nog niet vastgesteld.</p></div>`;}
+
+/* ---- events ---- */
+document.querySelectorAll('.side [data-v],.top [data-v],.crumb [data-v]').forEach(n=>n.addEventListener('click',()=>nav(n.dataset.v)));
+document.addEventListener('click',e=>{if(!e.target.closest('.search'))$('qsug').hidden=true;});
+const qi=$('q');
+function qhits(){const q=qi.value.toLowerCase().trim();return ADR.map((a,i)=>({a,i})).filter(x=>q&&(x.a.a+' '+x.a.p+' '+x.a.id).toLowerCase().includes(q)).slice(0,6);}
+qi.addEventListener('input',()=>{const h=qhits(),s=$('qsug');s.innerHTML=h.map(x=>`<button type="button" data-i="${x.i}">${esc(x.a.a)}, ${esc(x.a.p)}<small>${x.a.id}</small></button>`).join('');s.hidden=!h.length;});
+function qgo(a){if(a){P.adres=a.a;P.plaats=a.p;}else{const v=qi.value.trim();if(!v)return;if(/^\d{16}$/.test(v)){V.mode='bag';P.bag=v;}else{V.mode='adres';const m=v.split(',');P.adres=m[0].trim();if(m[1])P.plaats=m[1].trim();}}
+  if(a)V.mode='adres';$('qsug').hidden=true;qi.value='';nav('pand');send();}
+$('qsug').addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(b)qgo(ADR[+b.dataset.i]);});
+qi.addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();const h=qhits();qgo(h.length==1?h[0].a:null);}});
+
+const cv=$('canvas');
+cv.addEventListener('click',e=>{const el=e.target;
+  const m=el.closest('[data-mode]');if(m){if(V.mode=='adres'){P.adres=$('i-adres').value;P.plaats=$('i-plaats').value;}V.mode=m.dataset.mode;render();return;}
+  const rt=el.closest('[data-rt]');if(rt){V.resTab=rt.dataset.rt;$('resp').innerHTML=respHTML();return;}
+  if(el.closest('#go')){send();return;}
+  if(el.closest('[data-fill]')){fillExample();render();return;}
+  if(el.closest('[data-clr]')){P.k={};render();return;}
+  const sg=el.closest('#sug button');if(sg){const a=ADR[+sg.dataset.i];P.adres=a.a;P.plaats=a.p;render();return;}
+  if(el.closest('#bb-demo')){demoBatch();return;}
+  if(el.closest('#bb-up')){$('file').click();return;}
+  if(el.closest('#bb-tpl')){$('b-tpl').click();return;}
+  if(el.closest('#bb-xlsx')){exportBatch('xlsx');return;}
+  if(el.closest('#bb-json')){exportBatch('json');return;}
+  if(el.closest('#newkey')){toast('In het prototype worden geen echte sleutels aangemaakt');return;}
+});
+cv.addEventListener('change',e=>{const el=e.target;
+  if(el.id=='i-kopen'){if(V.mode=='adres'){P.adres=$('i-adres').value;P.plaats=$('i-plaats').value;}V.kopen=el.checked;render();return;}
+  if(el.dataset.kk){const k=el.dataset.kk;let v=el.value;if(v===''){delete P.k[k];}else{if(['ingang','drempel'].includes(k))v=Math.round(+v);P.k[k]=v;}el.classList.toggle('set',v!=='');
+    const tg=document.querySelector('label.tg');if(tg){const n=Object.keys(P.k).length;tg.lastChild.textContent='Gebouwkenmerken meesturen'+(n?` (${n} ingevuld)`:'');}
+    const pre=document.querySelector('.panel pre.code.sm');if(pre)pre.textContent=curl();}});
+cv.addEventListener('input',e=>{const el=e.target;
+  if(el.id=='i-adres'||el.id=='i-plaats'){P[el.id=='i-adres'?'adres':'plaats']=el.value;const pre=document.querySelector('.panel pre.code.sm');if(pre)pre.textContent=curl();}
+  if(el.id=='i-adres'){const q=el.value.toLowerCase().trim(),s=$('sug');const hits=ADR.map((a,i)=>({a,i})).filter(x=>q&&(x.a.a+' '+x.a.p).toLowerCase().includes(q)).slice(0,6);
+    s.innerHTML=hits.map(x=>`<button type="button" data-i="${x.i}">${esc(x.a.a)}, ${esc(x.a.p)}<small>${x.a.id}</small></button>`).join('');s.hidden=!hits.length;}});
+cv.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.matches('#i-adres,#i-plaats,#i-bag')){e.preventDefault();send();}});
+document.addEventListener('click',e=>{if(!e.target.closest('#sug')&&!e.target.closest('#i-adres')){const s=$('sug');if(s)s.hidden=true;}});
+$('file').addEventListener('change',e=>{readFile(e.target.files[0]);e.target.value='';});
+
+/* toegang */
+const GH='73e2822498c988475f994d5cbc7348677198694cb01830ef3182527acd0f6d0e';
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+function unlock(){$('gate').hidden=true;$('app').hidden=false;try{sessionStorage.setItem('rk-ok','1');}catch(e){}}
+try{if(sessionStorage.getItem('rk-ok')==='1')unlock();}catch(e){}
+$('g-form').addEventListener('submit',async e=>{e.preventDefault();const v=$('g-in').value;let ok=false;
+  try{ok=(await sha(v))===GH;}catch(err){ok=false;}
+  if(ok)unlock();else{$('g-err').hidden=false;$('g-in').select();}});
+$('g-in').addEventListener('input',()=>{$('g-err').hidden=true;});
+
+render();
+})();
+</script>
+
+</body></html>
