@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FCAB Rekenkern Wateroverlast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="leaflet.css">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f8fafd; --white:#fff; --border:#e8e4de; --border2:#d4cfc8; --line:#efece8;
+  --text:#1c1a17; --text2:#5a5650; --text3:#9c9690;
+  --accent:#e07a2f; --accent-d:#b4561a; --accent-s:rgba(224,122,47,.10);
+  --shadow:0 1px 2px rgba(60,40,20,.10),0 2px 8px rgba(60,40,20,.10);
+  --shadow2:0 2px 6px rgba(60,40,20,.10),0 8px 28px rgba(60,40,20,.14);
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; --word:'Poppins',system-ui,sans-serif;
+  --rail:72px; --panel:432px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+*{scrollbar-width:thin;scrollbar-color:#dcd8d2 transparent}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#dcd8d2;border-radius:6px;border:2px solid transparent;background-clip:padding-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:var(--sans);font-size:14px;line-height:1.55;color:var(--text);background:var(--bg)}
+button,input,select{font-family:var(--sans);font-size:13.5px;color:var(--text)}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+
+/* kaart */
+#map{position:absolute;inset:0 0 0 var(--rail);background:#dfe3e6}
+.leaflet-container{font-family:var(--sans)}
+.leaflet-control-attribution{font-size:10.5px;background:rgba(255,255,255,.8)!important}
+.leaflet-bar{border:none!important;box-shadow:var(--shadow)!important;border-radius:10px!important;overflow:hidden}
+.leaflet-bar a{width:38px!important;height:38px!important;line-height:38px!important;color:var(--text2)!important;border-bottom:1px solid var(--line)!important}
+.leaflet-tooltip.wd{background:#fff;border:none;box-shadow:var(--shadow);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--text)}
+.leaflet-tooltip.wd:before{display:none}
+.pin{width:30px;height:40px}
+
+/* rail */
+.rail{position:absolute;left:0;top:0;bottom:0;width:var(--rail);background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding:14px 0 12px;gap:4px;z-index:1200}
+.mark{display:grid;grid-template-columns:repeat(2,16px);grid-template-rows:repeat(2,16px);gap:2px;margin-bottom:18px}
+.mark i{display:flex;align-items:center;justify-content:center;font:600 9.5px/1 var(--word);color:#fff;font-style:normal;border-radius:3px}
+.rbtn{width:60px;border:none;background:none;border-radius:12px;padding:7px 0 6px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text2);font-size:11px;font-weight:500}
+.rbtn svg{width:22px;height:22px;padding:3px 0;border-radius:14px;box-sizing:content-box;width:40px}
+.rbtn:hover svg{background:#f3f1ee}
+.rbtn.on{color:var(--text)}
+.rbtn.on svg{background:var(--accent-s);color:var(--accent-d)}
+.rail .sp{flex:1}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+
+/* zoekbalk */
+.search{position:absolute;top:12px;left:calc(var(--rail) + 14px);width:calc(var(--panel) - 28px);z-index:1100;background:var(--white);border-radius:26px;box-shadow:var(--shadow2);display:flex;align-items:center;height:50px;padding:0 6px 0 18px;gap:8px}
+.search input{flex:1;border:none;outline:none;background:none;font-size:15px;min-width:0;height:100%}
+.search input::placeholder{color:var(--text3)}
+.sbtn{width:38px;height:38px;border:none;background:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.sbtn:hover{background:#f3f1ee}
+.sugg{position:absolute;top:56px;left:0;right:0;background:#fff;border-radius:16px;box-shadow:var(--shadow2);padding:6px 0;max-height:340px;overflow:auto}
+.sugg button{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:none;background:none;padding:9px 18px;font-size:14px}
+.sugg button:hover,.sugg button.act{background:#f6f4f1}
+.sugg svg{flex:none;color:var(--text3)}
+
+/* paneel */
+.panel{position:absolute;top:0;bottom:0;left:var(--rail);width:var(--panel);background:var(--white);z-index:1050;box-shadow:2px 0 14px rgba(60,40,20,.10);display:flex;flex-direction:column;transform:translateX(0);transition:transform .2s}
+.panel.dicht{transform:translateX(calc(-100% - 20px))}
+.pbody{flex:1;overflow:auto;padding:4px 24px 28px;position:relative;margin-top:72px}
+.close{position:absolute;top:10px;right:14px;width:34px;height:34px;border:none;background:none;border-radius:50%;color:var(--text3);display:flex;align-items:center;justify-content:center}
+.close:hover{background:#f3f1ee;color:var(--text)}
+.toggle{position:absolute;top:50%;right:-23px;width:23px;height:48px;border:none;background:#fff;border-radius:0 8px 8px 0;box-shadow:3px 0 6px rgba(60,40,20,.10);display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.eyebrow{font-size:12px;color:var(--text3);font-weight:500;letter-spacing:.01em}
+.ptitle{font-size:22px;line-height:1.25;font-weight:600;margin:4px 40px 2px 0}
+.psub{color:var(--text2);font-size:13.5px}
+.meta{color:var(--text3);font-size:12.5px;margin-top:6px}
+.sec{border-top:1px solid var(--line);margin-top:20px;padding-top:18px}
+.sec h3{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)}
+.risk{display:flex;align-items:baseline;gap:10px;margin:6px 0 4px}
+.risk b{font-size:30px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin:10px 0 4px}
+.scale i{height:5px;border-radius:3px;background:#eeebe7}
+.scalel{display:flex;justify-content:space-between;font-size:11px;color:var(--text3)}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;font-size:13.5px;margin-top:14px}
+.kv dt{color:var(--text2)}.kv dd{margin:0;display:flex;align-items:center;gap:8px}
+.sw{width:14px;height:14px;border-radius:3px;border:1px solid #2f2f2f;flex:none}
+.rule{font-size:12.5px;color:var(--text2);margin-top:12px}
+.mx{display:grid;grid-template-columns:repeat(20,1fr);gap:1px;margin-top:10px}
+.mx i{height:9px;border-radius:1px;opacity:.55}
+.mx i.hit{opacity:1;outline:2px solid var(--text);outline-offset:0;position:relative;z-index:1}
+.mxl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text3);margin-top:3px}
+.form{display:grid;grid-template-columns:1fr 168px;gap:8px 12px;align-items:center;font-size:13.5px}
+.form label{color:var(--text2)}
+.form .sub{padding-left:14px;font-size:13px}
+.form select,.form input{width:100%;height:34px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:0 8px}
+.form select:hover,.form input:hover{border-color:var(--border2)}
+.pts{width:100%;border-collapse:collapse;font-size:13px}
+.pts td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.pts td:last-child{text-align:right;white-space:nowrap;padding-left:12px}
+.pts small{display:block;color:var(--text3);font-size:12px}
+.pts tfoot td{border-bottom:none;font-weight:600;padding-top:9px}
+.btn{height:38px;border-radius:19px;border:1px solid var(--border);background:#fff;padding:0 16px;font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:#f8f6f3}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{background:var(--accent-d)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.note{font-size:12.5px;color:var(--text3);margin-top:10px}
+.warn{font-size:13px;color:#8a4b12;background:#fdf3ea;border-radius:10px;padding:10px 12px;margin-top:12px}
+.attrs{font-size:12.5px;color:var(--text2);margin-top:8px}
+.attrs div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.attrs span:last-child{color:var(--text);text-align:right;word-break:break-all}
+details summary{cursor:pointer;color:var(--text2);font-size:12.5px;margin-top:10px}
+
+/* portefeuille */
+.plist{margin:0 -24px}
+.pitem{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:11px 24px;border-bottom:1px solid var(--line);cursor:pointer;width:100%;text-align:left;border-left:none;border-right:none;border-top:none;background:none}
+.pitem:hover{background:#faf8f6}
+.pitem.sel{background:var(--accent-s)}
+.pitem .n{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pitem .a{font-size:12.5px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pitem .r{grid-row:1/3;grid-column:2;align-self:center;font-size:13px;display:flex;align-items:center;gap:7px;color:var(--text2)}
+.dist{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:14px 0 6px;text-align:center}
+.dist b{display:block;font-size:18px;font-weight:600}
+.dist span{font-size:11px;color:var(--text3);line-height:1.2;display:block}
+.bar{height:4px;border-radius:2px;background:#eeebe7;overflow:hidden;margin:14px 0 4px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.drop{border:1.5px dashed var(--border2);border-radius:14px;padding:22px;text-align:center;color:var(--text2);margin-top:16px}
+.drop.over{border-color:var(--accent);background:var(--accent-s)}
+.mtab{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.mtab td,.mtab th{padding:6px 0;border-bottom:1px solid var(--line);text-align:left;font-weight:400;vertical-align:top}
+.mtab th{color:var(--text3);font-size:12px}
+.mtab td:last-child,.mtab th:last-child{text-align:right}
+.ptxt{font-size:13.5px;color:var(--text2);margin:0 0 10px}
+
+/* kaartbediening */
+.legend{position:absolute;right:12px;bottom:150px;z-index:1000;background:#fff;border-radius:14px;box-shadow:var(--shadow);width:236px;font-size:12.5px}
+.legend .lh{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 10px 14px;font-weight:600;font-size:12.5px;border:none;background:none;width:100%;text-align:left}
+.legend .lb{padding:0 14px 12px}
+.legend .li{display:flex;align-items:center;gap:9px;padding:2.5px 0;color:var(--text2)}
+.legend input[type=range]{width:100%;accent-color:var(--accent)}
+.legend .src{overflow-wrap:anywhere;font-size:11.5px;color:var(--text3);margin-top:8px;border-top:1px solid var(--line);padding-top:8px}
+.legend .src a{color:var(--accent-d);cursor:pointer;text-decoration:underline}
+.base{position:absolute;left:calc(var(--rail) + var(--panel) + 14px);bottom:24px;z-index:1000;width:76px;height:76px;border-radius:12px;border:2px solid #fff;box-shadow:var(--shadow2);overflow:hidden;padding:0;background:#ccc;transition:left .2s}
+.base img{width:100%;height:100%;object-fit:cover;display:block}
+.base span{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 5px;font-size:11.5px;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.55));text-align:left}
+body.pdicht .base{left:calc(var(--rail) + 14px)}
+.hint{position:absolute;left:50%;transform:translateX(-50%);bottom:28px;z-index:1000;background:rgba(28,26,23,.86);color:#fff;font-size:12.5px;padding:7px 14px;border-radius:16px;pointer-events:none;margin-left:calc((var(--rail) + var(--panel))/2)}
+body.pdicht .hint{margin-left:calc(var(--rail)/2)}
+.toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:1300;background:#1c1a17;color:#fff;padding:9px 16px;border-radius:10px;font-size:13px;box-shadow:var(--shadow2)}
+.nodata{position:absolute;top:76px;left:50%;transform:translateX(-50%);margin-left:calc((var(--rail) + var(--panel))/2);z-index:1000;background:#fdf3ea;color:#8a4b12;border:1px solid #f1d5bb;border-radius:12px;padding:9px 14px;font-size:13px;max-width:520px;box-shadow:var(--shadow)}
+.nodata a{color:#b4561a}
+body.pdicht .nodata{margin-left:calc(var(--rail)/2)}
+.spin{width:16px;height:16px;border:2px solid #e8e4de;border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{color:var(--text3);font-size:13.5px;margin-top:8px}
+@media (max-width:820px){:root{--panel:calc(100vw - var(--rail))}.legend{display:none}}
+#gate{position:fixed;inset:0;z-index:9999;overflow-y:auto;background:#faf9f7;display:flex;flex-direction:column}
+#gate::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(180,174,166,.75) 1px,transparent 1px);background-size:17px 17px;-webkit-mask-image:radial-gradient(ellipse 520px 380px at 50% 38vh,transparent 0,#000 100%);mask-image:radial-gradient(ellipse 520px 380px at 50% 38vh,transparent 0,#000 100%)}
+.g-body{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;padding:14vh 24px 60px}
+.g-brand{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:14px}
+.g-brand i{display:grid;place-items:center;font:700 17px var(--word);color:#fff;font-style:normal;width:40px;height:40px;border-radius:7px}
+.g-name{font-family:var(--word);font-size:20px;font-weight:500;margin-bottom:28px;color:var(--text)}
+.g-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:30px 30px 24px;max-width:400px;width:100%;box-shadow:0 16px 44px rgba(0,0,0,.08);text-align:center}
+.g-card input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14.5px;text-align:center;letter-spacing:.5px;margin-bottom:12px;background:#fff}
+.g-card input:focus{outline:none;border-color:var(--accent)}
+.g-card button{width:100%;padding:12px 0;background:var(--accent);color:#fff;border:0;border-radius:12px;font-size:14.5px;font-weight:600;cursor:pointer}
+.g-err{color:#c0392b;font-size:12.5px;margin-top:10px;font-weight:500}
+.g-legal{font-size:12.5px;color:var(--text2);line-height:1.55;margin:18px 0 0}
+code{font-size:12px;background:#f3f1ee;padding:1px 5px;border-radius:4px;word-break:break-all}
+</style>
+</head>
+<body class="pdicht">
+<div id="gate">
+  <div class="g-body">
+    <div class="g-brand" aria-hidden="true"><i style="background:#E8B84B">F</i><i style="background:#C0392B">C</i><i style="background:#4BAE8A">A</i><i style="background:#E8710A">B</i></div>
+    <div class="g-name">Rekenkern Wateroverlast</div>
+    <form class="g-card" id="g-form" autocomplete="off">
+      <input type="password" id="g-in" placeholder="Toegangscode" aria-label="Toegangscode" autofocus>
+      <button type="submit">Ontgrendelen</button>
+      <div class="g-err" id="g-err" hidden>Onjuiste code. Probeer het opnieuw.</div>
+      <p class="g-legal">Deze omgeving is momenteel afgeschermd. Voer de toegangscode in om verder te gaan.</p>
+    </form>
+  </div>
+</div>
+<div id="map" aria-label="Kaart"></div>
+
+<nav class="rail" aria-label="Navigatie">
+  <div class="mark" title="FCAB" aria-hidden="true"><i style="background:#E8B84B">F</i><i style="background:#C0392B">C</i><i style="background:#4BAE8A">A</i><i style="background:#E8710A">B</i></div>
+  <button class="rbtn on" data-v="kaart" title="Kaart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4Z"/><path d="M9 4v13.5M15 6.5V20"/></svg>Kaart</button>
+  <button class="rbtn" data-v="port" title="Portefeuille"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M8.5 7V5.5a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5V7M3.5 12.5h17"/></svg>Portefeuille</button>
+  <button class="rbtn" data-v="meth" title="Methodiek"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3 4 5.5 7 5.5 10a5.5 5.5 0 0 1-11 0c0-3 2.5-6 5.5-10Z"/></svg>Methodiek</button>
+  <div class="sp"></div>
+  <button class="rbtn" data-v="bron" title="Databron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></svg><span id="bronlbl">Databron</span></button>
+</nav>
+
+<div class="search" role="search">
+  <input id="q" type="search" placeholder="Zoek een adres" autocomplete="off" aria-label="Zoek een adres">
+  <button class="sbtn" id="qgo" title="Zoeken" aria-label="Zoeken"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
+  <div class="sugg" id="sugg" hidden></div>
+</div>
+
+
+
+<aside class="panel dicht" id="panel" aria-label="Details">
+  <button class="toggle" id="ptoggle" title="Paneel in- of uitklappen" aria-label="Paneel in- of uitklappen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path id="tgp" d="m15 6-6 6 6 6"/></svg></button>
+  <div class="pbody" id="pbody"></div>
+</aside>
+
+<button class="base" id="base" title="Andere achtergrond"><img id="baseimg" alt=""><span id="baselbl">Kaart</span></button>
+
+<div class="legend" id="legend">
+  <button class="lh" id="lh">Waterdiepte bij 70 mm in 1 uur<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path id="lhp" d="m6 15 6-6 6 6"/></svg></button>
+  <div class="lb" id="lb">
+    <div id="lrows"></div>
+    <div class="li" style="margin-top:8px;gap:8px">Transparantie<input type="range" id="opac" min="20" max="100" value="80" aria-label="Dekking van de kaartlaag"></div>
+    <div class="src" id="lsrc"></div>
+  </div>
+</div>
+<div class="hint" id="hint" hidden></div>
+<div class="toast" id="toast" hidden></div>
+<div class="nodata" id="nodata" hidden>Geen omgevingsdata gekoppeld: de map <b>data</b> staat niet naast deze pagina. Scores zijn niet beschikbaar. <a href="#" onclick="openView('bron');return false">Uitleg</a></div>
+<input type="file" id="file" accept=".xlsx,.xls,.csv" hidden>
+
+<script src="leaflet.js"></script>
+<script src="xlsx.full.min.js"></script>
+<script>
+'use strict';
+/* =================================================================== basis */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=x=>x==null?'–':(Math.round(x*10)/10).toLocaleString('nl-NL');
+const RISICO=['Geen','Zeer laag','Laag','Gemiddeld','Hoog','Zeer hoog'];
+const RISKCOL=['#b9c7b0','#8fbf7a','#d7cf5c','#e8a43c','#d9573f','#8e1f17'];
+const NA='#b2b2b2';
+let KL=[{code:'0 tot 2 cm',naam:'Geen',kleur:'#ffffff'},{code:'2 tot 10 cm',naam:'Zeer laag',kleur:'#ffbebe'},{code:'10 tot 15 cm',naam:'Laag',kleur:'#ff7f7f'},{code:'15 tot 20 cm',naam:'Middel',kleur:'#ff0000'},{code:'20 tot 30 cm',naam:'Hoog',kleur:'#700000'},{code:'meer dan 30 cm',naam:'Zeer hoog',kleur:'#280000'}];
+const WOM=['00000000000000000000','11111111111111111222','11111111222222222333','11111122233333333444','11111222333344444555','11122233355555555555'];
+const PDOK_LS='https://api.pdok.nl/bzk/locatieserver/search/v3_1/';
+const BAG_WFS='https://service.pdok.nl/lv/bag/wfs/v2_0?service=WFS&version=2.0.0&request=GetFeature&typeNames=bag:pand&outputFormat=application/json&srsName=EPSG:4326&count=60&bbox=';
+const S={status:null,view:'kaart',base:'foto',laag:true,portAan:true,opac:.8,sel:null,port:[],batch:null};
+
+function toast(t,ms){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,ms||3200);}
+async function fetchT(u,ms){const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||8000);try{return await fetch(u,{signal:c.signal});}finally{clearTimeout(t);}}
+
+
+/* ================================================================= kaart */
+const map=L.map('map',{zoomControl:false,preferCanvas:true,minZoom:7,maxZoom:21,attributionControl:true}).setView([52.0885,5.1215],17);
+map.attributionControl.setPrefix(false);
+L.control.zoom({position:'bottomright'}).addTo(map);
+L.control.scale({position:'bottomright',imperial:false}).addTo(map);
+const BASES={
+  foto:{naam:'Luchtfoto',url:'https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_orthoHR/EPSG:3857/{z}/{x}/{y}.jpeg',opt:{maxNativeZoom:19,maxZoom:21,attribution:'Luchtfoto: Beeldmateriaal Nederland / PDOK'}},
+  kaart:{naam:'Kaart',url:'https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/grijs/EPSG:3857/{z}/{x}/{y}.png',opt:{maxNativeZoom:19,maxZoom:21,attribution:'Achtergrond: Kadaster / PDOK'}}};
+let baseLayer=null;
+function setBase(k){S.base=k;if(baseLayer)map.removeLayer(baseLayer);baseLayer=L.tileLayer(BASES[k].url,BASES[k].opt).addTo(map);baseLayer.bringToBack();thumb();}
+function thumb(){const o=S.base=='foto'?'kaart':'foto';$('#baselbl').textContent=BASES[o].naam;const z=15,c=map.getCenter(),n=2**z;const x=Math.floor((c.lng+180)/360*n),y=Math.floor((1-Math.log(Math.tan(c.lat*Math.PI/180)+1/Math.cos(c.lat*Math.PI/180))/Math.PI)/2*n);$('#baseimg').src=BASES[o].url.replace('{z}',z).replace('{x}',x).replace('{y}',y);}
+$('#base').onclick=()=>setBase(S.base=='foto'?'kaart':'foto');
+setBase('foto');
+
+/* ================================================== data (GitHub Pages) */
+/* De omgevingsscore staat in data/<x>_<y>.bin.gz (tegels van 5 x 5 km, RD), gemaakt met maak_data.py. */
+const DATA={index:null,set:null,tiles:new Map()};
+async function laadIndex(){try{const r=await fetch('data/index.json',{cache:'no-cache'});if(!r.ok)throw 0;DATA.index=await r.json();DATA.set=new Set(DATA.index.tegels);}catch(e){DATA.index=null;DATA.set=null;}}
+function parseTile(buf){const dv=new DataView(buf);if(String.fromCharCode(dv.getUint8(0),dv.getUint8(1),dv.getUint8(2),dv.getUint8(3))!=='FCB1')throw new Error('onbekend formaat');
+  const n=dv.getUint32(4,true);let o=8;const ids=new Float64Array(buf,o,n);o+=8*n;const xs=new Int32Array(buf,o,n);o+=4*n;const ys=new Int32Array(buf,o,n);o+=4*n;
+  const hw=new Uint16Array(buf,o,n);o+=2*n;const hh=new Uint16Array(buf,o,n);o+=2*n;const dd=new Int16Array(buf,o,n);o+=2*n;const kk=new Uint8Array(buf,o,n);
+  return {n,ids,xs,ys,hw,hh,dd,kk,idmap:null};}
+async function gunzip(buf){const u=new Uint8Array(buf);if(u[0]!==0x1f||u[1]!==0x8b)return buf;return await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();}
+function tile(tx,ty){const k=tx+'_'+ty;if(!DATA.set||!DATA.set.has(k))return Promise.resolve(null);
+  if(!DATA.tiles.has(k))DATA.tiles.set(k,fetch('data/'+k+'.bin.gz').then(async r=>{if(!r.ok)throw new Error(r.status);return parseTile(await gunzip(await r.arrayBuffer()));}).catch(e=>{DATA.tiles.delete(k);return null;}));
+  return DATA.tiles.get(k);}
+function idIndex(t){if(!t.idmap){t.idmap=new Map();for(let i=0;i<t.n;i++)if(t.ids[i])t.idmap.set(t.ids[i],i);}return t.idmap;}
+async function tilesRond(x,y,r){const T=5000,out=[];for(let tx=Math.floor((x-r)/T);tx<=Math.floor((x+r)/T);tx++)for(let ty=Math.floor((y-r)/T);ty<=Math.floor((y+r)/T);ty++)out.push(tile(tx,ty));return (await Promise.all(out)).filter(Boolean);}
+const pandNum=v=>{const s=String(v||'').replace(/^NL\.IMBAG\.Pand\./i,'');return /^\d+$/.test(s)?+s:0;};
+
+/* ==================================================== rekenregels FCAB */
+const X0=155000,Y0=463000,PHI0=52.15517440,LAM0=5.38720621;
+function rd2wgs(x,y){const dx=(x-X0)*1e-5,dy=(y-Y0)*1e-5;
+  const n=3235.65389*dy-32.58297*dx**2-0.2475*dy**2-0.84978*dx**2*dy-0.0655*dy**3-0.01709*dx**2*dy**2-0.00738*dx+0.0053*dx**4-0.00039*dx**2*dy**3+0.00033*dx**4*dy-0.00012*dx*dy;
+  const e=5260.52916*dx+105.94684*dx*dy+2.45656*dx*dy**2-0.81885*dx**3+0.05594*dx*dy**3-0.05607*dx**3*dy+0.01199*dy-0.00256*dx**3*dy**2+0.00128*dx*dy**4+0.00022*dy**2-0.00022*dx**2+0.00026*dx**5;
+  return [PHI0+n/3600,LAM0+e/3600];}
+function wgs2rd(lat,lon){const p=0.36*(lat-PHI0),l=0.36*(lon-LAM0);
+  const x=190094.945*l-11832.228*p*l-114.221*p**2*l-32.391*l**3-0.705*p-2.34*p**3*l-0.608*p*l**3-0.008*l**2+0.148*p**2*l**3;
+  const y=309056.544*p+3638.893*l**2+73.077*p**2-157.984*p*l**2+59.788*p**3+0.433*l-6.439*p**2*l**2-0.032*p*l+0.092*l**4-0.054*p*l**4;
+  return [X0+x,Y0+y];}
+const FCAB_VERSIE='FCAB 2.0 · omgevingsscore wateroverlast v20260806',REKENKERN_VERSIE='1.0.0 (web)';
+const MAXP={ingang:40,kelder:15,instroom:20,riool:5,inst:20};
+const PUNTLAB={ingang:'Hoogte ingang',kelder:'Ondergrondse ruimte',instroom:'Overige instroompunten',riool:'Riool en terugslagklep',inst:'Installaties'};
+const r2=x=>Math.round(x*100)/100;
+function gebouwscore(s,bj){const ing=s.ingang==null?0:s.ingang,dr=s.drempel==null?0:s.drempel,jaar=bj||1900,kel=s.kelder!='geen';
+  const p={ingang:ing>15?4:s.schotIn!='geen'?10:ing>=1?28:40,
+    kelder:!kel?0:s.kelder=='?'?15:(dr>15||s.rooster||s.schotK!='geen')?6:dr>=1?10.5:15,
+    instroom:s.instroom=='?'?20:(s.instroom=='15'?(s.instroomSchot?8:20):0),
+    riool:(s.riool=='gescheiden'||s.klep||jaar>1980)?0:5,
+    inst:{kelder:20,bg:ing<=0?14:0,hoog:0,'?':20}[s.inst]};
+  const score=r2(Object.values(p).reduce((a,b)=>a+b,0));return {score,punten:p,kolom:Math.max(0,Math.min(19,Math.ceil(score/5)-1))};}
+const lab=(k,v)=>String(KMDEF[k].o[v]).toLowerCase();
+function toelichting(s,bj){const t={};
+  t.ingang=(s.ingang==null?'onbekend, telt als op straatniveau':s.ingang+' cm')+(s.schotIn=='geen'?'':', waterkering '+lab('schotIn',s.schotIn));
+  if(s.kelder=='geen')t.kelder='geen ondergrondse ruimte';else{const x=[];if(s.drempel!=null)x.push('drempel '+s.drempel+' cm');if(s.rooster)x.push('waterrooster');if(s.schotK!='geen')x.push('waterkering');t.kelder=lab('kelder',s.kelder)+(x.length?' ('+x.join(', ')+')':'');}
+  t.instroom=lab('instroom',s.instroom)+(s.instroom=='15'&&s.instroomSchot?', afgeschermd':'');
+  t.riool=lab('riool',s.riool)+(s.klep?', terugslagklep':'')+(bj?', bouwjaar '+bj:', bouwjaar onbekend');t.inst=lab('inst',s.inst);return t;}
+function hash(s){let h=2166136261;for(const c of new TextEncoder().encode(s)){h^=c;h=Math.imul(h,16777619)>>>0;}return h;}
+async function omgevingsscore(x,y,pid){
+  const leeg={klasse:null,waterdiepte:null,index:null,wijze:'geen object binnen 10 m',pand:'',diepte:null,attributen:{},kleur:NA};
+  if(!DATA.index)return {...leeg,wijze:'geen omgevingsdata gekoppeld (map data ontbreekt)'};
+  const ts=await tilesRond(x,y,pid?400:60);const pn=pandNum(pid);let best=null;
+  if(pn)for(const t of ts){const i=idIndex(t).get(pn);if(i!==undefined){best={t,i,wijze:'BAG-pand'};break;}}
+  if(!best){let ba=1e18;for(const t of ts)for(let i=0;i<t.n;i++){if(Math.abs(x-t.xs[i])<=t.hw[i]&&Math.abs(y-t.ys[i])<=t.hh[i]){const a=t.hw[i]*t.hh[i];if(a<ba){ba=a;best={t,i,wijze:'locatie binnen object'};}}}}
+  if(!best){let bd=10.0001;for(const t of ts)for(let i=0;i<t.n;i++){const d=Math.hypot(Math.max(0,Math.abs(x-t.xs[i])-t.hw[i]),Math.max(0,Math.abs(y-t.ys[i])-t.hh[i]));if(d<bd){bd=d;best={t,i,wijze:`dichtstbijzijnde object op ${Math.round(d)} m`};}}}
+  if(!best)return leeg;
+  const {t,i}=best;const k=t.kk[i];const idv=t.ids[i]?String(t.ids[i]).padStart(16,'0'):'';const d=t.dd[i]<0?null:t.dd[i]/10;
+  const kol=DATA.index.kolommen||{};const at={};if(kol.pand)at[kol.pand]=idv||'–';at[kol.klasse||'waterdiepte_klasse']=k<6?KL[k].code:'Onbekend';if(kol.diepte)at[kol.diepte]=d==null?'–':d;
+  if(k>5)return {...leeg,klasse:'Onbekend',waterdiepte:'Onbekend',wijze:best.wijze,pand:idv,diepte:d,attributen:at};
+  return {klasse:KL[k].naam,waterdiepte:KL[k].code,index:k,wijze:best.wijze,pand:idv,diepte:d,attributen:at,kleur:KL[k].kleur};}
+async function bereken(inv){
+  const s={...KMSTD,...(inv.gebouwkenmerken||{})};let x=inv.rd_x,y=inv.rd_y;
+  if(x==null){[x,y]=wgs2rd(inv.lat,inv.lon);}
+  let bj=inv.bouwjaar?+inv.bouwjaar:null;const pid=inv.bag_pand_id||'';
+  const o=await omgevingsscore(x,y,pid);const g=gebouwscore(s,bj);let risico,regel;
+  if(o.index==null){risico={score:null,klasse:'Onbekend'};regel=!DATA.index?'Er is geen omgevingsdata gekoppeld (map data ontbreekt). Het klimaatrisico kan daarom niet worden bepaald.':'De omgevingsscore is onbekend: de brondata is ouder dan het gebouw of er ligt geen object binnen 10 m. Het klimaatrisico kan daarom niet worden bepaald.';}
+  else{const r=+WOM[o.index][g.kolom];risico={score:r,klasse:RISICO[r]};regel=`Risicomatrix: omgevingsklasse ${o.index} (${o.klasse.toLowerCase()}, ${o.waterdiepte}) × gebouwscore ${fmt(g.score)} (kolom ${g.kolom*5} – ${(g.kolom+1)*5}): klimaatrisico ${risico.klasse.toLowerCase()}`;}
+  const onb=['ingang','kelder','instroom','riool','inst'].filter(k=>(k=='ingang'&&s.ingang==null)||s[k]=='?').map(k=>KMDEF[k].l);const tl=toelichting(s,bj);
+  return {status:'ok',id:inv.id||'',naam:inv.naam||'',adres:inv.adres||'',postcode:inv.postcode||'',plaats:inv.plaats||'',bag_pand_id:pid||o.pand,bouwjaar:bj,
+    locatie:{lat:inv.lat,lon:inv.lon,rd_x:Math.round(x*100)/100,rd_y:Math.round(y*100)/100},omgevingsscore:o,
+    gebouwscore:{score:g.score,kolom:g.kolom,punten:Object.entries(g.punten).map(([k,v])=>({onderdeel:PUNTLAB[k],sleutel:k,punten:r2(v),max:MAXP[k],toelichting:tl[k]}))},
+    klimaatrisico:risico,herleiding:{regel,onbekende_kenmerken:onb,gebouwkenmerken:s},
+    methodiek:{fcab:FCAB_VERSIE,rekenkern:REKENKERN_VERSIE,bui:'70 mm in 1 uur',bron:DATA.index?'data':'voorbeeld: geen data'}};}
+
+/* ============================================================ kaartlagen */
+const canvas=L.canvas({padding:.3,tolerance:2});
+const KLKLEUR=()=>[...KL.map(k=>k.kleur),NA];
+/* zoom 11–15: stippen per object uit de datategels (alleen waar water staat) */
+const Stippen=L.GridLayer.extend({createTile(c,done){const el=document.createElement('canvas');el.width=el.height=256;
+  const nw=this._map.unproject([c.x*256,c.y*256],c.z),se=this._map.unproject([(c.x+1)*256,(c.y+1)*256],c.z);
+  const a=wgs2rd(nw.lat,nw.lng),b=wgs2rd(se.lat,se.lng),xmin=Math.min(a[0],b[0])-30,xmax=Math.max(a[0],b[0])+30,ymin=Math.min(a[1],b[1])-30,ymax=Math.max(a[1],b[1])+30;
+  const ps=[];for(let tx=Math.floor(xmin/5000);tx<=Math.floor(xmax/5000);tx++)for(let ty=Math.floor(ymin/5000);ty<=Math.floor(ymax/5000);ty++)ps.push(tile(tx,ty));
+  Promise.all(ps).then(ts=>{const g=el.getContext('2d');const col=KLKLEUR();const rad=c.z>=15?2.6:c.z>=14?2.1:c.z>=13?1.7:1.3;const min=c.z>=14?1:c.z>=13?2:3;
+    for(let lvl=min;lvl<=6;lvl++){const k=lvl==6?6:lvl;if(k==6&&c.z<14)continue;g.fillStyle=col[k];g.globalAlpha=Math.min(1,S.opac+.15);
+      for(const t of ts){if(!t)continue;for(let i=0;i<t.n;i++){if(t.kk[i]!==k)continue;const x=t.xs[i],y=t.ys[i];if(x<xmin||x>xmax||y<ymin||y>ymax)continue;
+        const ll=rd2wgs(x,y);const p=this._map.project([ll[0],ll[1]],c.z);g.beginPath();g.arc(p.x-c.x*256,p.y-c.y*256,rad,0,7);g.fill();}}}
+    done(null,el);}).catch(e=>done(e,el));return el;}});
+const stipLaag=new Stippen({minZoom:11,maxZoom:15,pane:'overlayPane',updateWhenZooming:false});
+/* zoom 16+: BAG-pandcontouren van PDOK, gekleurd met de omgevingsscore */
+const omgLaag=L.geoJSON(null,{renderer:canvas,style:f=>{const k=f.properties.k;return k==null?{color:'#ffffff',weight:.6,opacity:.6,fill:false}:{color:'#2f2f2f',weight:.6,fillColor:KLKLEUR()[k],fillOpacity:S.opac,opacity:Math.min(1,S.opac+.1)};},
+  onEachFeature:(f,l)=>{const k=f.properties.k;const t=k==null?'Niet in de omgevingsscore':k==6?'Onbekend · bron ouder dan pand':`${KL[k].code} · ${KL[k].naam}`;
+    l.bindTooltip(esc(t),{sticky:true,className:'wd',direction:'top',offset:[0,-6]});l.on('click',e=>{L.DomEvent.stopPropagation(e);selectAt(e.latlng);});}}).addTo(map);
+const selLaag=L.layerGroup().addTo(map);
+const portLaag=L.layerGroup().addTo(map);
+let laagSeq=0,laagTimer=null,wfsCtl=null;
+function hint(t){const h=$('#hint');h.hidden=!t;if(t)h.textContent=t;}
+async function laadLaag(){
+  const seq=++laagSeq;const z=map.getZoom();
+  if(!DATA.index){omgLaag.clearLayers();if(map.hasLayer(stipLaag))map.removeLayer(stipLaag);hint('');return;}
+  if(!map.hasLayer(stipLaag))stipLaag.addTo(map);
+  if(z<11){omgLaag.clearLayers();hint('Zoom in om de omgevingsscore te zien');return;}
+  if(z<16){omgLaag.clearLayers();hint('');return;}
+  const b=map.getBounds().pad(.1);if(wfsCtl)wfsCtl.abort();wfsCtl=new AbortController();
+  hint('Panden laden…');
+  try{const j=await (await fetch(BAG_WFS.replace('count=60','count=5000')+`${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()},urn:ogc:def:crs:EPSG::4326`,{signal:wfsCtl.signal})).json();
+    if(seq!==laagSeq)return;
+    const c=map.getCenter();const [cx,cy]=wgs2rd(c.lat,c.lng);const ts=await tilesRond(cx,cy,2500);
+    const idx=new Map();ts.forEach(t=>{const m=idIndex(t);m.forEach((i,id)=>idx.set(id,t.kk[i]));});
+    j.features.forEach(f=>{const k=idx.get(pandNum(f.properties.identificatie));f.properties.k=k===undefined?null:k;});
+    if(seq!==laagSeq)return;omgLaag.clearLayers();omgLaag.addData(j);
+    hint(j.features.length>=5000?'Niet alle panden getoond; zoom verder in':'');}
+  catch(e){if(e.name!=='AbortError'&&seq===laagSeq)hint('BAG-panden konden niet worden geladen bij PDOK');}}
+map.on('moveend',()=>{clearTimeout(laagTimer);laagTimer=setTimeout(laadLaag,200);thumb();});
+map.on('click',e=>selectAt(e.latlng));
+$('#opac').oninput=e=>{S.opac=e.target.value/100;omgLaag.setStyle(f=>f.properties.k==null?{}:{fillOpacity:S.opac,opacity:Math.min(1,S.opac+.1)});stipLaag.redraw();};
+$('#lh').onclick=()=>{const lb=$('#lb');lb.hidden=!lb.hidden;$('#lhp').setAttribute('d',lb.hidden?'m6 9 6 6 6-6':'m6 15 6-6 6 6');};
+
+function legend(){
+  $('#lrows').innerHTML=KL.map(k=>`<div class="li"><i class="sw" style="background:${k.kleur}"></i>${esc(k.naam)}<span style="margin-left:auto;color:var(--text3)">${esc(k.code)}</span></div>`).join('')+`<div class="li"><i class="sw" style="background:${NA}"></i>Onbekend<span style="margin-left:auto;color:var(--text3)">bron ouder dan pand</span></div>`;
+  const st=S.status;
+  $('#lsrc').innerHTML=!st?'Rekenservice wordt gestart…':st.modus=='gpkg'?`Bron: ${esc(st.gpkg.bestand)}${st.gpkg.aantal?` · ${st.gpkg.aantal.toLocaleString('nl-NL')} objecten`:''}. Pandcontouren: BAG (PDOK).`:`Geen omgevingsdata gevonden (map data ontbreekt). Er worden geen scores getoond. <a id="kies1">Uitleg</a>`;
+  const k1=$('#kies1');if(k1)k1.onclick=()=>openView('bron');
+  $('#bronlbl').innerHTML=st&&st.modus=='gpkg'?'Databron':'Databron <i class="dot" style="background:#d9573f;vertical-align:1px"></i>';}
+
+/* ================================================================ PDOK */
+function pip(pt,geom){const polys=geom.type=='Polygon'?[geom.coordinates]:geom.type=='MultiPolygon'?geom.coordinates:[];
+  return polys.some(poly=>{let ins=false;const r=poly[0];for(let i=0,j=r.length-1;i<r.length;j=i++){const [xi,yi]=r[i],[xj,yj]=r[j];if(((yi>pt[1])!=(yj>pt[1]))&&(pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi))ins=!ins;}return ins;});}
+function geomDist(lat,lon,g){if(pip([lon,lat],g))return 0;const k=Math.cos(lat*Math.PI/180);let best=1e9;const polys=g.type=='Polygon'?[g.coordinates]:g.coordinates;
+  polys.forEach(p=>{const r=p[0];for(let i=1;i<r.length;i++){const ax=r[i-1][0]*k,ay=r[i-1][1],bx=r[i][0]*k,by=r[i][1],px=lon*k,py=lat;const dx=bx-ax,dy=by-ay;const t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/((dx*dx+dy*dy)||1e-18)));best=Math.min(best,Math.hypot(px-ax-t*dx,py-ay-t*dy));}});return best*111320;}
+function pt(wkt){const m=/POINT\(([-\d.]+) ([-\d.]+)\)/.exec(wkt||'');return m?[+m[1],+m[2]]:null;}
+function adresDoc(d){const ll=pt(d.centroide_ll),rd=pt(d.centroide_rd);return {adres:d.straatnaam+' '+d.huisnummer+(d.huisletter||'')+(d.huisnummertoevoeging?'-'+d.huisnummertoevoeging:''),postcode:d.postcode||'',plaats:d.woonplaatsnaam||'',lat:ll[1],lon:ll[0],rd_x:rd?rd[0]:null,rd_y:rd?rd[1]:null,naam:d.weergavenaam};}
+const FL='&fl=weergavenaam,straatnaam,huisnummer,huisletter,huisnummertoevoeging,woonplaatsnaam,postcode,centroide_ll,centroide_rd';
+async function bagPand(lat,lon,maxM){
+  try{const e=.0004;const w=await (await fetchT(BAG_WFS+`${lat-e},${lon-e},${lat+e},${lon+e},urn:ogc:def:crs:EPSG::4326`)).json();
+    const f=w.features.map(f=>[geomDist(lat,lon,f.geometry),f]).sort((a,b)=>a[0]-b[0])[0];
+    if(f&&f[0]<=(maxM??15))return {id:f[1].properties.identificatie,bouwjaar:f[1].properties.bouwjaar,gebruiksdoel:f[1].properties.gebruiksdoel||'',status:f[1].properties.status||'',geom:f[1].geometry};}catch(e){}
+  return null;}
+const nm=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+const GEOC=new Map();
+async function geocode(adres,postcode,plaats){
+  const key=nm(adres+postcode+plaats);if(GEOC.has(key))return GEOC.get(key);
+  let out=null;
+  const j=await (await fetchT(PDOK_LS+'free?fq=type:adres&rows=1'+FL+'&q='+encodeURIComponent([adres,postcode,plaats].filter(Boolean).join(' ')))).json();
+  const d=j.response.docs[0];const inNr=(/(\d+)/.exec(adres)||[])[1];const inStraat=nm(String(adres).replace(/\d.*$/,''));
+  if(d&&(!inNr||String(d.huisnummer)==inNr)&&(!inStraat||nm(d.straatnaam).startsWith(inStraat)||nm(d.straatnaam).startsWith(inStraat.slice(0,6))))out=adresDoc(d);
+  GEOC.set(key,out);return out;}
+
+/* ============================================================== zoeken */
+let sugg=[],sIdx=-1,sT=null;
+$('#q').addEventListener('input',e=>{clearTimeout(sT);const v=e.target.value.trim();if(v.length<3){$('#sugg').hidden=true;return;}
+  sT=setTimeout(async()=>{try{const j=await (await fetchT(PDOK_LS+'suggest?fq=type:adres&rows=7&q='+encodeURIComponent(v),5000)).json();sugg=j.response.docs;sIdx=-1;drawSugg();}catch(e){}},180);});
+function drawSugg(){const el=$('#sugg');if(!sugg.length){el.hidden=true;return;}
+  el.innerHTML=sugg.map((d,i)=>`<button data-i="${i}" class="${i==sIdx?'act':''}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6.5-6.2-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.8-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>${esc(d.weergavenaam)}</button>`).join('');el.hidden=false;
+  el.querySelectorAll('button').forEach(b=>b.onmousedown=ev=>{ev.preventDefault();kiesSugg(sugg[+b.dataset.i]);});}
+$('#q').addEventListener('keydown',e=>{if(e.key=='ArrowDown'){sIdx=Math.min(sugg.length-1,sIdx+1);drawSugg();e.preventDefault();}else if(e.key=='ArrowUp'){sIdx=Math.max(0,sIdx-1);drawSugg();e.preventDefault();}
+  else if(e.key=='Enter'){if(sIdx>=0&&sugg[sIdx])kiesSugg(sugg[sIdx]);else zoek();}else if(e.key=='Escape')$('#sugg').hidden=true;});
+$('#q').addEventListener('blur',()=>setTimeout(()=>$('#sugg').hidden=true,150));
+$('#qgo').onclick=zoek;
+async function kiesSugg(d){$('#sugg').hidden=true;$('#q').value=d.weergavenaam;
+  try{const j=await (await fetchT(PDOK_LS+'lookup?id='+encodeURIComponent(d.id)+FL)).json();const a=adresDoc(j.response.docs[0]);openAdres(a);}catch(e){toast('Adres kon niet worden opgehaald bij PDOK');}}
+async function zoek(){const v=$('#q').value.trim();if(!v)return;$('#sugg').hidden=true;
+  try{const j=await (await fetchT(PDOK_LS+'free?fq=type:adres&rows=1'+FL+'&q='+encodeURIComponent(v))).json();const d=j.response.docs[0];if(!d)return toast('Geen adres gevonden');openAdres(adresDoc(d));}catch(e){toast('PDOK is niet bereikbaar. Controleer de internetverbinding.');}}
+
+/* ============================================================ selectie */
+async function openAdres(a){
+  map.flyTo([a.lat,a.lon],Math.max(map.getZoom(),18),{duration:.6});
+  const item={adres:a.adres,postcode:a.postcode,plaats:a.plaats,lat:a.lat,lon:a.lon,rd_x:a.rd_x,rd_y:a.rd_y,km:{},pand:null};
+  S.sel=item;showPand(true);
+  item.pand=await bagPand(a.lat,a.lon,3);await reken(item);}
+async function selectAt(ll){
+  const item={adres:'',postcode:'',plaats:'',lat:ll.lat,lon:ll.lng,km:{},pand:null,klik:true};
+  S.sel=item;showPand(true);
+  const [pand,rev]=await Promise.all([bagPand(ll.lat,ll.lng,1),fetchT(PDOK_LS+'reverse?type=adres&rows=1&distance=60'+FL+'&lat='+ll.lat+'&lon='+ll.lng).then(r=>r.json()).catch(()=>null)]);
+  if(S.sel!==item)return;item.pand=pand;
+  const d=rev&&rev.response.docs[0];
+  if(d){const a=adresDoc(d);if(!pand||pip([a.lon,a.lat],pand.geom)){Object.assign(item,{adres:a.adres,postcode:a.postcode,plaats:a.plaats});}else item.nabij=a.naam;}
+  await reken(item);}
+let rekenSeq=0;
+async function reken(item){
+  const seq=++rekenSeq;
+  const body={adres:item.adres,postcode:item.postcode,plaats:item.plaats,id:item.id||'',naam:item.naam||'',gebouwkenmerken:item.km,
+    bag_pand_id:item.pand?item.pand.id:'',bouwjaar:item.pand?item.pand.bouwjaar:null,bron_bouwjaar:item.pand?'BAG':''};
+  if(item.rd_x!=null&&!item.klik){body.rd_x=item.rd_x;body.rd_y=item.rd_y;}else{body.lat=item.lat;body.lon=item.lon;}
+  try{const r=await bereken(body);item.res=r;item.fout='';}
+  catch(e){item.res=null;item.fout=e.message;}
+  if(item.inPort)savePort();
+  if(S.sel===item&&seq===rekenSeq){showPand();drawSel();}
+  if(item.inPort){drawPortMarkers();}}
+function drawSel(){selLaag.clearLayers();const it=S.sel;if(!it)return;
+  if(it.pand)L.geoJSON(it.pand.geom,{style:{color:'#e07a2f',weight:3,fill:false},interactive:false}).addTo(selLaag);
+  const icon=L.divIcon({className:'',iconSize:[30,40],iconAnchor:[15,38],html:'<svg class="pin" viewBox="0 0 30 40"><path d="M15 39s12-12.3 12-23A12 12 0 0 0 3 16c0 10.7 12 23 12 23Z" fill="#e07a2f" stroke="#fff" stroke-width="2"/><circle cx="15" cy="16" r="4.5" fill="#fff"/></svg>'});
+  L.marker([it.lat,it.lon],{icon,interactive:false,keyboard:false}).addTo(selLaag);}
+
+/* ============================================================== paneel */
+function setPanel(open){$('#panel').classList.toggle('dicht',!open);document.body.classList.toggle('pdicht',!open);$('#tgp').setAttribute('d',open?'m15 6-6 6 6 6':'m9 6 6 6-6 6');}
+$('#ptoggle').onclick=()=>setPanel($('#panel').classList.contains('dicht'));
+function sluit(){if(S.view=='pand'&&S.terug){openView(S.terug);return;}S.sel=null;selLaag.clearLayers();openView('kaart');}
+const CLOSE='<button class="close" title="Sluiten" aria-label="Sluiten" onclick="sluit()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+document.querySelectorAll('.rbtn').forEach(b=>b.onclick=()=>openView(b.dataset.v));
+function openView(v){S.view=v;document.querySelectorAll('.rbtn').forEach(b=>b.classList.toggle('on',b.dataset.v==v||(v=='pand'&&b.dataset.v=='kaart')));
+  if(v=='kaart'){setPanel(false);S.terug=null;return;}
+  setPanel(true);if(v!='pand')S.terug=null;
+  ({port:showPort,meth:showMeth,bron:showBron,pand:()=>showPand()})[v]();}
+
+const KM_VOLGORDE=['ingang','schotIn','kelder','drempel','rooster','schotK','instroom','instroomSchot','riool','klep','inst'];
+const KMDEF={
+  ingang:{l:'Hoogte ingang boven straatpeil',num:'cm'},schotIn:{l:'Waterkering bij ingang',o:{geen:'Geen',lo:'Tot 50 cm',hi:'Hoger dan 50 cm'},sub:1},
+  kelder:{l:'Ondergrondse ruimte',o:{'?':'Onbekend',geen:'Geen',deel:'Gedeeltelijke onderkeldering',vol:'Volledige kelder of souterrain',park:'Parkeerkelder'}},
+  drempel:{l:'Drempel bij toegang',num:'cm',sub:1,if:s=>s.kelder&&s.kelder!='geen'&&s.kelder!='?'},rooster:{l:'Waterrooster voor toegang',o:{0:'Nee',1:'Ja'},sub:1,if:s=>s.kelder&&s.kelder!='geen'&&s.kelder!='?'},
+  schotK:{l:'Waterkering',o:{geen:'Geen',lo:'Tot 50 cm',hi:'Hoger dan 50 cm'},sub:1,if:s=>s.kelder&&s.kelder!='geen'&&s.kelder!='?'},
+  instroom:{l:'Overige instroompunten',o:{'?':'Onbekend',nee:'Geen, of hoger dan 50 cm','50':'Tussen 15 en 50 cm','15':'Binnen 15 cm boven maaiveld'}},
+  instroomSchot:{l:'Afgeschermd',o:{0:'Nee',1:'Ja'},sub:1,if:s=>s.instroom=='15'},
+  riool:{l:'Rioolstelsel',o:{'?':'Onbekend',gemengd:'Gemengd',gescheiden:'Gescheiden'}},klep:{l:'Terugslagklep',o:{0:'Nee',1:'Ja'},sub:1,if:s=>s.riool!='gescheiden'},
+  inst:{l:'Technische installaties',o:{'?':'Onbekend',kelder:'Onder straatniveau',bg:'Op de begane grond',hoog:'Verhoogd of op een verdieping'}}};
+const KMSTD={ingang:null,schotIn:'geen',kelder:'?',drempel:null,rooster:0,schotK:'geen',instroom:'?',instroomSchot:0,riool:'?',klep:0,inst:'?'};
+
+function showPand(laden){
+  if(S.view!='pand'){S.terug=S.view=='port'?'port':S.terug;}
+  S.view='pand';document.querySelectorAll('.rbtn').forEach(b=>b.classList.toggle('on',b.dataset.v==(S.terug||'kaart')));setPanel(true);
+  const it=S.sel;if(!it)return;const r=it.res;const pb=$('#pbody');
+  const titel=it.naam||it.adres||(it.pand?'Pand zonder adres':'Geselecteerde locatie');
+  const sub=it.naam?[it.adres,it.postcode,it.plaats].filter(Boolean).join(', '):[it.postcode,it.plaats].filter(Boolean).join(' ')||(it.nabij?'Nabij '+it.nabij:'');
+  const pid=(r&&r.bag_pand_id)||(it.pand&&it.pand.id);const bj=(r&&r.bouwjaar)||(it.pand&&it.pand.bouwjaar);
+  let h=`<div class="eyebrow">${S.terug=='port'?'Portefeuille · ':''}Pand</div><h1 class="ptitle">${esc(titel)}</h1><div class="psub">${esc(sub)}</div>
+   <div class="meta num">${pid?'BAG pand '+esc(pid):'Geen BAG-pand gevonden'}${bj?' · bouwjaar '+esc(bj):''}${it.pand&&it.pand.gebruiksdoel?' · '+esc(it.pand.gebruiksdoel):''}</div>`;
+  if(it.fout){h+=`<div class="warn">${esc(it.fout)}</div>`;}
+  if(!r&&!it.fout){h+=`<div class="sec"><span class="spin"></span></div>`;pb.innerHTML=CLOSE+h;return;}
+  if(r){const o=r.omgevingsscore,k=r.klimaatrisico;const kc=k.score==null?NA:RISKCOL[k.score];
+    h+=`<div class="sec"><h3>Klimaatrisico wateroverlast</h3><div class="risk"><b>${esc(k.klasse)}</b></div>
+      <div class="scale">${[1,2,3,4,5].map(i=>`<i style="${k.score!=null&&i<=k.score?'background:'+kc:''}"></i>`).join('')}</div><div class="scalel"><span>Zeer laag</span><span>Zeer hoog</span></div>
+      <dl class="kv"><dt>Omgevingsscore</dt><dd><i class="sw" style="background:${o.kleur}"></i>${esc(o.klasse||'Onbekend')}${o.waterdiepte&&o.index!=null?` <span style="color:var(--text3)">${esc(o.waterdiepte)}</span>`:''}</dd>
+      <dt>Gebouwscore</dt><dd class="num">${fmt(r.gebouwscore.score)} <span style="color:var(--text3)">van 100</span></dd></dl>
+      <div class="rule">${esc(r.herleiding.regel)}</div>`;
+    if(o.index!=null)h+=`<div class="mx" aria-label="Risicomatrix">${WOM[o.index].split('').map((c,i)=>`<i class="${i==r.gebouwscore.kolom?'hit':''}" style="background:${RISKCOL[+c]}"></i>`).join('')}</div><div class="mxl"><span>gebouwscore 0</span><span>100</span></div>`;
+    if(r.herleiding.onbekende_kenmerken.length)h+=`<div class="note">${r.herleiding.onbekende_kenmerken.length} van 5 kenmerken onbekend; die tellen als kwetsbaar. Vul ze hieronder aan voor een preciezere score.</div>`;
+    h+=`</div>`;}
+  const s={...KMSTD,...it.km};
+  h+=`<div class="sec"><h3>Gebouwkenmerken</h3><div class="form">`;
+  KM_VOLGORDE.forEach(key=>{const d=KMDEF[key];if(d.if&&!d.if(s))return;const v=s[key];
+    h+=`<label for="km_${key}" class="${d.sub?'sub':''}">${esc(d.l)}</label>`;
+    h+=d.num?`<input id="km_${key}" data-k="${key}" type="number" step="1" inputmode="numeric" placeholder="onbekend" value="${v==null?'':esc(v)}" aria-label="${esc(d.l)} in cm">`
+      :`<select id="km_${key}" data-k="${key}">${Object.entries(d.o).map(([c,t])=>`<option value="${esc(c)}"${String(v)==c?' selected':''}>${esc(t)}</option>`).join('')}</select>`;});
+  h+=`</div><div class="note">Hoogtes in cm ten opzichte van het straatpeil. Leeg of onbekend telt als kwetsbaar.</div></div>`;
+  if(r){h+=`<div class="sec"><h3>Puntentelling gebouwscore</h3><table class="pts num"><tbody>${r.gebouwscore.punten.map(p=>`<tr><td>${esc(p.onderdeel)}<small>${esc(p.toelichting)}</small></td><td>${fmt(p.punten)} <span style="color:var(--text3)">/ ${p.max}</span></td></tr>`).join('')}</tbody><tfoot><tr><td>Totaal</td><td>${fmt(r.gebouwscore.score)}</td></tr></tfoot></table></div>`;
+    const o=r.omgevingsscore;const at=Object.entries(o.attributen||{});
+    h+=`<div class="sec"><h3>Omgevingsscore</h3><div class="ptxt">${o.index==null?'Geen bruikbare waterdiepte voor dit pand.':`99e percentiel van de waterdiepte binnen 0,5 m rond het pand bij 70 mm neerslag in 1 uur: <b style="font-weight:600;color:var(--text)">${esc(o.waterdiepte)}</b>.`} Gekoppeld op ${esc(o.wijze)}.</div>
+      ${at.length?`<details><summary>Kenmerken uit het GIS-bestand</summary><div class="attrs">${at.map(([a,b])=>`<div><span>${esc(a)}</span><span>${esc(b??'–')}</span></div>`).join('')}</div></details>`:''}
+      ${r.methodiek.bron.startsWith('voorbeeld')?`<div class="warn">De map data met de omgevingsscore ontbreekt, dus er is geen omgevingsscore en geen klimaatrisico. Zie Databron.</div>`:''}</div>`;
+    h+=`<div class="sec row">${it.inPort?`<button class="btn" id="bVerw">Verwijderen uit portefeuille</button>`:`<button class="btn pri" id="bAdd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Toevoegen aan portefeuille</button>`}</div>`;}
+  pb.innerHTML=CLOSE+h;
+  pb.querySelectorAll('[data-k]').forEach(el=>el.addEventListener('change',()=>{const key=el.dataset.k;let v=el.value;
+    if(KMDEF[key].num)v=v===''?null:Math.round(+v);else if(['rooster','instroomSchot','klep'].includes(key))v=+v;
+    it.km={...it.km,[key]:v};if(v==null||v===KMSTD[key])delete it.km[key];reken(it);if(!KMDEF[key].num)showPand();}));
+  const ba=$('#bAdd');if(ba)ba.onclick=()=>{it.inPort=true;it.uid=it.uid||('p'+Date.now().toString(36)+Math.random().toString(36).slice(2,5));it.id=it.id||('P-'+String(S.port.length+1).padStart(3,'0'));S.port.push(it);savePort();drawPortMarkers();showPand();toast('Toegevoegd aan de portefeuille');};
+  const bv=$('#bVerw');if(bv)bv.onclick=()=>{S.port=S.port.filter(x=>x!==it);it.inPort=false;savePort();drawPortMarkers();showPand();};}
+
+/* ========================================================= portefeuille */
+function savePort(){try{localStorage.setItem('fcab-wo-port',JSON.stringify(S.port.map(p=>({...p,res:p.res}))));}catch(e){}}
+function loadPort(){try{const a=JSON.parse(localStorage.getItem('fcab-wo-port')||'[]');S.port=a.map(p=>({...p,inPort:true}));}catch(e){S.port=[];}}
+function riskOf(p){return p.res?p.res.klimaatrisico.score:undefined;}
+function drawPortMarkers(){portLaag.clearLayers();S.port.forEach(p=>{if(p.lat==null)return;const r=riskOf(p);
+  L.circleMarker([p.lat,p.lon],{radius:7,color:'#fff',weight:2,fillColor:r==null?NA:RISKCOL[r],fillOpacity:1,renderer:canvas}).bindTooltip(`${esc(p.naam||p.adres)} · ${esc(p.res?p.res.klimaatrisico.klasse:p.fout?'fout':'…')}`,{className:'wd',direction:'top',offset:[0,-6]})
+   .on('click',e=>{L.DomEvent.stopPropagation(e);openItem(p);}).addTo(portLaag);});}
+function openItem(p){S.terug='port';S.sel=p;S.view='port';showPand();drawSel();if(p.lat!=null)map.flyTo([p.lat,p.lon],Math.max(map.getZoom(),18),{duration:.6});}
+function showPort(){
+  const pb=$('#pbody');const n=S.port.length;const b=S.batch;
+  let h=`<div class="eyebrow">Batch</div><h1 class="ptitle">Portefeuille</h1><div class="psub">${n?`${n} ${n==1?'pand':'panden'}`:'Nog geen panden'}</div>
+   <div class="row" style="margin-top:14px"><button class="btn pri" id="bUp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Excel uploaden</button>
+   <button class="btn" id="bTpl">Sjabloon</button>${n?`<button class="btn" id="bExp">Exporteren</button>`:''}</div>`;
+  if(b&&b.bezig)h+=`<div class="bar"><i style="width:${Math.round(b.klaar/b.totaal*100)}%"></i></div><div class="note" style="margin-top:2px">${b.klaar} van ${b.totaal} berekend… <a href="#" id="bStop" style="color:var(--accent-d)">stoppen</a></div>`;
+  if(!n)h+=`<div class="drop" id="drop">Sleep een Excel-bestand hierheen<br><span style="font-size:12.5px;color:var(--text3)">kolommen: adres, postcode, plaats en eventueel gebouwkenmerken</span></div>
+    <p class="note">Of klik op een pand op de kaart en kies <i>Toevoegen aan portefeuille</i>.</p>`;
+  else{const c=[0,0,0,0,0,0];let na=0;S.port.forEach(p=>{const r=riskOf(p);if(r==null)na++;else c[r]++;});
+    h+=`<div class="dist num">${[1,2,3,4,5,0].map(i=>`<div><b style="color:${c[i]?'var(--text)':'var(--text3)'}">${c[i]}</b><span>${RISICO[i]}</span></div>`).join('')}<div><b style="color:${na?'var(--text)':'var(--text3)'}">${na}</b><span>Onbekend</span></div></div>
+    <div class="row" style="justify-content:space-between;margin-top:14px"><span class="eyebrow">Gesorteerd op klimaatrisico</span><button class="btn" id="bClear" style="height:30px;font-size:12.5px;padding:0 12px">Leegmaken</button></div>
+    <div class="plist">${[...S.port].sort((a,b)=>(riskOf(b)??-1)-(riskOf(a)??-1)).map(p=>{const r=riskOf(p);
+      return `<button class="pitem${S.sel===p?' sel':''}" data-u="${esc(p.uid)}"><span class="n">${esc(p.naam||p.adres||p.id)}</span><span class="a">${esc([p.naam?p.adres:'',p.plaats].filter(Boolean).join(', ')||p.id)}</span>
+      <span class="r">${p.fout?`<span style="color:#b4561a">${esc(p.fout.length>28?'Niet gevonden':p.fout)}</span>`:p.res?`<i class="dot" style="background:${r==null?NA:RISKCOL[r]}"></i>${esc(p.res.klimaatrisico.klasse)}`:'<span class="spin"></span>'}</span></button>`;}).join('')}</div>`;}
+  pb.innerHTML=CLOSE+h;
+  $('#bUp').onclick=()=>$('#file').click();$('#bTpl').onclick=sjabloon;const be=$('#bExp');if(be)be.onclick=exporteer;
+  const bs=$('#bStop');if(bs)bs.onclick=e=>{e.preventDefault();S.batch.stop=true;};
+  const bc=$('#bClear');if(bc)bc.onclick=()=>{if(S.batch&&S.batch.bezig)S.batch.stop=true;S.port=[];savePort();drawPortMarkers();showPort();};
+  pb.querySelectorAll('.pitem').forEach(el=>el.onclick=()=>openItem(S.port.find(p=>p.uid==el.dataset.u)));
+  const d=$('#drop');if(d){d.ondragover=e=>{e.preventDefault();d.classList.add('over');};d.ondragleave=()=>d.classList.remove('over');d.ondrop=e=>{e.preventDefault();d.classList.remove('over');if(e.dataTransfer.files[0])leesExcel(e.dataTransfer.files[0]);};}}
+$('#file').onchange=e=>{if(e.target.files[0])leesExcel(e.target.files[0]);e.target.value='';};
+
+/* Excel-kolommen herkennen */
+const KOLOM={id:['id','objectnummer','nummer','code','complexnummer'],naam:['naam','omschrijving','object','objectnaam'],adres:['adres','straathuisnummer','straatenhuisnummer','straatnaamhuisnummer'],
+  straat:['straat','straatnaam'],huisnummer:['huisnummer','nr','nummer_huis'],toevoeging:['toevoeging','huisletter','huisnummertoevoeging'],postcode:['postcode'],plaats:['plaats','woonplaats','plaatsnaam','gemeente'],
+  ingang:['hoogteingangcm','hoogteingang','ingangcm','ingang'],schotIn:['schotingang','waterkeringingang','waterkeringbijingang'],kelder:['ondergrondseruimte','kelder','souterrain'],
+  drempel:['drempelkeldercm','drempelcm','drempel','drempelbijtoegang'],rooster:['waterrooster','rooster'],schotK:['schotkelder','waterkeringkelder','waterkeringondergrondseruimte'],
+  instroom:['instroompunten','overigeinstroompunten'],instroomSchot:['schotinstroompunten','instroompuntenafgeschermd','afgeschermd'],riool:['rioolstelsel','riool'],klep:['terugslagklep','klep'],inst:['installaties','technischeinstallaties','installatie']};
+function kmWaarde(key,v){if(v==null||String(v).trim()==='')return undefined;const d=KMDEF[key];const s=String(v).trim();
+  if(d.num){const n=parseFloat(s.replace(',','.'));return isNaN(n)?undefined:Math.round(n);}
+  if(['rooster','instroomSchot','klep'].includes(key))return /^(1|ja|j|yes|true|waar|x)$/i.test(s)?1:0;
+  if(d.o[s]!==undefined)return isNaN(+s)||key=='instroom'?s:s;const low=s.toLowerCase();
+  for(const [c,t] of Object.entries(d.o))if(t.toLowerCase()==low||c.toLowerCase()==low)return c;
+  const alias={kelder:{nee:'geen',ja:'vol',volledig:'vol',gedeeltelijk:'deel',parkeerkelder:'park',onbekend:'?'},schotIn:{nee:'geen',ja:'lo'},schotK:{nee:'geen',ja:'lo'},instroom:{nee:'nee',geen:'nee',onbekend:'?'},riool:{onbekend:'?'},inst:{kelder:'kelder',begane:'bg','begane grond':'bg',verdieping:'hoog',verhoogd:'hoog',onbekend:'?'}};
+  return (alias[key]||{})[low];}
+async function leesExcel(f){
+  try{const wb=XLSX.read(await f.arrayBuffer());const ws=wb.Sheets[wb.SheetNames.includes('Panden')?'Panden':wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+    if(!rows.length)return toast('Het bestand bevat geen rijen');
+    const hdr=Object.keys(rows[0]);const kol={};for(const [k,al] of Object.entries(KOLOM)){const h=hdr.find(x=>al.includes(nm(x)));if(h)kol[k]=h;}
+    if(!kol.adres&&!(kol.straat&&kol.huisnummer))return toast('Geen kolom ‘adres’ (of ‘straat’ en ‘huisnummer’) gevonden',5000);
+    const nieuw=rows.map((r,i)=>{const g=k=>kol[k]?String(r[kol[k]]).trim():'';
+      const adres=g('adres')||[g('straat'),g('huisnummer')+(g('toevoeging')?(/^[a-z]$/i.test(g('toevoeging'))?g('toevoeging'):'-'+g('toevoeging')):'')].join(' ').trim();
+      const km={};KM_VOLGORDE.forEach(k=>{if(kol[k]){const v=kmWaarde(k,r[kol[k]]);if(v!==undefined&&v!==KMSTD[k])km[k]=v;}});
+      return {uid:'p'+Date.now().toString(36)+i,id:g('id')||('P-'+String(S.port.length+i+1).padStart(3,'0')),naam:g('naam'),adres,postcode:g('postcode').replace(/\s/g,'').toUpperCase(),plaats:g('plaats'),km,inPort:true,pand:null};}).filter(p=>p.adres);
+    S.port.push(...nieuw);savePort();openView('port');toast(`${nieuw.length} panden ingelezen`);runBatch(nieuw);}
+  catch(e){toast('Het bestand kon niet worden gelezen: '+e.message,5000);}}
+async function runBatch(items){
+  if(S.batch&&S.batch.bezig){S.batch.wacht=(S.batch.wacht||[]).concat(items);S.batch.totaal+=items.length;return;}
+  const b=S.batch={bezig:true,klaar:0,totaal:items.length,stop:false};const q=[...items];
+  const tick=()=>{if(S.view=='port')showPort();};let last=0;
+  async function worker(){while(q.length&&!b.stop){const p=q.shift();
+    try{const a=await geocode(p.adres,p.postcode,p.plaats);
+      if(!a){p.fout='Adres niet gevonden in de BAG';p.res=null;}
+      else{Object.assign(p,{lat:a.lat,lon:a.lon,rd_x:a.rd_x,rd_y:a.rd_y,postcode:p.postcode||a.postcode,plaats:p.plaats||a.plaats});p.pand=await bagPand(a.lat,a.lon,3);await reken(p);}}
+    catch(e){p.fout='PDOK niet bereikbaar';}
+    b.klaar++;if(Date.now()-last>400){last=Date.now();tick();drawPortMarkers();}
+    if(!q.length&&b.wacht&&b.wacht.length){q.push(...b.wacht);b.wacht=[];}}}
+  await Promise.all([0,1,2,3,4].map(worker));
+  b.bezig=false;savePort();drawPortMarkers();tick();
+  const pts=S.port.filter(p=>p.lat!=null);if(pts.length&&!b.stop)map.flyToBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lon])).pad(.2),{duration:.8,maxZoom:17});
+  toast(b.stop?'Batch gestopt':`Batch klaar: ${b.klaar} panden`);}
+
+/* ============================================================ Excel uit */
+function bewaar(wb,naam){XLSX.writeFile(wb,naam);}
+function opties(key){const d=KMDEF[key];return d.num?'getal in cm':Object.entries(d.o).map(([c,t])=>`${c} = ${t}`).join('; ');}
+const UITKOP={id:'id',naam:'naam',adres:'adres',postcode:'postcode',plaats:'plaats',ingang:'hoogte_ingang_cm',schotIn:'schot_ingang',kelder:'ondergrondse_ruimte',drempel:'drempel_kelder_cm',rooster:'waterrooster',schotK:'schot_kelder',instroom:'instroompunten',instroomSchot:'schot_instroompunten',riool:'rioolstelsel',klep:'terugslagklep',inst:'installaties'};
+function sjabloon(){
+  const wb=XLSX.utils.book_new();const kop=Object.values(UITKOP);
+  const vb=[['W-001','Grachtenpand','Oudegracht 211','3511NH','Utrecht',0,'geen','vol',-5,0,'geen','15',0,'gemengd',0,'kelder'],
+            ['K-002','Kantoor Domplein','Domplein 21','3512JE','Utrecht',20,'geen','geen','','','','nee','','gescheiden','','hoog'],
+            ['W-003','','Lange Nieuwstraat 4','','Utrecht','','','','','','','','','','','']];
+  const ws=XLSX.utils.aoa_to_sheet([kop,...vb]);ws['!cols']=kop.map(k=>({wch:Math.max(10,k.length+2)}));XLSX.utils.book_append_sheet(wb,ws,'Panden');
+  const t=[['Kolom','Betekenis','Toegestane waarden'],['id','Eigen kenmerk van het pand (optioneel)',''],['naam','Naam of omschrijving (optioneel)',''],['adres','Straat en huisnummer (verplicht)','bijv. Oudegracht 211'],['postcode','Postcode (aanbevolen)',''],['plaats','Woonplaats (aanbevolen)',''],
+    ...KM_VOLGORDE.map(k=>[UITKOP[k],KMDEF[k].l,opties(k)]),[],['Lege cellen gelden als onbekend en tellen als kwetsbaar (FCAB-2).']];
+  const wt=XLSX.utils.aoa_to_sheet(t);wt['!cols']=[{wch:24},{wch:44},{wch:90}];XLSX.utils.book_append_sheet(wb,wt,'Toelichting');
+  bewaar(wb,'FCAB-wateroverlast-sjabloon.xlsx');}
+function exporteer(){
+  const wb=XLSX.utils.book_new();
+  const kop=['id','naam','adres','postcode','plaats','BAG pand-ID','bouwjaar','waterdiepte (99e percentiel)','omgevingsscore','koppeling','gebouwscore','klimaatrisico','klimaatrisico (0–5)',
+    'punten ingang','punten ondergrondse ruimte','punten instroompunten','punten riool','punten installaties',...KM_VOLGORDE.map(k=>UITKOP[k]),'herleiding','melding','lat','lon'];
+  const rows=S.port.map(p=>{const r=p.res;const s={...KMSTD,...p.km};const pt=k=>r?r.gebouwscore.punten.find(x=>x.sleutel==k).punten:'';
+    return [p.id,p.naam,p.adres,p.postcode,p.plaats,r?r.bag_pand_id:'',r?r.bouwjaar:'',r?r.omgevingsscore.waterdiepte:'',r?r.omgevingsscore.klasse:'',r?r.omgevingsscore.wijze:'',r?r.gebouwscore.score:'',r?r.klimaatrisico.klasse:'',r&&r.klimaatrisico.score!=null?r.klimaatrisico.score:'',
+      pt('ingang'),pt('kelder'),pt('instroom'),pt('riool'),pt('inst'),...KM_VOLGORDE.map(k=>s[k]==null?'':s[k]),r?r.herleiding.regel:'',p.fout||'',p.lat??'',p.lon??''];});
+  const ws=XLSX.utils.aoa_to_sheet([kop,...rows]);ws['!cols']=kop.map((k,i)=>({wch:i==kop.length-4?80:Math.max(10,Math.min(28,k.length+2))}));ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:rows.length,c:kop.length-1}})};
+  XLSX.utils.book_append_sheet(wb,ws,'Resultaten');
+  const st=S.status||{};const t=[['FCAB Rekenkern Wateroverlast'],['Berekend op',new Date().toLocaleString('nl-NL')],['Methodiek',st.fcab_versie||''],['Rekenkern',st.rekenkern_versie||''],
+    ['Omgevingsscore',st.gpkg?st.gpkg.bestand:'geen (databron ontbreekt)'],['Bui','70 mm in 1 uur'],['Maat','99e percentiel van de waterdiepte binnen 0,5 m rond het BAG-pand (10 m rond het adrespunt zonder BAG-pand)'],
+    ['Gebouwscore','FCAB-2 wateroverlast: ingang (max 40), ondergrondse ruimte (15), instroompunten (20), riool (5), installaties (20)'],['Klimaatrisico','Risicomatrix omgevingsklasse × gebouwscore (kolommen van 5 punten)'],[],['Klasse','Waterdiepte'],...KL.map(k=>[k.naam,k.code]),['Onbekend','Brondata ouder dan gebouw']];
+  const wt=XLSX.utils.aoa_to_sheet(t);wt['!cols']=[{wch:18},{wch:100}];XLSX.utils.book_append_sheet(wb,wt,'Toelichting');
+  bewaar(wb,'FCAB-wateroverlast-portefeuille.xlsx');}
+
+/* ========================================================== methodiek */
+function showMeth(){
+  const st=S.status||{};
+  $('#pbody').innerHTML=CLOSE+`<div class="eyebrow">Methodiek</div><h1 class="ptitle">Wateroverlast door korte extreme regen</h1><div class="psub">${esc(st.fcab_versie||'FCAB 2.0')}</div>
+  <div class="sec"><h3>Omgevingsscore</h3><p class="ptxt">Waterdiepte op straat bij een bui van 70 mm in 1 uur, berekend op een raster van 0,5 × 0,5 m (Klimaateffectatlas 2026). Per pand telt het 99e percentiel van de waterdiepte binnen een zone van 0,5 m rond de BAG-pandcontour. Zonder BAG-pand geldt een zone van 10 m rond het adrespunt.</p>
+   <table class="mtab"><thead><tr><th>Klasse</th><th>Waterdiepte</th></tr></thead><tbody>${KL.map((k,i)=>`<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><i class="sw" style="background:${k.kleur}"></i>${i} · ${esc(k.naam)}</span></td><td>${esc(k.code)}</td></tr>`).join('')}<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><i class="sw" style="background:${NA}"></i>Onbekend</span></td><td>brondata ouder dan pand</td></tr></tbody></table></div>
+  <div class="sec"><h3>Gebouwscore (FCAB-2)</h3><p class="ptxt">Hoe gevoelig het pand is voor water op straat. Hoger is kwetsbaarder; onbekende kenmerken tellen als kwetsbaar.</p>
+   <table class="mtab"><tbody>
+   <tr><td>Hoogte ingang<br><small style="color:var(--text3)">meer dan 15 cm: 4 · waterkering: 10 · 1–15 cm: 28 · op straatniveau: 40</small></td><td>max 40</td></tr>
+   <tr><td>Ondergrondse ruimte<br><small style="color:var(--text3)">geen: 0 · drempel &gt; 15 cm, rooster of kering: 6 · drempel 1–15 cm: 10,5 · anders: 15</small></td><td>max 15</td></tr>
+   <tr><td>Overige instroompunten<br><small style="color:var(--text3)">binnen 15 cm boven maaiveld: 20, afgeschermd 8 · hoger: 0</small></td><td>max 20</td></tr>
+   <tr><td>Riool en terugslagklep<br><small style="color:var(--text3)">gescheiden, terugslagklep of bouwjaar na 1980: 0 · anders: 5</small></td><td>max 5</td></tr>
+   <tr><td>Installaties<br><small style="color:var(--text3)">onder straatniveau: 20 · begane grond bij ingang op straatniveau: 14 · verhoogd: 0</small></td><td>max 20</td></tr></tbody></table></div>
+  <div class="sec"><h3>Klimaatrisico</h3><p class="ptxt">De omgevingsklasse (rij) en de gebouwscore in stappen van 5 punten (kolom) bepalen samen het klimaatrisico.</p>
+   <div style="display:grid;grid-template-columns:62px 1fr;gap:3px 8px;align-items:center;font-size:11.5px;color:var(--text3)">${WOM.map((r,i)=>`<span>${esc(KL[i].naam)}</span><div class="mx" style="margin:0">${r.split('').map(c=>`<i style="background:${RISKCOL[+c]};opacity:1"></i>`).join('')}</div>`).join('')}<span></span><div class="mxl" style="margin:0"><span>gebouwscore 0</span><span>100</span></div></div>
+   <div class="row" style="margin-top:12px;gap:12px;font-size:12px;color:var(--text2)">${[0,1,2,3,4,5].map(i=>`<span style="display:inline-flex;align-items:center;gap:5px"><i class="dot" style="background:${RISKCOL[i]}"></i>${RISICO[i]}</span>`).join('')}</div></div>
+  <div class="sec"><h3>Bronnen</h3><table class="mtab"><tbody>
+   <tr><td>Omgevingsscore wateroverlast</td><td>${esc(st.gpkg?('v'+(st.gpkg.versie||'')):'v20260806')}</td></tr><tr><td>Waterdiepte 70 mm/1 uur</td><td>Klimaateffectatlas 2026</td></tr>
+   <tr><td>Panden en bouwjaar</td><td>Kadaster BAG (PDOK)</td></tr><tr><td>Adressen</td><td>PDOK Locatieserver</td></tr><tr><td>Luchtfoto</td><td>Beeldmateriaal Nederland</td></tr></tbody></table>
+   <p class="note">Wijzigingen ten opzichte van de vorige versie: bui van 70 mm in 1 uur (was 2 uur), zone van 0,5 m (was 2 m) en het 99e percentiel in plaats van het maximum.</p></div>`;}
+
+/* ============================================================== bron */
+function showBron(){
+  const st=S.status||{};const g=DATA.index;
+  let h=`<div class="eyebrow">Databron</div><h1 class="ptitle">Omgevingsscore wateroverlast</h1><div class="psub">${g?'Gekoppeld':'Niet gekoppeld'}</div>`;
+  if(g){const pk=g.per_klasse||{};h+=`<div class="sec"><dl class="kv" style="grid-template-columns:120px 1fr;margin-top:0"><dt>Bronbestand</dt><dd style="word-break:break-all">${esc(g.bestand)}</dd><dt>Laag</dt><dd style="word-break:break-all;font-size:12.5px">${esc(g.laag)}</dd>
+     <dt>Objecten</dt><dd class="num">${(g.aantal||0).toLocaleString('nl-NL')}</dd><dt>Datategels</dt><dd class="num">${g.tegels.length} van 5 × 5 km</dd><dt>Klasse</dt><dd>${esc(g.kolommen.klasse)}</dd><dt>Pand-ID</dt><dd>${esc(g.kolommen.pand||'niet gevonden')}</dd>${g.kolommen.diepte?`<dt>Waterdiepte</dt><dd>${esc(g.kolommen.diepte)}</dd>`:''}<dt>Omgezet op</dt><dd>${esc(g.gemaakt)}</dd></dl></div>
+     <div class="sec"><h3>Verdeling</h3><table class="mtab num"><tbody>${Object.entries(pk).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.toLocaleString('nl-NL')}</td></tr>`).join('')}</tbody></table></div>`;}
+  else h+=`<div class="sec"><p class="ptxt">De map <b style="font-weight:600">data</b> ontbreekt naast deze pagina. Het GeoPackage (2,2 GB) past niet op GitHub; zet het daarom eenmalig om naar kleine databestanden:</p>
+     <ol class="ptxt" style="padding-left:18px"><li>Open een opdrachtvenster in de map van deze website.</li><li><code>python maak_data.py "pad\\naar\\nl_fcab_omgevingsscore_wateroverlast_v20260806.gpkg"</code></li><li>Zet de nieuwe map <b style="font-weight:600">data</b> in je GitHub-repository en push.</li></ol>
+     <p class="note">Tot die tijd toont de site geen omgevingsscore en geen klimaatrisico.</p></div>`;
+  h+=`<div class="sec"><p class="note">Pandcontouren, bouwjaren en adressen komen live uit de BAG via PDOK. Alle berekeningen gebeuren in de browser; er wordt niets verstuurd.</p></div>`;
+  $('#pbody').innerHTML=CLOSE+h;}
+
+/* ============================================================== start */
+function laadStatus(){S.status={modus:DATA.index?'gpkg':'voorbeeld',gpkg:DATA.index?{bestand:DATA.index.bestand,aantal:DATA.index.aantal,versie:DATA.index.versie}:null,fcab_versie:FCAB_VERSIE,rekenkern_versie:REKENKERN_VERSIE};legend();}
+async function start(){legend();loadPort();drawPortMarkers();await laadIndex();laadStatus();laadLaag();
+  if(!DATA.index)hint('');$('#nodata').hidden=false;}
+/* toegang */
+const GH='73e2822498c988475f994d5cbc7348677198694cb01830ef3182527acd0f6d0e';
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+let gestart=false;function unlock(){$('#gate').hidden=true;try{sessionStorage.setItem('fcab-wo-ok','1');}catch(e){}if(!gestart){gestart=true;map.invalidateSize();start();}}
+try{if(sessionStorage.getItem('fcab-wo-ok')==='1')unlock();}catch(e){}
+$('#g-form').addEventListener('submit',async e=>{e.preventDefault();let ok=false;try{ok=(await sha($('#g-in').value))===GH;}catch(err){}
+  if(ok)unlock();else{$('#g-err').hidden=false;$('#g-in').select();}});
+$('#g-in').addEventListener('input',()=>{$('#g-err').hidden=true;});
+</script>
+</body>
+</html>
