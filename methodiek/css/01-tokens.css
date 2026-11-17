@@ -1,0 +1,697 @@
+/* ─── TOKENS ─── */
+:root{
+  --cream:   #faf9f7;
+  --white:   #ffffff;
+  --border:  #e8e4de;
+  --border2: #d4cfc8;
+  --text:    #1c1a17;
+  --text2:   #5a5650;
+  --text3:   #9c9690;
+  --accent:  #e07a2f;
+  --accent-s:rgba(224,122,47,.09);
+  --accent-b:rgba(224,122,47,.22);
+  --blue:    #1C974D;
+  --blue-s:  rgba(28,151,77,.07);
+  --blue-b:  rgba(28,151,77,.18);
+  --green:   #1a6e3c;
+  --green-s: rgba(26,110,60,.08);
+  --green-b: rgba(26,110,60,.18);
+  --amber:   #b45309;
+  --amber-s: rgba(180,83,9,.08);
+  --amber-b: rgba(180,83,9,.18);
+  --red:     #b91c1c;
+  --red-s:   rgba(185,28,28,.07);
+  --red-b:   rgba(185,28,28,.16);
+  --sans:    'Inter', system-ui, -apple-system, sans-serif;
+  --wordmark:'Poppins', system-ui, sans-serif;
+  --serif:   'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --mono:    ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  --r:       10px;
+  --r-sm:    6px;
+  --topbar-bg:  #ffffff;
+  --hover-tint: rgba(0,0,0,.02);
+  --shadow-soft:rgba(28,26,23,.08);
+  --shadow-card:rgba(0,0,0,.08);
+  --neutral-s:  #f0ede8;
+  --code-bg:    #1c1a17;
+  --code-text:  #e8e0d4;
+  --gate-dot:   rgba(180,174,166,.75);
+}
+
+html[data-theme="dark"]{
+  --cream:   #1a1815;
+  --white:   #242220;
+  --border:  #3a3630;
+  --border2: #4a453d;
+  --text:    #f1eee8;
+  --text2:   #b7b1a7;
+  --text3:   #837d73;
+  --topbar-bg:  #242220;
+  --hover-tint: rgba(255,255,255,.045);
+  --shadow-soft:rgba(0,0,0,.4);
+  --shadow-card:rgba(0,0,0,.4);
+  --neutral-s:  #33302a;
+  --code-bg:    #100f0d;
+  --code-text:  #e8e0d4;
+  --gate-dot:   rgba(255,255,255,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;color-scheme:light;height:100%;overflow:hidden;}
+html[data-theme="dark"]{color-scheme:dark;}
+/* De hele pagina scrolt niet meer als geheel: de topbar en de sidebar staan
+   volledig vast (position:fixed / geen eigen scroll nodig), alleen de
+   inhoud in .canvas heeft een eigen, onafhankelijke scrollbalk - en die
+   verschijnt dus ook alleen wanneer een pagina daadwerkelijk te lang is. */
+body{font-family:var(--sans);background:var(--cream);color:var(--text);font-size:15px;line-height:1.72;transition:background .2s,color .2s;height:100%;overflow:hidden;}
+#app{height:100%;}
+::selection{background:var(--accent-b);}
+
+/* ─── TOPBAR (volledig vast, geen onderdeel meer van enige scroll) ─── */
+.topbar{
+  background:var(--topbar-bg);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  height:96px;
+  border-radius:18px;
+  box-shadow:0 4px 24px var(--shadow-soft);
+  position:fixed;top:16px;left:16px;right:16px;z-index:200;
+}
+.topbar-inner{
+  max-width:1400px;margin:0 auto;height:100%;
+  padding:0 40px 0 24px;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:16px;
+}
+.topbar-waveline{display:none;}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+
+/* ─── TOPBAR MAIN NAV (centered: Over ons / Klimaatthema's / FCAB) ─── */
+.topbar-nav{display:flex;align-items:center;justify-content:center;gap:4px;justify-self:center;}
+.tnav-item{
+  position:relative;display:flex;align-items:center;gap:5px;
+  font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--text2);
+  padding:8px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;
+  text-decoration:none;transition:color .15s,background .15s;user-select:none;
+}
+.tnav-item:hover{color:var(--text);background:var(--hover-tint);}
+.tnav-caret{width:9px;height:9px;flex-shrink:0;opacity:.55;transition:transform .15s;}
+.tnav-item:hover .tnav-caret{transform:rotate(180deg);}
+.tnav-dd-menu{
+  position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  box-shadow:0 12px 32px var(--shadow-soft);padding:6px 0;min-width:210px;
+  display:none;z-index:250;
+}
+.tnav-dd:hover .tnav-dd-menu{display:block;}
+.tnav-dd-menu a{
+  display:block;padding:8px 16px;font-size:13px;font-weight:400;
+  color:var(--text2);text-decoration:none;cursor:pointer;white-space:nowrap;
+}
+.tnav-dd-menu a:hover{background:var(--hover-tint);color:var(--text);}
+@media(max-width:1220px){.topbar-nav{display:none;}}
+.logo-block{
+  width:34px;height:34px;background:var(--accent);border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;letter-spacing:-.5px;
+}
+.logo-name{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.2px;}
+.logo-sub{font-size:11px;font-weight:400;color:var(--text3);margin-top:-2px;}
+.topbar-right{display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
+.theme-toggle{
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--border);background:var(--white);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent-b);background:var(--accent-s);}
+.theme-toggle .ti-sun{display:none;}
+html[data-theme="dark"] .theme-toggle .ti-moon{display:none;}
+html[data-theme="dark"] .theme-toggle .ti-sun{display:block;}
+.lang-toggle{
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--border);background:var(--white);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.2px;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.lang-toggle:hover{color:var(--accent);border-color:var(--accent-b);background:var(--accent-s);}
+.lang-toggle.busy{opacity:.5;cursor:wait;}
+.dgbc-link{
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--border);background:var(--white);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  transition:border-color .15s,box-shadow .15s,transform .15s;
+}
+.dgbc-link:hover{border-color:var(--accent-b);box-shadow:0 0 0 3px var(--accent-s);transform:translateY(-1px);}
+.dgbc-link img{width:70%;height:70%;object-fit:contain;transform:translateX(2px);}
+
+/* ─── Google Translate: keep our own layout, hide Google's default chrome ─── */
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate{display:none!important;visibility:hidden!important;height:0!important;}
+body > .skiptranslate{display:none!important;visibility:hidden!important;height:0!important;}
+.goog-te-gadget-icon{display:none!important;}
+html,body{top:0!important;position:static!important;margin-top:0!important;}
+.goog-tooltip,.goog-tooltip:hover,#goog-gt-tt,.goog-te-balloon-frame{display:none!important;visibility:hidden!important;}
+.goog-text-highlight{background:none!important;box-shadow:none!important;}
+#google_translate_element{display:none!important;}
+.vbadge{font-size:11px;font-weight:500;color:var(--text3);background:var(--cream);border:1px solid var(--border);padding:3px 10px;border-radius:20px;}
+
+
+
+/* ─── SHELL ───
+   De shell zelf scrolt niet: hij vult precies de ruimte onder de vaste topbar
+   (100vh - 112px) en staat op vaste afstand (112px) daaronder. Rail en canvas
+   zijn allebei even hoog als de shell; alleen canvas krijgt een eigen
+   scrollbalk (zie .canvas), de rail staat volledig stil. */
+.shell{display:flex;height:calc(100vh - 112px);max-width:1400px;margin:112px auto 0;}
+
+/* ─── LEFT RAIL (nav) - staat volledig vast, geen eigen scroll nodig tenzij de inhoud te lang is ─── */
+.rail{
+  width:260px;min-width:260px;
+  padding:32px 0 40px;
+  height:100%;overflow-y:auto;flex-shrink:0;
+}
+.rail-section{margin-bottom:4px;}
+.rail-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:none;
+  color:var(--text2);padding:10px 24px 5px;
+}
+.ni{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 24px;cursor:pointer;
+  color:var(--text2);font-size:13px;font-weight:400;
+  border-left:2px solid transparent;transition:all .13s;
+}
+.ni:hover{color:var(--text);background:var(--hover-tint);}
+.ni.on{border-left-color:var(--accent);color:var(--accent);font-weight:500;background:var(--accent-s);}
+.ni.sub{font-size:12.5px;}
+.ni.sub.on{border-left-color:var(--accent);color:var(--accent);background:var(--accent-s);}
+.rdiv{height:1px;background:transparent;margin:8px 16px;}
+.calcbox{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin:20px 0;}
+.calcbox h4{margin-top:0;color:var(--text);font-size:14px;}
+.calcrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.calcrow:last-child{border-bottom:none;}
+.calclabel{flex:1;min-width:220px;font-size:13px;color:var(--text2);font-weight:300;}
+.calcrow select{flex:1;min-width:200px;max-width:360px;font-family:var(--sans);font-size:13px;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--r);background:var(--cream);color:var(--text);}
+.calcsub{border-top:1.5px solid var(--accent-b);margin-top:8px;padding-top:14px;}
+.calcresult{display:flex;gap:28px;align-items:center;margin-top:18px;padding-top:16px;border-top:1.5px solid var(--border);flex-wrap:wrap;}
+.calcresitem{display:flex;flex-direction:column;gap:5px;}
+.calcresitem .crl{font-size:11px;font-weight:600;letter-spacing:.3px;color:var(--text3);text-transform:none;}
+.calcgs{font-size:20px;font-weight:700;color:var(--text);}
+.calcbadge{display:inline-block;padding:5px 14px;font-size:13px;font-weight:600;border-radius:20px;}
+.calcbadge.mcn{background:var(--neutral-s);color:var(--text2);}
+.calcbadge.mcvl{background:var(--green-s);color:var(--green);}
+.calcbadge.mcl{background:var(--green-s);color:var(--green);}
+.calcbadge.mcm{background:var(--amber-s);color:var(--amber);}
+.calcbadge.mch{background:var(--red-s);color:var(--red);}
+.calcbadge.mcvh{background:var(--red-s);color:var(--red);}
+.calchint{font-size:12px;color:var(--text3);margin-top:10px;font-weight:300;}
+.calccond{display:none;}
+.calccond.show{display:block;}
+
+.ni-ext{justify-content:space-between;text-decoration:none;color:var(--text3);}
+.ni-ext-ic{font-size:12px;color:var(--text3);}
+.ni-ext:hover .ni-ext-ic{color:var(--accent);}
+.nchip{font-size:10px;font-weight:600;color:var(--text3);min-width:16px;font-variant-numeric:tabular-nums;}
+.inline-link{cursor:pointer;color:var(--accent);transition:color .13s;}
+.inline-link:hover{color:var(--text);text-decoration:underline;}
+
+/* ─── SIDEBAR SEARCH ─── altijd zichtbaar: sticky binnen de rail, op dezelfde
+   hoogte als de icoonknoppen/paginatitel (rail's eigen padding-top van 32px
+   zorgt ervoor dat de natuurlijke rustpositie al gelijk is aan de sticky
+   dock-positie - geen sprongetje). Ondoorzichtige achtergrond zodat
+   navigatie-items die er onderdoor scrollen niet zichtbaar blijven. ─── */
+.sidebar-search{
+  padding:0 20px 14px;margin-bottom:0;position:sticky;top:0;z-index:15;
+  background:var(--cream);
+  border-bottom:1px solid transparent;
+  transition:border-color .15s,box-shadow .15s;
+}
+.sidebar-search.stuck{
+  border-bottom-color:var(--border);
+  box-shadow:0 8px 12px -10px var(--shadow-soft);
+}
+.ss-box{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--border2);border-radius:20px;background:var(--white);
+  padding:8px 12px;color:var(--text3);transition:border-color .15s,box-shadow .15s;
+}
+.ss-box svg{flex-shrink:0;}
+.ss-box input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:var(--sans);font-size:13px;color:var(--text);}
+.ss-box input::placeholder{color:var(--text3);}
+.ss-clear{border:none;background:none;color:var(--text3);font-size:16px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;}
+.ss-clear:hover{color:var(--text);}
+.ss-results{
+  display:none;position:absolute;left:20px;right:20px;top:calc(100% + 6px);z-index:50;
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  box-shadow:0 12px 32px var(--shadow-soft);max-height:min(60vh,520px);overflow-y:auto;padding:6px 0;
+}
+.ss-results.open{display:block;}
+.ss-group-label{padding:8px 16px 4px;font-size:10px;font-weight:600;letter-spacing:.3px;color:var(--text3);}
+.ss-item{display:block;width:100%;text-align:left;padding:7px 16px;border:none;background:none;cursor:pointer;font-family:var(--sans);}
+.ss-item:hover,.ss-item.hl{background:var(--hover-tint);}
+.ss-item-title{font-size:12.5px;font-weight:500;color:var(--text);}
+.ss-item-snippet{font-size:11.5px;color:var(--text3);margin-top:2px;line-height:1.45;}
+.ss-item-snippet mark{background:var(--accent-b);color:var(--text);border-radius:2px;padding:0 1px;}
+.ss-empty{padding:16px;font-size:12.5px;color:var(--text3);text-align:center;}
+.search-hit-flash{animation:ss-flash 2s ease;}
+@keyframes ss-flash{0%,100%{background:transparent;}15%,55%{background:var(--accent-s);}}
+
+/* ─── CONTENT CANVAS ─── de enige plek die daadwerkelijk scrolt, en alleen als de inhoud van
+   een pagina daadwerkelijk langer is dan de beschikbare hoogte.
+   Let op: hier bewust GEEN padding-top - die zou anders een stukje "kaal"
+   scrollgebied vlak onder de topbar overlaten waar de sticky .theme-head
+   niet start (position:sticky met top:0 dockt op de padding-edge van dit
+   element, dus een padding-top hier zou er precies voor zorgen dat
+   wegscrollende inhoud tussen topbar en kop nog even zichtbaar doorschuift
+   voordat de kop hem bedekt). De boven-marge wordt in plaats daarvan per
+   pagina zelf geregeld via .page (zie hieronder), zodat .theme-head zelf
+   die ruimte vult en er nooit iets "doorheen" kan schuiven. ─── */
+.canvas{
+  flex:1 1 auto;min-width:0;
+  height:100%;overflow-y:auto;scroll-behavior:smooth;
+  padding:0 56px 100px 72px;
+  max-width:900px;
+  /* Bewust GEEN margin:auto (centreren): dat zou de tekst links laten
+     opschuiven of -krimpen afhankelijk van of de reading guide (rechts)
+     op die pagina wel of niet zichtbaar is, wat een inconsistente
+     uitlijning tussen pagina's opleverde. Nu staat de tekst altijd op
+     dezelfde vaste afstand van de rail, ongeacht de reading guide. */
+  margin:0;
+}
+
+/* ─── READING GUIDE ("Op deze pagina") - staat net als de rail volledig vast,
+   alleen zichtbaar op de FCAB-onderdeelpagina's (zie updateReadingGuide()). ─── */
+.reading-guide{
+  width:200px;min-width:200px;flex-shrink:0;
+  height:100%;overflow-y:auto;
+  padding:32px 32px 40px 0;
+  display:none;
+}
+.reading-guide.show{display:block;}
+.rg-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:none;
+  color:var(--text2);padding:0 12px 8px;
+}
+.rg-list{display:flex;flex-direction:column;gap:1px;}
+.rg-item{
+  display:block;padding:6px 12px;font-size:12.5px;line-height:1.4;
+  color:var(--text2);text-decoration:none;cursor:pointer;
+  border-left:2px solid transparent;transition:all .13s;
+}
+.rg-item:hover{color:var(--text);background:var(--hover-tint);}
+.rg-item.on{border-left-color:var(--accent);color:var(--accent);font-weight:500;background:var(--accent-s);}
+
+/* ─── TABLE WRAP (auto-applied via JS to plain content tables) ─── */
+.table-wrap{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:16px 0;}
+.table-wrap table{margin:0;}
+
+/* ─── THEME PAGE HEAD (sticky icons + title for klimaatthema pages) ───
+   .canvas is the scrolling element itself, and .page.page-theme has
+   padding-top:0, so .theme-head (the first child) sits flush against the
+   very top of .canvas's scrollport from the start - its sticky dock
+   position (top:0) is therefore identical to its natural resting position,
+   with zero travel/jump. Its own padding-top (32px) both creates the visual
+   gap above the icon row (aligning them with the sidebar search box) AND -
+   crucially - is filled by its own opaque background, so that gap is never
+   "empty scroll space" that content could slide through while scrolling;
+   it is fully covered at all times. ── */
+.theme-head{
+  position:sticky;top:0;z-index:30;
+  background:var(--cream);
+  padding-top:32px;padding-bottom:18px;margin-bottom:2px;
+  border-bottom:1px solid transparent;
+  transition:border-color .15s,box-shadow .15s;
+}
+.theme-head.stuck{
+  border-bottom-color:var(--border);
+  box-shadow:0 8px 16px -12px var(--shadow-soft);
+}
+.theme-head h1{margin-bottom:0;}
+.ticons{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.ticons-group{display:flex;gap:10px;}
+.ticon-btn{
+  position:relative;width:34px;height:34px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--border);background:var(--white);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.ticon-btn:hover{color:var(--accent);border-color:var(--accent-b);background:var(--accent-s);}
+.ticon-btn.on{color:var(--accent);border-color:var(--accent);background:var(--accent-s);}
+/* Toelichting & Versiebeheer zijn de context-onderdelen, niet de methodiekstappen - subtielere, grijzere stijl in rust, maar oranje zodra geselecteerd */
+.ticon-btn.ticon-edge{color:var(--text3);}
+.ticon-btn.ticon-edge:hover{color:var(--text);border-color:var(--border2);background:var(--hover-tint);}
+.ticon-btn.ticon-edge.on{color:var(--accent);border-color:var(--accent);background:var(--accent-s);}
+.ticon-btn .qtip{
+  position:absolute;top:calc(100% + 8px);left:50%;
+  transform:translateX(-50%) translateY(-4px);
+  background:var(--text);color:var(--white);
+  font-size:11px;font-weight:500;padding:4px 9px;border-radius:6px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .15s,transform .15s;z-index:20;
+}
+.ticon-btn:hover .qtip{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ─── TAB SUB-PAGES (within a klimaatthema page, one visible at a time) ─── */
+.tsub{display:none;}
+.tsub.on{display:block;}
+
+/* ─── PAGE ROUTING ───
+   padding-top staat hier (op .page) in plaats van op .canvas: gewone pagina's
+   krijgen zo hun bovenmarge, maar klimaatthema-pagina's (.page-theme) niet -
+   daar vult .theme-head zelf die ruimte, zodat zijn achtergrond de volledige
+   strook tussen topbar en kop bedekt en er nooit tekst "doorheen" kan schuiven
+   tijdens het scrollen. ─── */
+.page{display:none;padding-top:30px;}
+.page.on{display:block;}
+.page.page-theme{padding-top:0;}
+
+/* ─── BREADCRUMBS ─── */
+/* ─── SECTION HEADER ─── */
+.section-eyebrow{
+  font-size:11px;font-weight:500;letter-spacing:.4px;text-transform:none;
+  color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:var(--accent-b);}
+h1{font-size:32px;font-weight:700;color:var(--text);line-height:1.2;letter-spacing:-.7px;margin-bottom:10px;}
+h1 em{font-style:italic;font-weight:300;color:var(--text2);}
+.lead{font-size:16px;font-weight:300;color:var(--text2);line-height:1.7;margin-bottom:36px;max-width:640px;}
+hr.section-rule{border:none;border-top:1px solid var(--border);margin:40px 0;}
+
+/* ─── SECTION HEADINGS ─── */
+h2{
+  font-size:20px;font-weight:600;color:var(--text);
+  margin:44px 0 16px;padding-bottom:12px;
+  border-bottom:1.5px solid var(--border);
+  scroll-margin-top:130px;
+}
+.h2-num{font-weight:600;}
+.h2-num::after{content:'. ';}
+h3{font-size:15px;font-weight:600;color:var(--text);margin:24px 0 8px;}
+h4{font-size:11px;font-weight:600;color:var(--blue);margin:18px 0 8px;text-transform:none;letter-spacing:.2px;}
+p{margin-bottom:14px;color:var(--text2);font-weight:300;}
+p strong{color:var(--text);font-weight:600;}
+
+/* ─── OVERVIEW CARDS ─── */
+.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.ov-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;cursor:pointer;box-shadow:0 1px 2px var(--shadow-soft);transition:box-shadow .18s,transform .18s,border-color .18s;}
+.ov-card:hover{box-shadow:0 10px 28px var(--shadow-card);transform:translateY(-2px);border-color:var(--accent-b);}
+.ov-num{font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums;}
+.ov-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.ov-desc{font-size:12px;color:var(--text3);line-height:1.5;font-weight:300;}
+
+/* ─── THEME CARDS ─── */
+.theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:20px 0;}
+.tc{
+  background:var(--white);border:1px solid var(--border);border-left-width:3px;border-radius:var(--r);
+  padding:16px 18px;cursor:pointer;box-shadow:0 1px 2px var(--shadow-soft);
+  transition:box-shadow .18s,transform .18s;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.tc:hover{box-shadow:0 10px 24px var(--shadow-card);transform:translateY(-2px);}
+.tc.th-hitte{border-left-color:#C0392B;}
+.tc.th-droogte{border-left-color:#B45309;}
+.tc.th-water{border-left-color:#1d5fa8;}
+.tc.th-overstr{border-left-color:#0e7490;}
+.tc.th-storm{border-left-color:#7c3aed;opacity:.65;}
+.tic{display:none;}
+.tn{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.td{font-size:12px;color:var(--text3);line-height:1.4;font-weight:300;}
+
+/* ─── INDICATOR TABS (per klimaateffect binnen Omgevingsscore) ─── */
+.pills{display:flex;border-bottom:1.5px solid var(--border);margin:16px 0;flex-wrap:wrap;}
+.pill{
+  padding:8px 16px;cursor:pointer;font-family:var(--sans);
+  font-size:12.5px;font-weight:500;color:var(--text3);
+  background:transparent;border:none;border-bottom:2px solid transparent;border-radius:0;
+  margin-bottom:-1.5px;transition:all .12s;white-space:nowrap;
+}
+.pill.on{color:var(--accent);border-bottom-color:var(--accent);}
+.pill:hover{color:var(--text);}
+.ip{display:none;}
+.ip.on{display:block;}
+
+/* ─── PAGE TABS ─── */
+.tabs{display:flex;border-bottom:1.5px solid var(--border);margin-bottom:24px;}
+.tb{
+  padding:9px 18px;cursor:pointer;font-family:var(--sans);
+  font-size:13px;font-weight:500;color:var(--text3);
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  margin-bottom:-1.5px;transition:all .12s;
+}
+.tb.on{color:var(--accent);border-bottom-color:var(--accent);}
+.tb:hover{color:var(--text);}
+.tc2{display:none;}
+.tc2.on{display:block;}
+
+/* ─── TABLES ─── */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;}
+th{background:var(--accent-s);color:var(--text2);font-weight:600;font-size:11px;letter-spacing:.3px;text-transform:none;padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--accent-b);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;font-weight:300;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--cream);}
+
+/* ─── SCORE BADGES ─── */
+.sb{display:inline-flex;align-items:center;padding:0;border-radius:0;font-size:11.5px;font-weight:600;letter-spacing:.3px;background:none;border:none;color:var(--text2);}
+.sn{background:none;color:var(--text2);}
+.svl{background:none;color:var(--text2);border:none;}
+.sl{background:none;color:var(--text2);border:none;}
+.sm{background:none;color:var(--text2);border:none;}
+.sh{background:none;color:var(--text2);border:none;}
+.svh{background:none;color:var(--text2);border:none;}
+.su{background:none;color:var(--text2);border:none;}
+
+.scale{display:flex;gap:3px;margin:12px 0;flex-wrap:wrap;}
+.scale .sb{flex:1;min-width:72px;padding:8px 4px;text-align:center;justify-content:center;font-size:11px;border:1px solid var(--border);}
+
+/* ─── INFO BLOCKS ─── */
+.ib,.wb,.nb{position:relative;border-radius:var(--r);border:1px solid;padding:13px 18px 13px 46px;margin:16px 0;font-size:13.5px;line-height:1.6;color:var(--text2);font-weight:400;}
+.ib::before,.wb::before,.nb::before{
+  content:'';position:absolute;left:16px;top:14px;width:18px;height:18px;
+  background-repeat:no-repeat;background-position:center;background-size:contain;
+}
+.ib{background:var(--accent-s);border-color:var(--accent-b);}
+.ib::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23e07a2f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5'/%3E%3C/svg%3E");}
+.dgbc-credit{display:flex;align-items:center;gap:18px;margin-top:56px;padding-top:28px;border-top:1px solid var(--border);text-decoration:none;transition:opacity .15s;}
+.dgbc-credit:hover{opacity:.75;}
+.dgbc-credit-logo{height:40px;width:auto;flex-shrink:0;}
+.dgbc-credit-text{font-size:12.5px;line-height:1.55;color:var(--text3);font-weight:300;}
+.dgbc-credit-text strong{color:var(--text2);font-weight:600;}
+.dgbc-credit-link{color:var(--accent);font-weight:500;}
+.ib strong,.wb strong,.nb strong{color:var(--text);font-weight:600;}
+.wb{background:var(--red-s);border-color:var(--red-b);}
+.wb::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23b91c1c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13.5'/%3E%3Ccircle cx='12' cy='16.5' r='0.6' fill='%23b91c1c' stroke='none'/%3E%3C/svg%3E");}
+.nb{background:var(--blue-s);border-color:var(--blue-b);}
+.nb::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231C974D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5'/%3E%3C/svg%3E");}
+.phb{background:var(--white);border:1.5px dashed var(--border2);border-radius:var(--r);padding:40px;margin:24px 0;text-align:center;}
+.phb .phi{font-size:32px;margin-bottom:12px;}
+.phb .pht{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+.phb .phd{font-size:13px;color:var(--text3);font-weight:300;}
+
+/* ─── FIGUUR-PLACEHOLDER (bronafbeelding nog toe te voegen) ─── */
+.figbox{border:1.5px dashed var(--border2);border-radius:var(--r);padding:22px;margin:14px 0 18px;text-align:center;background:var(--cream);}
+.figph{font-size:12.5px;color:var(--text3);font-style:italic;margin-bottom:8px;}
+.figcap{font-size:12.5px;color:var(--text2);font-weight:500;}
+
+/* ─── KADER (titelbox rond een klein referentietabelletje) ─── */
+.kader{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin:16px 0 20px;}
+.kadertitel{font-size:12.5px;font-weight:600;color:var(--text2);margin-bottom:12px;}
+.kaderfoot{font-size:11.5px;color:var(--text3);margin-top:10px;font-weight:300;}
+
+/* ─── CODE / FORMULA ─── */
+code{background:var(--neutral-s);border:1px solid var(--border);border-radius:4px;padding:1.5px 5px;font-family:var(--mono);font-size:.9em;color:var(--text);}
+th code,td code{background:var(--white);}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--r);padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.6;overflow-x:auto;margin:14px 0;}
+pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit;}
+.fb{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 16px;margin:14px 0;font-family:var(--mono);font-size:13px;color:var(--blue);}
+
+/* ─── PROCESS FLOW ─── */
+.pflow{display:flex;align-items:stretch;margin:24px 0;flex-wrap:wrap;gap:16px;}
+.pstep{flex:1;min-width:140px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 1px 2px var(--shadow-soft);padding:20px 18px;text-align:center;position:relative;}
+.pstep::after{content:'→';position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:18px;font-weight:700;z-index:1;}
+.pstep:last-child::after{display:none;}
+.pnum{font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;}
+.plbl{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.psub{font-size:11.5px;color:var(--text3);line-height:1.4;font-weight:300;}
+
+/* ─── RISK DIAGRAM ─── */
+.rd{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--border);padding:22px 26px;margin:20px 0;flex-wrap:wrap;}
+.rbox{background:var(--cream);border:1px solid var(--border);padding:14px 20px;text-align:center;flex:1;min-width:110px;}
+.rbox.res{background:var(--accent-s);border-color:var(--accent-b);}
+.rbl{font-size:10px;font-weight:600;text-transform:none;letter-spacing:.2px;color:var(--text3);margin-bottom:5px;}
+.rbv{font-size:13px;font-weight:500;color:var(--text);}
+.rop{font-size:22px;font-weight:700;color:var(--accent);}
+
+/* ─── STEP LIST ─── */
+.slist{counter-reset:s;list-style:none;padding:0;}
+.slist li{counter-increment:s;padding:12px 16px 12px 52px;position:relative;margin-bottom:6px;background:var(--white);border:1px solid var(--border);font-size:13.5px;color:var(--text2);font-weight:300;}
+.slist li strong{color:var(--text);font-weight:600;}
+.slist li::before{content:counter(s,'decimal-leading-zero');position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--accent);}
+
+/* ─── ANSWER OPTIONS ─── */
+.aos{display:flex;flex-direction:column;gap:5px;margin:8px 0 20px;}
+.ao{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);font-size:13px;transition:border-color .12s;}
+.ao:hover{border-color:var(--border2);}
+.aob{flex-shrink:0;padding:3px 10px;font-size:11px;font-weight:600;min-width:60px;text-align:center;border-radius:2px;border:1px solid var(--border);color:var(--text2);}
+.ag{background:none;}
+.aa{background:none;}
+.ar{background:none;}
+.am{background:none;color:var(--text3);}
+.aot{color:var(--text2);flex:1;font-weight:300;}
+.aosr{margin-left:auto;flex-shrink:0;}
+
+/* ─── SOURCE CARDS ─── */
+.srccard{background:var(--white);border:1px solid var(--border);padding:14px 18px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;}
+.srn{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.srm{font-size:11.5px;color:var(--text3);font-weight:300;}
+.srl{font-size:12px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap;}
+.srl:hover{text-decoration:underline;}
+
+/* ─── CHANGELOG ─── */
+.cli{display:flex;gap:24px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border);}
+.cli:last-child{border-bottom:none;}
+.clv{font-size:13px;font-weight:700;color:var(--accent);min-width:48px;}
+.cld{font-size:11.5px;color:var(--text3);margin-bottom:4px;font-weight:300;}
+.clc{flex:1;}
+.ct{font-size:10px;font-weight:600;padding:2px 8px;border-radius:2px;margin-right:4px;display:inline-block;letter-spacing:.3px;}
+.ctn{background:var(--green-s);color:var(--green);border:1px solid var(--green-b);}
+.ctu{background:var(--amber-s);color:var(--amber);border:1px solid var(--amber-b);}
+.ctv{background:var(--red-s);color:var(--red);border:1px solid var(--red-b);}
+/* ─── SITEWIDE CHANGELOG (per datum) ─── */
+.cl-date{font-size:13.5px;font-weight:700;color:var(--text);min-width:150px;flex-shrink:0;}
+
+/* ─── COST ─── */
+.cl{color:var(--green);font-weight:600;}
+.cm{color:var(--amber);font-weight:600;}
+.ch{color:var(--red);font-weight:600;}
+
+/* ─── TAG ─── */
+.tag{display:inline;font-size:11px;font-weight:600;padding:0;border-radius:0;}
+.tag-blue{background:none;color:var(--text2);border:none;}
+
+/* ─── MATRIX ─── */
+.mx-colheads,.mx-grid{display:grid;gap:2px;}
+.mx-grid{background:var(--cream);border-radius:10px;overflow:hidden;}
+.mx-rowlabels{display:flex;flex-direction:column;gap:2px;}
+.mcell{height:46px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3;color:#1c1a17;}
+.mcn{background:#4BAE8A;}
+.mcvl{background:#4BAE8A;}
+.mcl{background:#E8B84B;}
+.mcm{background:#E8710A;}
+.mch{background:#C0392B;}
+.mcvh{background:#C0392B;}
+.mlc{width:76px;height:46px;font-size:9.5px;font-weight:500;color:var(--text3);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3;}
+.myl{writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-size:10px;font-weight:500;color:var(--text3);padding:0 4px;}
+
+ul,ol{padding-left:20px;margin-bottom:14px;}
+li{margin-bottom:5px;font-size:14px;color:var(--text2);font-weight:300;}
+li strong{color:var(--text);font-weight:600;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--cream);}
+::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* ─── MEASURE LIST (Bijlage 1 - Maatregelentabel) ─── */
+/* ─── MAATREGELEN: uitklapbare tabel, zelfde opmaak-taal als .qtable (gebouwkenmerken) ─── */
+.mlist{
+  display:flex;flex-direction:column;margin:16px 0 20px;
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;
+}
+.mrow{border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.mlist .mrow:last-child{border-bottom:none;}
+.mrow:hover{background:var(--accent-s);}
+.mrow.on{background:var(--accent-s);}
+.mrow-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;}
+.mrow-name{font-size:14px;font-weight:600;color:var(--text);}
+.mrow-theme{font-size:11px;color:var(--text3);font-weight:500;margin-left:auto;white-space:nowrap;}
+.mrow-fcab{font-size:9.5px;font-weight:600;color:var(--blue);background:var(--blue-s);border:1px solid var(--blue-b);padding:1px 6px;border-radius:3px;letter-spacing:.2px;}
+.mrow-chev{color:var(--text3);font-size:13px;flex-shrink:0;transition:transform .15s,color .15s;}
+.mrow.on .mrow-chev{transform:rotate(90deg);color:var(--accent);}
+.mrow-meta,.mrow-body{display:none;}
+.mrow.on .mrow-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;margin:0 16px 8px 16px;color:var(--text3);}
+.mrow.on .mrow-body{display:block;margin:0 16px 14px 16px;padding-top:10px;border-top:1px dashed var(--border);}
+.mrow-meta strong{font-weight:600;}
+.mrow-body p{font-size:13px;margin-bottom:5px;color:var(--text2);font-weight:300;}
+.mrow-body p:last-child{margin-bottom:0;}
+.mrow-body strong{color:var(--text);font-weight:600;}
+
+/* ─── ACCESS GATE (volgt nu de site-theme, net als de rest van de app) ─── */
+#gate{
+  position:fixed;inset:0;overflow-y:auto;
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  z-index:9999;
+}
+#gate::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle, var(--gate-dot) 1px, transparent 1px);
+  background-size:17px 17px;
+  /* De "uitgedoofde" zone (waar de dots vrijwel onzichtbaar worden) volgt de
+     kaart, die nu hoger en op een VASTE pixelpositie op de pagina staat (zie
+     .gate-body: geen verticale centrering meer, maar een vaste padding-top).
+     Een percentage-gebaseerd middelpunt (bv. "50% 38%") schaalt mee met de
+     viewporthoogte en raakt daardoor los van de kaart zodra de vensterhoogte
+     of het zoomniveau verandert - een vaste pixelwaarde (gelijk aan het
+     verticale midden van .gate-card) blijft wel altijd exact achter de kaart
+     staan, ongeacht viewporthoogte of zoomniveau. */
+  -webkit-mask-image:radial-gradient(circle at 50% 361px, transparent 0, transparent 120px, black 260px);
+  mask-image:radial-gradient(circle at 50% 361px, transparent 0, transparent 120px, black 260px);
+}
+.gate-topbar{
+  /* .topbar (gedeelde class) is nu position:fixed met top/left/right - reset die hier expliciet,
+     want de gate-header moet gewoon in de eigen flex-kolom van #gate blijven meestromen. */
+  position:relative;top:auto;left:auto;right:auto;z-index:2;flex-shrink:0;
+  background:var(--topbar-bg);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  height:72px;
+  margin:16px 16px 0 16px;
+  border-radius:18px;
+  box-shadow:0 4px 24px var(--shadow-soft);
+}
+/* .topbar-inner is grid-template-columns:auto 1fr auto (logo / gecentreerde
+   nav / rechterknoppen) - de gate-topbar heeft geen middelste nav-element,
+   waardoor .topbar-right door grid auto-placement in de MIDDELSTE (1fr) kolom
+   terechtkwam in plaats van de rechter (auto) kolom, en dus vlak naast het
+   logo bleef hangen. Hier expliciet in kolom 3 plaatsen, net als bij de
+   normale topbar. */
+.gate-topbar .topbar-right{grid-column:3;justify-self:end;}
+.gate-body{
+  position:relative;z-index:1;flex:1;min-height:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:64px 24px 60px;
+}
+.gate-brand{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;margin-bottom:36px;}
+.gate-brand-mark{display:flex;gap:5px;}
+.gate-brand-mark div{width:40px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--wordmark);font-size:17px;font-weight:700;color:#fff;}
+.gate-card{position:relative;z-index:1;background:var(--white);border:1px solid var(--border);border-radius:20px;padding:30px 30px 26px;max-width:400px;width:100%;box-shadow:0 16px 44px var(--shadow-card);text-align:center;}
+#gate-input{width:100%;box-sizing:border-box;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14.5px;text-align:center;letter-spacing:.5px;font-family:var(--sans);margin-bottom:12px;transition:border-color .15s;background:var(--white);color:var(--text);}
+#gate-input:focus{outline:none;border-color:var(--accent);}
+#gate-btn{width:100%;padding:12px 0;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:14.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .15s;}
+#gate-btn:hover{opacity:.9;}
+#gate-error{color:#C0392B;font-size:12.5px;margin-top:10px;display:none;font-weight:500;}
+#gate-error.on{display:block;}
+.gate-legal{font-size:12.5px;color:var(--text2);font-weight:300;line-height:1.55;margin-top:18px;}
+.gate-card-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text3);font-weight:300;text-align:center;}
+
+@media(max-width:960px){.rail{display:none;}.reading-guide{display:none !important;}.canvas{padding:0 24px 60px;}.page{padding-top:32px;}.overview-grid{grid-template-columns:1fr;}}
+
+/* --- INTERACTIEVE GEBOUWSCORE-TABEL --- */
+.qtable-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:16px 0 20px;}
+table.qtable{width:100%;border-collapse:collapse;font-size:13px;margin:0;}
+table.qtable th{background:var(--accent-s);color:var(--text2);font-weight:600;font-size:11.5px;letter-spacing:.2px;padding:10px 16px;text-align:left;border-bottom:1.5px solid var(--accent-b);}
+table.qtable td{padding:0;border-bottom:1px solid var(--border);vertical-align:top;}
+table.qtable tbody tr:last-child td{border-bottom:none;}
+.qt-q{width:36%;padding:14px 18px!important;background:var(--cream);border-right:1px solid var(--border);font-size:13px;font-weight:500;color:var(--text);line-height:1.45;}
+.qt-row{cursor:pointer;transition:background .12s;}
+.qt-row:hover{background:var(--accent-s);}
+.qt-row.on{background:var(--accent-s);}
+.qt-row.on .qt-opt{color:var(--accent);font-weight:600;}
+.qt-row.on .qt-pts{color:var(--accent);font-weight:700;}
+.qt-opt{padding:10px 16px!important;color:var(--text2);font-weight:300;}
+.qt-pts{padding:10px 16px!important;text-align:right;color:var(--text3);font-weight:600;width:90px;white-space:nowrap;border-left:1px solid var(--border);font-variant-numeric:tabular-nums;}
+.qt-total-row td{background:var(--cream);border-top:1.5px solid var(--accent-b);border-bottom:none!important;padding:12px 16px!important;font-weight:600;color:var(--text);}
+.qt-total-row .qt-total-label{text-align:right;color:var(--text2);font-weight:500;}
+.qt-total-row .qt-total-val{text-align:right;color:var(--accent);font-size:14px;font-weight:700;border-left:1px solid var(--border);font-variant-numeric:tabular-nums;}
+.qt-block-start td{border-top:2px solid var(--border2);}
