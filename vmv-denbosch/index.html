@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaartviewer Den Bosch</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="stylesheet" href="css/01-stijl.css?v=4">
+</head>
+<body>
+
+<!-- Kleurfilter voor de waterdieptekaart; de waarden zet js/03-kaart.js -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="water-kleuren" color-interpolation-filters="sRGB">
+    <feComponentTransfer>
+      <feFuncR id="water-funcR" type="discrete" tableValues="0"/>
+      <feFuncG id="water-funcG" type="discrete" tableValues="0"/>
+      <feFuncB id="water-funcB" type="discrete" tableValues="0"/>
+    </feComponentTransfer>
+  </filter>
+</svg>
+
+<!-- TOEGANG -->
+<div id="login-screen">
+  <div class="gate-topbar">
+    <div class="logo">
+      <img src="assets/img/fcab-logo.png" alt="FCAB">
+      <div class="logo-text">
+        <div class="logo-name">Kaartviewer Den Bosch</div>
+      </div>
+    </div>
+    <a class="gate-dgbc-link" href="https://www.dgbc.nl" target="_blank" rel="noopener" aria-label="Naar www.dgbc.nl" title="Dutch Green Building Council">
+      <img src="assets/img/dgbc.png" alt="DGBC" class="dgbc-mark-plain">
+    </a>
+  </div>
+  <div class="gate-body">
+    <div class="login-card">
+      <div class="login-logo"><img src="assets/img/fcab-logo.png" alt="FCAB"></div>
+      <label class="login-label" for="code-input">Toegangscode</label>
+      <input class="login-input" id="code-input" type="text" placeholder="Voer uw toegangscode in" autocomplete="off" spellcheck="false">
+      <button class="login-btn" id="login-btn"><span class="login-btn-label">Inloggen</span></button>
+      <div class="login-error" id="login-error">Ongeldige toegangscode. Neem contact op met uw projectbeheerder.</div>
+      <div class="gate-card-footer">Ontwikkeld door Dutch Green Building Council</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="logo">
+      <img src="assets/img/fcab-logo.png" alt="FCAB">
+      <div class="logo-text">
+        <div class="logo-name">Kaartviewer Den Bosch</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" id="settings-btn">Instellingen</button>
+      <button class="topbar-btn" id="logout-btn">Uitloggen</button>
+      <a class="icon-btn" href="https://www.dgbc.nl" target="_blank" rel="noopener" aria-label="Naar www.dgbc.nl" title="Dutch Green Building Council">
+        <img src="assets/img/dgbc.png" alt="DGBC" class="dgbc-mark">
+      </a>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- ZIJPANEEL -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Zoeken</div>
+        <div class="search-wrap">
+          <input class="search-input" id="search-input" type="text" placeholder="Adres, functie, postcode...">
+          <svg class="search-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <div class="search-result-count" id="search-result-count"></div>
+      </div>
+      <div class="search-results" id="search-results">
+        <div class="search-hint">Typ een adres, functie of postcode om te zoeken.<br><br>Je kunt ook op een pand op de kaart klikken om de details te bekijken.</div>
+      </div>
+      <div class="detail-panel" id="detail-panel">
+        <div class="detail-top">
+          <div>
+            <div class="detail-name" id="d-name"></div>
+            <div class="detail-addr" id="d-addr"></div>
+            <div class="detail-addr" id="d-functie" style="margin-top:2px;font-style:italic;"></div>
+          </div>
+          <button class="detail-close" id="detail-close" aria-label="Sluiten">&times;</button>
+        </div>
+        <div class="detail-grid" id="d-grid"></div>
+      </div>
+      <div class="panel-sep"></div>
+      <div class="filter-section">
+        <div class="filter-section-title">Filter op omgevingsscore</div>
+        <div class="filter-btns" id="filter-row">
+          <button class="filter-btn on" data-filter="all">Alle</button>
+          <button class="filter-btn" data-filter="hoog">Hoog+</button>
+          <button class="filter-btn" data-filter="zeerhoog">Zeer hoog</button>
+        </div>
+        <div class="rec-count" id="rec-count"></div>
+      </div>
+    </div>
+
+    <!-- KAART -->
+    <div class="map-container">
+      <div id="map"></div>
+      <div class="legend" id="legend">
+        <button type="button" class="legend-toggle" id="legend-toggle" aria-expanded="true" aria-controls="legend-body">
+          <span>Legenda</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="legend-body" id="legend-body">
+          <div class="legend-title">Omgevingsscore panden</div>
+          <div class="legend-items" id="legend-items"></div>
+          <div class="layer-sep"></div>
+          <div class="legend-title">Waterdiepte bui 70 mm/1 uur</div>
+          <div class="legend-items" id="legend-water"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTELLINGEN -->
+<div class="settings-backdrop" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-titel">
+  <div class="settings-card">
+    <div class="settings-head">
+      <h3 id="settings-titel">Instellingen</h3>
+      <button class="detail-close" id="settings-close" aria-label="Sluiten">&times;</button>
+    </div>
+    <div class="settings-sub">Kleuren van de legenda. Je keuze blijft bewaard in deze browser.</div>
+    <div class="settings-title">Panden: omgevingsscore</div>
+    <div id="kleur-rijen"></div>
+    <div class="preset-row" id="preset-rij" style="margin-top:8px"></div>
+    <div class="settings-title">Kaartlaag: waterdiepte bui 70 mm/1 uur</div>
+    <div id="water-rijen"></div>
+    <div class="settings-btns">
+      <button class="topbar-btn" id="kleur-reset">Standaardkleuren</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/instellingen.js?v=5"></script>
+<script src="data/panden.js?v=2"></script>
+<script src="data/waterdiepte-tegels.js?v=2"></script>
+<script src="js/02-toegang.js?v=1"></script>
+<script src="js/03-kaart.js?v=7"></script>
+</body>
+</html>
