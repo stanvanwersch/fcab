@@ -123,8 +123,10 @@
   function pnav(nr){
     const MAIN=['1','2','3','4'], k=MAIN.indexOf(nr); if(k<0) return '';
     const p=k>0?MAIN[k-1]:null, n=k<MAIN.length-1?MAIN[k+1]:null;
-    const a=(x,cls,lab)=>x?`<a class="${cls}" href="#m-${x}"><small>${lab}</small><b>${esc(t(NODES[x].n))}</b></a>`:'';
-    return `<nav class="pnav" aria-label="${L('Chapters','Hoofdstukken')}">${a(p,'pv',L('Previous','Vorige'))}${a(n,'nx',L('Next','Volgende'))}</nav>`;
+    const nm=x=>({'1':L('Introduction','Introductie'),'2':L('Methodology','Methodologie'),'3':L('Assessment','Beoordeling'),'4':L('Adaptation','Adaptatie')})[x];
+    const prev=p?`<a class="pv" href="#m-${p}">${ic('back')}<span>${esc(nm(p))}</span></a>`:'<span></span>';
+    const next=n?`<a class="nx" href="#m-${n}"><small>${L('Next','Volgende')}</small><b>${esc(nm(n))}${ic('fwd')}</b></a>`:'';
+    return `<nav class="pnav" aria-label="${L('Chapters','Hoofdstukken')}">${prev}${next}</nav>`;
   }
   function methodPage(nr){
     const o=NODES[nr].n, par=NODES[nr].parent;
