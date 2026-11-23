@@ -71,7 +71,7 @@
     const r=parse(), cur=r.v==='m'?'m-'+r.page:r.v;
     pop.innerHTML=MORE_ITEMS().map(m=>m?`<a role="menuitem" href="${m[0]}" class="${cur===m[3]?'on':''}">${ic(m[1])}<span>${esc(m[2])}</span></a>`:'<hr>').join('');
     const b=btn.getBoundingClientRect();
-    pop.hidden=false; pop.style.left=Math.round(b.right+8)+'px';
+    pop.hidden=false; pop.style.left=Math.round(b.right-44)+'px';
     pop.style.top=Math.round(Math.min(b.top,innerHeight-pop.offsetHeight-12))+'px';
     btn.setAttribute('aria-expanded','true');
   }
@@ -95,7 +95,7 @@
         ${chap}
         <button type="button" class="sbi sbm${moreOn?' on':''}" data-more aria-haspopup="menu" aria-expanded="false">${ic('more')}<span>${L('More','Meer')}</span></button>
         <button type="button" class="sbsec${st.themes?' open':''}" data-fold="themes" aria-expanded="${st.themes}"><span>${L('Climate themes','Klimaatthema\'s')}</span>${ic('chev')}</button>
-        ${st.themes?themes.map(x=>it('#m-'+x.nr,dot(x.nr),esc(t(x)),'m-'+x.nr,'th')).join(''):''}
+        ${st.themes?themes.map(x=>it('#m-'+x.nr,dot(x.nr),esc(t(x)),'m-'+x.nr,(x.sub||[]).length?'th':'th soon')).join(''):''}
       </div>
 `;
     bindSearch();
@@ -128,21 +128,30 @@
   }
   function methodPage(nr){
     const o=NODES[nr].n, par=NODES[nr].parent;
-    let body=`<p class="eyebrow">Framework for Climate Adaptive Buildings</p>
-      <h1>${esc(t(o))}</h1><div class="prose">${h(o)}`;
+    let body=`<h1>${esc(t(o))}</h1><div class="prose">${h(o)}`;
     if(nr==='3'){
       // the climate themes are pages of their own: show them as entries
-      body+=`</div><ul class="tlist">${(o.sub||[]).map(x=>`<li><a href="#m-${x.nr}"><i class="dot" style="background:${THEMECOL[x.nr]||'var(--text3)'}"></i><b>${esc(t(x))}</b><span>${(x.sub||[]).length?L('Screening: exposure, building sensitivity and vulnerability score','Screening: blootstelling, gebouwgevoeligheid en kwetsbaarheidsscore'):L('Being developed','In ontwikkeling')}</span>${ic('fwd')}</a></li>`).join('')}</ul>`;
+      body+=`</div><ul class="tlist">${(o.sub||[]).map(x=>`<li><a href="#m-${x.nr}"><i class="dot" style="background:${THEMECOL[x.nr]||'var(--text3)'}"></i><b>${esc(t(x))}</b><span>${esc(themeDesc(x.nr))}</span>${ic('fwd')}</a></li>`).join('')}</ul>`;
     } else {
       body+=(o.sub||[]).map(x=>section(x,isThemePage(nr)?3:2)).join('')+'</div>';
     }
     return docw(body+pnav(nr));
   }
+  const THEMEDESC={'3.1':['Overheating of the building and heat stress on warm days and nights.','Oververhitting van het gebouw en hittestress op warme dagen en nachten.'],
+    '3.2':['Foundation damage from pile rot and differential settlement, and the risk of wildfire.','Funderingsschade door paalrot en verschilzetting en de kans op natuurbrand.'],
+    '3.3':['Water nuisance from extreme rainfall and from high groundwater.','Wateroverlast door extreme regen en door hoog grondwater.'],
+    '3.4':['Water from rivers or the sea after a dike breach.','Water uit rivieren of de zee na een dijkdoorbraak.'],
+    '3.5':['Being developed.','In ontwikkeling.'],'3.6':['Being developed.','In ontwikkeling.']};
+  const themeDesc=nr=>THEMEDESC[nr]?L(THEMEDESC[nr][0],THEMEDESC[nr][1]):'';
   function homePage(){
     const p=PAGES.home;
-    const cards=`<h2>${L('The methodology','De methodiek')}</h2><div class="cards">${DOC.map(c=>`<a class="card" href="#m-${c.nr}"><b>${esc(t(c))}</b><span>${esc(plain(h(c)).slice(0,130))}${plain(h(c)).length>130?'…':''}</span></a>`).join('')}</div>
-      <div class="cards"><a class="card" href="#maatregelen"><span class="n">FCAB-3</span><b>${L('Measure table','Maatregelentabel')}</b><span>${L('Adaptation measures per climate theme, searchable and filterable.','Adaptatiemaatregelen per klimaatthema, doorzoekbaar en te filteren.')}</span></a>
-      <a class="card" href="#faq"><span class="n">FAQ</span><b>${esc(pageTitle('faq'))}</b><span>${L('Answers to common questions about FCAB.','Antwoorden op veelgestelde vragen over FCAB.')}</span></a></div>`;
+    const GO=[['#m-1','flag',L('Introduction','Introductie'),L('Why FCAB exists, what it aims for and which buildings it covers.','Waarom FCAB bestaat, wat het wil bereiken en voor welke gebouwen.')],
+      ['#m-2','layers',L('Methodology','Methodologie'),L('Concepts, climate hazards, scenarios and how the methodology is built.','Begrippen, klimaatdreigingen, scenario\'s en de opbouw van de methodiek.')],
+      ['#m-3','gauge',L('Assessment','Beoordeling'),L('The vulnerability score of a building per climate theme.','Per klimaatthema de kwetsbaarheidsscore van een gebouw.')],
+      ['#m-4','shield',L('Adaptation','Adaptatie'),L('In-depth analysis and an adaptation plan for buildings at high risk.','Verdiepende analyse en een adaptatieplan voor gebouwen met een hoog risico.')],
+      ['#maatregelen','table',L('Measure table','Maatregelentabel'),L('Adaptation measures per climate theme, searchable and filterable.','Adaptatiemaatregelen per klimaatthema, doorzoekbaar en te filteren.')],
+      ['#faq','help',pageTitle('faq'),L('Answers to common questions about FCAB.','Antwoorden op veelgestelde vragen over FCAB.')]];
+    const cards=`<h2>${L('Go directly to','Ga direct naar')}</h2><ul class="tlist go">${GO.map(g=>`<li><a href="${g[0]}">${ic(g[1])}<b>${esc(g[2])}</b><span>${esc(g[3])}</span>${ic('fwd')}</a></li>`).join('')}</ul>`;
     if(p) return `<h1>Framework for Climate Adaptive Buildings</h1><div class="prose home">${h(p)}</div>${cards}`;
     return `<h1>Framework for Climate Adaptive Buildings</h1><p class="lead">${L('The FCAB methodology online: determine the climate risks of buildings and draw up an adaptation strategy.','De FCAB-methodiek online: bepaal de klimaatrisico\'s van gebouwen en stel een adaptatiestrategie op.')}</p>${cards}`;
   }
@@ -155,7 +164,7 @@
   }
   // measure table with search and a filter on the first column with few distinct values
   const ms={q:'',theme:'',cat:''};
-  // a cell is {nl,en}, a plain value, or true/false (FCAB-2 characteristic)
+  // a cell is {nl,en}, a plain value, or true/false
   function mcell(row,key){
     const v=row[key];
     if(v===true) return L('yes','ja'); if(v===false) return '';
@@ -177,14 +186,16 @@
         ${MEAS.xlsx?`<a class="btn" href="${esc(MEAS.xlsx)}" download>${ic('dl')}Excel</a>`:''}</div>
       <div class="wrap"><table class="t mt"><thead><tr>${cols.map(c=>`<th class="c-${c.key}">${esc(ct(c))}</th>`).join('')}</tr></thead><tbody id="mbody"></tbody></table></div>`;
   }
+  const CLAMP=['benefits','attention'];
   function fillMeasures(){
     const tb=$('mbody'); if(!tb) return;
     const cols=(MEAS.columns||[]).filter(c=>c.key!=='cat'), q=ms.q.trim().toLowerCase(), all=MEAS.rows||[];
     const list=all.filter(r=>FKEYS.every(([k])=>!ms[k]||String(mcell(r,k))===ms[k])&&(!q||(MEAS.columns||[]).some(c=>plain(String(mcell(r,c.key))).toLowerCase().includes(q))));
     let html='', prev=null;
     list.forEach(r=>{ const g=String(mcell(r,'cat')); if(g&&g!==prev){ html+=`<tr class="grp"><th colspan="${cols.length}">${esc(g)}</th></tr>`; prev=g; }
-      html+=`<tr>${cols.map(c=>`<td class="c-${c.key}">${mcell(r,c.key)}</td>`).join('')}</tr>`; });
+      html+=`<tr>${cols.map(c=>`<td class="c-${c.key}">${CLAMP.includes(c.key)?`<div class="clamp">${mcell(r,c.key)}</div>`:mcell(r,c.key)}</td>`).join('')}</tr>`; });
     tb.innerHTML=html||`<tr><td colspan="${cols.length}">${L('No measures found.','Geen maatregelen gevonden.')}</td></tr>`;
+    tb.querySelectorAll('.clamp').forEach(el=>{ if(el.scrollHeight>el.clientHeight+2&&!el.closest('tr').querySelector('[data-rm]')) el.insertAdjacentHTML('afterend',`<button type="button" class="rm" data-rm>${L('Read more','Lees meer')}</button>`); });
     $('mcnt').textContent=`${list.length} ${L('of','van')} ${all.length}`;
   }
 
@@ -278,7 +289,8 @@
 
   // ---- events
   document.addEventListener('click',e=>{
-    const el=e.target.closest('[data-sbtoggle],[data-hist],[data-lang],[data-toc],[data-print],[data-fold],[data-more],[data-fsopen],[data-fs],[data-fsclose]'); if(!el) return;
+    const el=e.target.closest('[data-sbtoggle],[data-hist],[data-lang],[data-toc],[data-print],[data-fold],[data-more],[data-rm],[data-fsopen],[data-fs],[data-fsclose]'); if(!el) return;
+    if(el.hasAttribute('data-rm')){ const tr=el.closest('tr'), open=!tr.classList.contains('open'); tr.classList.toggle('open',open); tr.querySelectorAll('[data-rm]').forEach(b=>b.textContent=open?L('Read less','Minder'):L('Read more','Lees meer')); return; }
     if(el.dataset.fold==='3'){ st.open3=!st.open3; try{ localStorage.setItem('fcab-open3',st.open3?'1':'0'); }catch(x){} sidebar(parse()); return; }
     if(el.dataset.fold==='themes'){ st.themes=!st.themes; try{ localStorage.setItem('fcab-themes',st.themes?'1':'0'); }catch(x){} sidebar(parse()); return; }
     if(el.hasAttribute('data-more')){ morePop(el.getAttribute('aria-expanded')==='true'?null:el); return; }

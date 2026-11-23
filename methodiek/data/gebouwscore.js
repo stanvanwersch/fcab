@@ -1,4 +1,4 @@
-/* Gebouwscore zelf bepalen (FCAB-2): de keuzes en punten per gebouwkenmerk, de omgevingsscores en de matrices.
+/* Gebouwscore zelf bepalen: de keuzes en punten per gebouwkenmerk, de omgevingsscores en de matrices.
    Gelijk aan de tabellen in hoofdstuk 3 (data/fcab-methode.js): 3.1.3, 3.1.4, 3.1.5, 3.2.3, 3.2.5, 3.3.3, 3.3.5, 3.4.3, 3.4.5.
    js/04-gebouwscore.js maakt van de tabel in die paragrafen een klikbare tabel en zet onder de kwetsbaarheidsscore een rekenblok.
    Klassen: 1 zeer laag, 2 laag, 3 gemiddeld, 4 hoog, 5 zeer hoog. */
@@ -96,14 +96,14 @@ window.FCAB_CALC = {
   ],
   min: 4, max: 100,
   omgeving: [
-   {id: "5", nl: "Zeer hoog (meer dan 30 cm water)", en: "Very high (more than 30 cm of water)"},
+   {id: "5", nl: "Zeer hoog (meer dan 30 cm water, 70 mm in 1 uur)", en: "Very high (more than 30 cm of water, 70 mm in 1 hour)"},
    {id: "4", nl: "Hoog (20 tot 30 cm)", en: "High (20 to 30 cm)"},
    {id: "3", nl: "Middel (15 tot 20 cm)", en: "Medium (15 to 20 cm)"},
    {id: "2", nl: "Laag (10 tot 15 cm)", en: "Low (10 to 15 cm)"},
-   {id: "1", nl: "Zeer laag (minder dan 10 cm)", en: "Very low (less than 10 cm)"},
-   {id: "0", nl: "Geen", en: "None"}
+   {id: "1", nl: "Zeer laag (2 tot 10 cm)", en: "Very low (2 to 10 cm)"},
+   {id: "0", nl: "Geen (minder dan 2 cm)", en: "None (less than 2 cm)"}
   ],
-  /* kolomgrenzen van de gebouwscore (tot en met), en per omgevingsscore de klasse per kolom (tabel in 3.3.5) */
+  /* kolomgrenzen van de gebouwscore (tot en met) en per omgevingsscore de klasse per kolom (tabel in 3.3.5) */
   kolommen: [15, 25, 30, 40, 45, 60, 85, 100],
   matrix: {
    "5": [1, 2, 2, 3, 3, 5, 5, 5],

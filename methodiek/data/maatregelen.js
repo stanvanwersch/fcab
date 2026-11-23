@@ -1,4 +1,4 @@
-// FCAB-3 Maatregelentabel (Bijlage 1), NL en EN. Overgenomen uit index.html.
+// Maatregelentabel (bijlage 1), NL en EN. Overgenomen uit index.html.
 window.FCAB_MEASURES = {
  "columns": [
   {
@@ -15,11 +15,6 @@ window.FCAB_MEASURES = {
    "key": "theme",
    "t_nl": "Klimaatthema",
    "t_en": "Climate theme"
-  },
-  {
-   "key": "fcab2",
-   "t_nl": "FCAB-2 kenmerk",
-   "t_en": "FCAB-2 characteristic"
   },
   {
    "key": "cost",
@@ -56,7 +51,6 @@ window.FCAB_MEASURES = {
     "nl": "Alle klimaatthema's",
     "en": "All climate themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -87,7 +81,6 @@ window.FCAB_MEASURES = {
     "nl": "Alle klimaatthema's",
     "en": "All climate themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -118,7 +111,6 @@ window.FCAB_MEASURES = {
     "nl": "Meerdere thema's",
     "en": "Multiple themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -149,7 +141,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -180,7 +171,6 @@ window.FCAB_MEASURES = {
     "nl": "Alle klimaatthema's",
     "en": "All climate themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -190,7 +180,7 @@ window.FCAB_MEASURES = {
     "en": "Simple"
    },
    "benefits": {
-    "nl": "Reeds bestaande functionaliteiten van het gebouw controleren op daadwerkelijk functioneren aan de hand van oorspronkelijk ontwerp en programma, en zonodig de functionaliteit herstellen.",
+    "nl": "Reeds bestaande functionaliteiten van het gebouw controleren op daadwerkelijk functioneren aan de hand van oorspronkelijk ontwerp en programma en zonodig de functionaliteit herstellen.",
     "en": "Checking whether existing building functions actually work as intended in the original design and brief, and restoring them where needed."
    },
    "attention": {
@@ -211,7 +201,6 @@ window.FCAB_MEASURES = {
     "nl": "Alle klimaatthema's",
     "en": "All climate themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -242,7 +231,6 @@ window.FCAB_MEASURES = {
     "nl": "Alle klimaatthema's",
     "en": "All climate themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -273,7 +261,6 @@ window.FCAB_MEASURES = {
     "nl": "Alle klimaatthema's",
     "en": "All climate themes"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -304,7 +291,6 @@ window.FCAB_MEASURES = {
     "nl": "Bodemdaling",
     "en": "Subsidence"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -335,7 +321,6 @@ window.FCAB_MEASURES = {
     "nl": "Bodemdaling",
     "en": "Subsidence"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -366,7 +351,6 @@ window.FCAB_MEASURES = {
     "nl": "Bodemdaling",
     "en": "Subsidence"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -397,7 +381,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -428,7 +411,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -459,7 +441,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -490,7 +471,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -521,7 +501,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -552,7 +531,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -583,7 +561,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -614,7 +591,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -645,7 +621,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -676,7 +651,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -707,7 +681,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -738,7 +711,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -769,7 +741,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -800,7 +771,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -831,7 +801,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -862,7 +831,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -893,7 +861,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -903,7 +870,7 @@ window.FCAB_MEASURES = {
     "en": "Moderate"
    },
    "benefits": {
-    "nl": "Regentuinen en wadi's spelen een rol bij de opvang en filtering van regenwater, en kunnen bijdragen aan een toename van de biodiversiteit.",
+    "nl": "Regentuinen en wadi's spelen een rol bij de opvang en filtering van regenwater en kunnen bijdragen aan een toename van de biodiversiteit.",
     "en": "Rain gardens and wadis help to collect and filter rainwater, and can contribute to an increase in biodiversity."
    },
    "attention": {
@@ -924,7 +891,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -955,7 +921,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -986,7 +951,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -1017,7 +981,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1048,7 +1011,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1079,7 +1041,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1110,7 +1071,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1141,7 +1101,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1172,7 +1131,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1203,7 +1161,6 @@ window.FCAB_MEASURES = {
     "nl": "Bodemdaling",
     "en": "Subsidence"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -1234,7 +1191,6 @@ window.FCAB_MEASURES = {
     "nl": "Bodemdaling",
     "en": "Subsidence"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1265,7 +1221,6 @@ window.FCAB_MEASURES = {
     "nl": "Bodemdaling",
     "en": "Subsidence"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1296,7 +1251,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1327,7 +1281,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1358,7 +1311,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1389,7 +1341,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1420,7 +1371,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1451,7 +1401,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1482,7 +1431,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1513,7 +1461,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1544,7 +1491,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1575,7 +1521,6 @@ window.FCAB_MEASURES = {
     "nl": "Droogte",
     "en": "Drought"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1606,7 +1551,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1637,7 +1581,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1668,7 +1611,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1699,7 +1641,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1730,7 +1671,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1761,7 +1701,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1792,7 +1731,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1823,7 +1761,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1854,7 +1791,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1885,7 +1821,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -1916,7 +1851,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -1947,7 +1881,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -1978,7 +1911,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2009,7 +1941,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2040,7 +1971,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2071,7 +2001,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2102,7 +2031,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2133,7 +2061,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2164,7 +2091,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2195,7 +2121,6 @@ window.FCAB_MEASURES = {
     "nl": "Hitte",
     "en": "Heat"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2226,7 +2151,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2257,7 +2181,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -2288,7 +2211,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2319,7 +2241,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2350,7 +2271,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2381,7 +2301,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -2412,7 +2331,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2443,7 +2361,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2474,7 +2391,6 @@ window.FCAB_MEASURES = {
     "nl": "Overstroming",
     "en": "Flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2505,7 +2421,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2536,7 +2451,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2567,7 +2481,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2598,7 +2511,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2629,7 +2541,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2660,7 +2571,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2691,7 +2601,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2722,7 +2631,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2753,7 +2661,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -2784,7 +2691,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Hoog",
     "en": "High"
@@ -2815,7 +2721,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2846,7 +2751,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2877,7 +2781,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2908,7 +2811,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2939,7 +2841,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -2970,7 +2871,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3001,7 +2901,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3032,7 +2931,6 @@ window.FCAB_MEASURES = {
     "nl": "Storm",
     "en": "Storm"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3063,7 +2961,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3094,7 +2991,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3125,7 +3021,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3156,7 +3051,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3187,7 +3081,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3218,7 +3111,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3249,7 +3141,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3280,7 +3171,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3311,7 +3201,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3342,7 +3231,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3373,7 +3261,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Laag",
     "en": "Low"
@@ -3404,7 +3291,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3435,7 +3321,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3466,7 +3351,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3497,7 +3381,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3528,7 +3411,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": true,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3559,7 +3441,6 @@ window.FCAB_MEASURES = {
     "nl": "Wateroverlast",
     "en": "Pluvial flooding"
    },
-   "fcab2": false,
    "cost": {
     "nl": "Middel",
     "en": "Medium"
@@ -3578,7 +3459,7 @@ window.FCAB_MEASURES = {
    }
   }
  ],
- "intro_nl": "<p>Onderstaande tabel bevat de volledige set adaptatiemaatregelen uit FCAB-3, ingedeeld naar niet-fysieke maatregelen, fysieke maatregelen op gebiedsniveau en fysieke maatregelen op gebouwniveau, in die voorkeursvolgorde (zie <a href=\"#m-4\">§4.1</a>). Per maatregel: het kostenniveau, de complexiteit van implementatie, en een toelichting op voordelen/werking en aandachtspunten (mogelijke trade-offs). De lijst is niet uitputtend en bedoeld als bron van inspiratie.</p><p>Het treffen van een gebouwmaatregel leidt alléén tot een verbeterde klimaatrisicoscore als de maatregel in FCAB-2 is benoemd als een van de meest bepalende gebouwkenmerken (in de tabel gemarkeerd met <b>FCAB-2 kenmerk</b>). Dit kan ertoe leiden dat gebouweigenaren een voorkeur ontwikkelen voor juist die maatregelen, terwijl de vaak effectievere gebiedsmaatregelen daardoor minder worden toegepast.</p><p>Wil je de maatregelen filteren of sorteren op kosten, complexiteit, klimaatthema-impact of co-benefits? Gebruik de <a href=\"/FCAB-3-Maatregelentabel.xlsx\">Excel-versie van de maatregelentabel</a>.</p>",
- "intro_en": "<p>The table below contains the full set of adaptation measures from FCAB-3, divided into non-physical measures, physical measures at area level and physical measures at building level, in that order of preference (see <a href=\"#m-4\">§4.1</a>). For each measure: the cost level, the complexity of implementation, and an explanation of the benefits/how it works and points of attention (possible trade-offs). The list is not exhaustive and is intended as a source of inspiration.</p><p>Taking a building measure only leads to an improved climate risk score if the measure is named in FCAB-2 as one of the most decisive building characteristics (marked in the table with <b>FCAB-2 characteristic</b>). This can lead building owners to develop a preference for precisely those measures, while the often more effective area measures are applied less as a result.</p><p>Want to filter or sort the measures by cost, complexity, climate theme impact or co-benefits? Use the <a href=\"/FCAB-3-Maatregelentabel.xlsx\">Excel version of the measures table</a>.</p>",
+ "intro_nl": "<p>Onderstaande tabel bevat de volledige set adaptatiemaatregelen uit de methodiek, ingedeeld naar niet-fysieke maatregelen, fysieke maatregelen op gebiedsniveau en fysieke maatregelen op gebouwniveau, in die voorkeursvolgorde (zie <a href=\"#m-4\">§4.1</a>). Per maatregel: het kostenniveau, de complexiteit van implementatie en een toelichting op voordelen/werking en aandachtspunten (mogelijke trade-offs). De lijst is niet uitputtend en bedoeld als bron van inspiratie.</p><p>Wil je de maatregelen filteren of sorteren op kosten, complexiteit, klimaatthema-impact of co-benefits? Gebruik de <a href=\"/FCAB-3-Maatregelentabel.xlsx\">Excel-versie van de maatregelentabel</a>.</p>",
+ "intro_en": "<p>The table below contains the full set of adaptation measures from the methodology, divided into non-physical measures, physical measures at area level and physical measures at building level, in that order of preference (see <a href=\"#m-4\">§4.1</a>). For each measure: the cost level, the complexity of implementation, and an explanation of the benefits/how it works and points of attention (possible trade-offs). The list is not exhaustive and is intended as a source of inspiration.</p><p>Want to filter or sort the measures by cost, complexity, climate theme impact or co-benefits? Use the <a href=\"/FCAB-3-Maatregelentabel.xlsx\">Excel version of the measures table</a>.</p>",
  "xlsx": "/FCAB-3-Maatregelentabel.xlsx"
 };
