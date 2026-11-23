@@ -85,8 +85,8 @@ window.CD_FCAB_TEXT = [
  },
  {
   "nr": "3",
-  "t_nl": "Klimaatkwetsbaarheidsbeoordeling (screening)",
-  "t_en": "Climate vulnerability assessment (screening)",
+  "t_nl": "Klimaatkwetsbaarheidsbeoordeling",
+  "t_en": "Climate vulnerability assessment",
   "nl": "<p>De screening geeft per gebouw en per klimaatthema een kwetsbaarheidsscore. Elk thema heeft dezelfde opbouw: het doel en de werkwijze, de omgevingsblootstelling (wat komt er op het gebouw af), de gebouwgevoeligheid (hoe reageert het gebouw), het adaptief vermogen (welke bestaande maatregelen helpen al) en de kwetsbaarheidsscore die daaruit volgt. Hagel en storm zijn nog niet uitgewerkt.</p>",
   "en": "<p>The screening gives a vulnerability score per building and per climate theme. Every theme has the same structure: purpose and approach, exposure (what the building faces), building sensitivity (how the building responds), adaptive capacity (which existing measures already help) and the resulting vulnerability score. Hail and storm are not yet worked out.</p>",
   "sub": [
@@ -286,8 +286,8 @@ window.CD_FCAB_TEXT = [
  },
  {
   "nr": "4",
-  "t_nl": "Klimaatrisicoanalyse en adaptatiestrategie (gedetailleerde analyse)",
-  "t_en": "Climate risk analysis and adaptation strategy (detailed analysis)",
+  "t_nl": "Klimaatrisicoanalyse en adaptatiestrategie",
+  "t_en": "Climate risk analysis and adaptation strategy",
   "nl": "<p>Uit de screening (hoofdstuk 3) volgt per gebouw en per klimaatthema een klimaatrisicoscore. Gebouwen met een score 'hoog' of 'zeer hoog' zijn rode vlaggen. Dit hoofdstuk beschrijft wat je daarna doet: het risico per gebouw beter begrijpen, beoordelen en verminderen.</p><p>De stappen volgen de risicomanagementcyclus uit hoofdstuk 2. Eerst toets je de uitkomst met een deep-dive. Daarna bekijk je wat het risico betekent voor gebruikers, gebouw en organisatie. Vervolgens kies je een risicohouding en maatregelen. Je eindigt met een adaptatieplan dat je uitvoert, monitort en regelmatig herziet.</p>",
   "en": "<p>The screening (chapter 3) gives each building a climate risk score per climate theme. Buildings scoring 'high' or 'very high' are red flags. This chapter describes the next step: understanding, assessing and reducing the risk for each building.</p><p>The steps follow the risk management cycle from chapter 2. First, you test the outcome in a deep dive. Next, you look at what the risk means for users, the building and the organisation. Then you choose a risk response and measures. You end with an adaptation plan that you carry out, monitor and review regularly.</p>",
   "sub": [
