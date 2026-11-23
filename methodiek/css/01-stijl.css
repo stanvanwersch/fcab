@@ -4,7 +4,7 @@
   --vlak:#F3F0EA; --wit:#FFFFFF; --cream:#FAF9F7; --line:#E8E4DE; --line-2:#D4CFC8;
   --text:#1C1A17; --text2:#5A5650; --text3:#9C9690;
   --accent:#E07A2F; --accent-licht:#FBEBDD; --groen:#1C974D; --rood:#B91C1C;
-  --f:#4BAE8A; --c:#E8B84B; --a:#E8710A; --b:#C0392B;
+  --f:#E8B84B; --c:#C0392B; --a:#4BAE8A; --b:#E8710A;
   --font-tekst:"Inter",system-ui,sans-serif; --font-kop:"Poppins","Inter",system-ui,sans-serif;
   --hover:rgba(28,26,23,.06); --on:#E9E4DB;
 }
