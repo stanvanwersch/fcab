@@ -13,8 +13,16 @@
   const save=()=>{ try{ localStorage.setItem('fcab-gs',JSON.stringify(S)); }catch(e){} };
   const num=n=>{ const r=Math.round(n*100)/100; return (LG.lang==='nl'?String(r).replace('.',','):String(r)).replace('-','−'); };
   const pts=n=>(n>0?'+':'')+num(n);
-  const KCOL={1:'#4BAE8A',2:'#9CC26B',3:'#E8B84B',4:'#E8710A',5:'#C0392B'};
-  const badge=k=>k?`<span class="kbadge" style="--k:${KCOL[k]}">${esc(tx(C.klassen[k]))}</span>`:`<span class="kbadge none">${L('none','geen')}</span>`;
+  // classes in the FCAB logo colours only: k1 light green ... k5 red (css/01-stijl.css)
+  const badge=k=>k?`<span class="kbadge k${k}">${esc(tx(C.klassen[k]))}</span>`:`<span class="kbadge none">${L('none','geen')}</span>`;
+  const KWORD={'zeer laag':1,'very low':1,'laag':2,'low':2,'gemiddeld':3,'medium':3,'hoog':4,'high':4,'zeer hoog':5,'very high':5};
+  // turn a table of the method text into a colour matrix: every body cell that holds a class (or 1-5) gets its colour
+  function asMatrix(t,numeric){
+    if(!t) return; t.classList.add('mx');
+    [...t.rows].forEach((r,ri)=>{ if(ri===0) return; [...r.cells].forEach((c,ci)=>{ if(ci===0) return;
+      const v=c.textContent.trim().toLowerCase(), k=numeric?(/^[1-5]$/.test(v)?+v:0):KWORD[v];
+      if(k){ c.classList.add('k'+k); if(numeric) c.title=tx(C.klassen[k]); } }); });
+  }
 
   // ---- questions: chosen points, or the most vulnerable option when not chosen
   const optPts=(o,env)=>o.p!==undefined?o.p:(env==='hoog'?o.hoog:o.laag);
@@ -34,11 +42,11 @@
       const raw=o.sum+a.sum, score=Math.round(Math.max(0,Math.min(100,raw)));
       R.hitte={op:o.sum,af:a.sum,score,open:o.open+a.open,envOpen:!env,k:band(C.hitte.banden,score)}; }
     // pluvial flooding
-    { const W=C.wateroverlast, s=sumQ('wateroverlast',W.vragen), score=Math.max(W.min,Math.min(W.max,s.sum)), env=S.env['wateroverlast.omgeving'];
+    { const W=C.wateroverlast, s=sumQ('wateroverlast',W.vragen), score=Math.round(Math.max(W.min,Math.min(W.max,s.sum))), env=S.env['wateroverlast.omgeving'];
       const col=colOf(W.kolommen,score);
       R.wateroverlast={score,open:s.open,env,col,k:env&&env!=='0'?W.matrix[env][col]:null}; }
     // river and sea flooding: step plan
-    { const O=C.overstroming, s=sumQ('overstroming',O.vragen), score=Math.max(O.min,Math.min(O.max,s.sum));
+    { const O=C.overstroming, s=sumQ('overstroming',O.vragen), score=Math.round(Math.max(O.min,Math.min(O.max,s.sum)));
       const k20=S.env['overstroming.k20'], k50=S.env['overstroming.k50'];
       let k=null, stap=null;
       if(k20==='klein'||k20==='zeerklein'){ k=2; stap=1; }
@@ -62,8 +70,8 @@
       const on=S.sel[key+'.'+q.id]===i;
       const p=o.p!==undefined?pts(o.p):`<span title="${L('environment score low','omgevingsscore laag')}">${pts(o.laag)}</span> / <span title="${L('environment score medium or high','omgevingsscore middel of hoog')}">${pts(o.hoog)}</span>`;
       return `<tr class="qo${on?' on':''}${i===0?' q1':''}" data-gs="${key}.${q.id}" data-i="${i}" tabindex="0" role="button" aria-pressed="${on}">
-        ${i===0?`<td class="qk" rowspan="${q.opties.length}">${esc(tx(q))}</td>`:''}<td class="qs"><i class="rb"></i>${esc(tx(o))}</td><td class="qp">${p}</td></tr>`;}).join('')).join('');
-    return `<div class="wrap"><table class="t qt" data-qt="${key}" data-part="${opts.part||''}"><thead><tr><th>${L('Characteristic','Kenmerk')}</th><th>${L('Situation (click to choose)','Situatie (klik om te kiezen)')}</th><th class="qp">${L('Points','Punten')}</th></tr></thead>
+        ${i===0?`<td class="qk" rowspan="${q.opties.length}">${esc(tx(q))}</td>`:''}<td class="qs">${esc(tx(o))}</td><td class="qp">${p}</td></tr>`;}).join('')).join('');
+    return `<div class="wrap"><table class="t qt" data-qt="${key}" data-part="${opts.part||''}"><thead><tr><th>${L('Characteristic','Kenmerk')}</th><th>${L('Situation','Situatie')}</th><th class="qp">${L('Points','Punten')}</th></tr></thead>
       <tbody>${rows}</tbody><tfoot><tr><td colspan="2" class="qtl" data-tot-label="${key}.${opts.part||''}"></td><td class="qp" data-tot="${key}.${opts.part||''}"></td></tr></tfoot></table></div>`;
   }
   const sel=(id,label,list,val,valOf)=>`<label class="cf"><span>${label}</span><select data-env="${id}"><option value="">${L('Choose','Kies')}</option>${list.map((o,i)=>{ const v=valOf?valOf(o,i):o.id; return `<option value="${esc(v)}"${String(val)===String(v)?' selected':''}>${esc(tx(o))}</option>`; }).join('')}</select></label>`;
@@ -86,7 +94,7 @@
       <div class="cres" data-res="droogte"></div></div>`; }
     return '';
   }
-  const item=(l,v,cls)=>`<div class="ci${cls?' '+cls:''}"><span>${l}</span><b>${v}</b></div>`;
+  const item=(l,v,cls)=>`<span class="ci${cls?' '+cls:''}">${l} <b>${v}</b></span>`;
   const openNote=n=>n?`<p class="cnote">${n===1?L('1 characteristic not chosen yet; it counts as very high vulnerability.','1 kenmerk nog niet gekozen; dat telt als zeer hoge kwetsbaarheid.'):L(`${n} characteristics not chosen yet; they count as very high vulnerability.`,`${n} kenmerken nog niet gekozen; die tellen als zeer hoge kwetsbaarheid.`)}</p>`:'';
 
   // ---- update everything that is on the page
@@ -140,11 +148,11 @@
     root._gsT={};
     if(page==='3.1'){
       replace('3.1.3',qtable('hitte',C.hitte.opwarming,{part:'op'})); replace('3.1.4',qtable('hitte',C.hitte.afkoeling,{part:'af'}));
-      root._gsT.hitte=tables('3.1.5')[0]; insertBox('3.1.5',box('hitte'));
+      root._gsT.hitte=tables('3.1.5')[0]; asMatrix(root._gsT.hitte,false); insertBox('3.1.5',box('hitte'));
     } else if(page==='3.2'){
-      root._gsT.zscore=tables('3.2.3')[0]; const t=tables('3.2.5'); root._gsT.paal=t[0]; root._gsT.zet=t[1]; insertBox('3.2.5',box('droogte'));
+      root._gsT.zscore=tables('3.2.3')[0]; const t=tables('3.2.5'); root._gsT.paal=t[0]; root._gsT.zet=t[1]; asMatrix(t[0],true); asMatrix(t[1],true); insertBox('3.2.5',box('droogte'));
     } else if(page==='3.3'){
-      replace('3.3.3',qtable('wateroverlast',C.wateroverlast.vragen)); root._gsT.water=tables('3.3.5')[0]; insertBox('3.3.5',box('wateroverlast'));
+      replace('3.3.3',qtable('wateroverlast',C.wateroverlast.vragen)); root._gsT.water=tables('3.3.5')[0]; asMatrix(root._gsT.water,false); insertBox('3.3.5',box('wateroverlast'));
     } else if(page==='3.4'){
       replace('3.4.3',qtable('overstroming',C.overstroming.vragen)); root._gsT.over=tables('3.4.5')[0]; insertBox('3.4.5',box('overstroming'));
     } else return;

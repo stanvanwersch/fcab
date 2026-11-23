@@ -359,3 +359,37 @@ mark.fm.on{background:var(--accent);color:#fff}
 @media (max-width:900px){ .pnav{flex-direction:row} }
 .pnav a.pv{flex-direction:row}
 .pnav a.nx b{flex-direction:row}
+
+/* chosen situation: just highlighted, no radio circles */
+.qt .rb{display:none}
+.qt tr.qo.on td.qs,.qt tr.qo.on td.qp{background:var(--accent-licht);font-weight:600;box-shadow:inset 3px 0 0 var(--accent)}
+.qt tr.qo.on td.qp{box-shadow:none}
+
+/* colour matrices and a calm result line (24-11-2026): only the FCAB logo colours */
+.docm .prose table.mx{display:table;width:100%;max-width:none;border-collapse:separate;border-spacing:3px;margin:12px -3px 18px;table-layout:fixed}
+.prose table.mx th,.prose table.mx td{border:0;background:transparent;padding:9px 6px;font-size:13px;text-align:center;vertical-align:middle;border-radius:6px}
+.prose table.mx th{font-weight:600;color:var(--text2);font-size:12.5px}
+.prose table.mx tr>*:first-child{text-align:left;font-weight:600;color:var(--text);width:22%}
+.prose table.mx tr:first-child>*:first-child{font-weight:500;color:var(--text3);font-size:12px}
+.k1{background:#D8EEE5!important;color:#1E5A44!important}
+.k2{background:#4BAE8A!important;color:#fff!important}
+.k3{background:#E8B84B!important;color:#3D2C00!important}
+.k4{background:#E8710A!important;color:#fff!important}
+.k5{background:#C0392B!important;color:#fff!important}
+.prose table.mx td.gs-mark{box-shadow:inset 0 0 0 3px #1C1A17;font-weight:700}
+.prose table.mx tr.gs-mark td{box-shadow:inset 0 0 0 3px #1C1A17;font-weight:700}
+.kbadge{font:600 14px/1 var(--font-tekst);padding:7px 12px;border-radius:7px}
+.kbadge.none{background:transparent;color:var(--text2);padding:0;font-weight:500}
+.calc{background:var(--cream);border:0}
+.cis{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;margin-top:4px}
+.ci{display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:0;min-width:0;flex-direction:row;font-size:13.5px;color:var(--text2)}
+.ci b{font-size:15px;color:var(--text)}
+.ci.big{min-width:0}
+.docm .prose table.mx{table-layout:auto}
+.prose table.mx td{overflow-wrap:normal;hyphens:manual;font-size:12.5px;padding:9px 4px}
+.prose table.mx tr>*:first-child{width:auto;white-space:nowrap;padding-right:10px}
+.prose .wrap:has(table.mx),.prose table.mx{overflow:visible}
+.docm .prose table.mx{table-layout:fixed;width:calc(100% + 6px)}
+.prose table.mx tr>*:first-child{width:17%;white-space:normal}
+.prose table.mx td{font-size:12px;padding:10px 3px}
+@media (max-width:1150px){ .prose table.mx td{hyphens:auto;overflow-wrap:break-word;font-size:11.5px;padding:9px 2px} .prose table.mx th{font-size:11.5px} }
