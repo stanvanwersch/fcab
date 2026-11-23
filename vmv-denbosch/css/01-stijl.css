@@ -359,3 +359,11 @@ html[data-theme="dark"] .de-onbekend{color:#9ca3af;}
 .legend.dicht .legend-toggle svg{transform:rotate(180deg);}
 .legend-body{margin-top:9px;}
 .legend.dicht .legend-body{display:none;}
+
+/* Nieuw FCAB-beeldmerk: vier gekleurde blokken F C A B (zoals fcab.eu/methodiek) */
+:root{--fcab-f:#E8B84B;--fcab-c:#C0392B;--fcab-a:#4BAE8A;--fcab-b:#E8710A;}
+.fmark{display:grid;grid-template-columns:repeat(2,16px);gap:2px;flex:none}
+.fmark i{width:16px;height:16px;border-radius:2.5px;display:grid;place-items:center;font:700 9.5px/1 var(--wordmark);font-style:normal;color:#fff}
+.fmark i:nth-child(1){background:var(--fcab-f)}.fmark i:nth-child(2){background:var(--fcab-c)}
+.fmark i:nth-child(3){background:var(--fcab-a)}.fmark i:nth-child(4){background:var(--fcab-b)}
+.fmark.lg{grid-template-columns:repeat(2,26px);gap:4px}.fmark.lg i{width:26px;height:26px;font-size:14px;border-radius:4px}
