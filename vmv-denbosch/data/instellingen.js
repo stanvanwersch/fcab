@@ -36,7 +36,13 @@ window.VMV_CONFIG = {
       { label: "20 - 30 cm",     kleur: "#1d44b8" },
       { label: "Meer dan 30 cm", kleur: "#002673" }
     ],
-    tegels: "assets/waterdiepte/{z}/{x}/{y}.png",
+    // Kaarten om uit te kiezen (zelfde klassen en kleuren). 'id' hoort bij VMV_TEGELS in waterdiepte-tegels.js.
+    kaarten: [
+      { id: "bui70", naam: "Nieuwe kaart", tegels: "assets/waterdiepte/{z}/{x}/{y}.png",
+        bron: "waterdieptekaart_db2.tif (waterdiepte in m, 0,5 m)" },
+      { id: "oud",   naam: "Oude kaart",   tegels: "assets/waterdiepte-oud/{z}/{x}/{y}.png",
+        bron: "waterdiepte_den_bosch_oude_kaart.tif (klassen 1-5, 2 m)" }
+    ],
     minZoom: 10,
     maxNativeZoom: 16,
     grenzen: [[51.6336, 5.1698], [51.7686, 5.5321]],

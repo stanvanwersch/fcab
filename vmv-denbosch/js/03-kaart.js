@@ -17,8 +17,14 @@
   var data = [], gefilterd = [];
   var activeEffect = C.effecten[0].key, activeFilter = "all";
   var map = null, waterLaag = null, pandenLaag = null, detailRij = null;
-  var tegelSet = {};
-  (window.VMV_TEGELS || "").split(" ").forEach(function(t){ if (t) tegelSet[t] = 1; });
+  // Per kaart de bestaande tegels; de gekozen kaart blijft bewaard
+  var tegelSets = {};
+  C.kaartlaag.kaarten.forEach(function(k){
+    var set = {}; ((window.VMV_TEGELS || {})[k.id] || "").split(" ").forEach(function(t){ if (t) set[t] = 1; });
+    tegelSets[k.id] = set;
+  });
+  var KAART_KEY = "vmv-db-kaart", kaartId = C.kaartlaag.kaarten[0].id;
+  try { var bewaard = localStorage.getItem(KAART_KEY); if (tegelSets[bewaard]) kaartId = bewaard; } catch(e){}
 
   function $(id){ return document.getElementById(id); }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
@@ -81,7 +87,7 @@
     $("code-input").style.borderColor = "#b91c1c";
   }
   function logout(){
-    data = []; gefilterd = [];
+    data = []; gefilterd = []; waterLaag = null;
     $("app").style.display = "none";
     $("login-screen").style.display = "flex";
     $("code-input").value = "";
@@ -92,7 +98,7 @@
   var WaterLaag = L.TileLayer.extend({
     createTile: function(coords, done){
       var key = coords.z + "/" + coords.x + "/" + coords.y;
-      if (!tegelSet[key]){
+      if (!tegelSets[this.options.kaartId][key]){
         var leeg = document.createElement("div");
         setTimeout(function(){ done(null, leeg); }, 0);
         return leeg;
@@ -110,16 +116,31 @@
 
     map.createPane("water");
     map.getPane("water").style.zIndex = 350;
-    var kl = C.kaartlaag;
-    waterLaag = new WaterLaag(kl.tegels, {
-      pane: "water", minZoom: kl.minZoom, maxNativeZoom: kl.maxNativeZoom, maxZoom: 19,
-      bounds: L.latLngBounds(kl.grenzen), opacity: kl.dekking,
-      attribution: kl.naam + " Den Bosch"
-    });
-    waterLaag.addTo(map);
+    zetWaterLaag();
     pandenLaag = L.layerGroup().addTo(map);
 
     filter();
+  }
+
+  function zetWaterLaag(){
+    var kl = C.kaartlaag;
+    var k = kl.kaarten.filter(function(x){ return x.id === kaartId; })[0];
+    if (waterLaag) map.removeLayer(waterLaag);
+    waterLaag = new WaterLaag(k.tegels, {
+      kaartId: k.id, pane: "water", minZoom: kl.minZoom, maxNativeZoom: kl.maxNativeZoom, maxZoom: 19,
+      bounds: L.latLngBounds(kl.grenzen), opacity: kl.dekking,
+      attribution: kl.naam + " Den Bosch (" + k.naam.toLowerCase() + ")"
+    }).addTo(map);
+  }
+
+  function kiesKaart(id){
+    kaartId = id;
+    try { localStorage.setItem(KAART_KEY, id); } catch(e){}
+    document.querySelectorAll("#kaart-keuze button").forEach(function(b){
+      var on = b.dataset.kaart === id;
+      b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    if (map) zetWaterLaag();
   }
 
   function slechtste(row){
@@ -240,6 +261,15 @@
   /* ---------- start ---------- */
   document.addEventListener("DOMContentLoaded", function(){
     zetFilter(); tekenLegenda(); tekenInstellingen();
+
+    // Keuze tussen de waterdieptekaarten
+    $("kaart-keuze").innerHTML = C.kaartlaag.kaarten.map(function(k){
+      return "<button type=\"button\" class=\"filter-btn\" data-kaart=\"" + k.id + "\" title=\"" + esc(k.bron) + "\">" + esc(k.naam) + "</button>";
+    }).join("");
+    $("kaart-keuze").addEventListener("click", function(e){
+      var b = e.target.closest("button"); if (b) kiesKaart(b.dataset.kaart);
+    });
+    kiesKaart(kaartId);
 
     // Legenda inklapbaar; de stand blijft bewaard
     function zetLegenda(dicht){
